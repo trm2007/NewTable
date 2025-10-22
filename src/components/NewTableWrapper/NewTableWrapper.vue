@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+
 import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
@@ -21,7 +23,6 @@ import { NEW_TABLE_STANDART_ACTIONS } from './constants/standartActions';
 
 import NewTable from '../NewTable/NewTable.vue';
 import NewScroller from '../NewScroller/NewScroller.vue';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const props = defineProps<{
   data: INewTableRow[];

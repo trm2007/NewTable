@@ -1,4 +1,4 @@
-import type { INewTableRow } from "../constants/testData";
+import { INewTableRow } from "../components/NewTable/types/NewTableRowTypes";
 
 export function findRowById(
   rowId: number | string,
