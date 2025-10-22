@@ -11,6 +11,7 @@ import type {
   INewTableRowActionEvent,
   INewTableUpdateCellDataEvent
 } from '../NewTable/types/NewTableEventTypes';
+import type { INewTableFilters } from '../NewTable/types/NewTableFilterTypes';
 
 import { useNewTableWrapperModesIds } from './composables/NewTableWrapperModesIds';
 import { useNewTableWrapperComputeData } from './composables/NewTableWrapperComputeData';
@@ -23,12 +24,14 @@ import { NEW_TABLE_STANDART_ACTIONS } from './constants/standartActions';
 
 import NewTable from '../NewTable/NewTable.vue';
 import NewScroller from '../NewScroller/NewScroller.vue';
+import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFilteredData';
 
 const props = defineProps<{
   data: INewTableRow[];
   columns: INewTableColumn[];
   columnsSettings: Record<string, INewTableHeaderSetting>;
-  commonMeta?: INewTableRowCommonMeta
+  commonMeta?: INewTableRowCommonMeta;
+  initialFilters: INewTableFilters;
 }>();
 
 const emit = defineEmits<{
@@ -45,10 +48,22 @@ const {
 } = useNewTableWrapperModesIds();
 
 const {
+  filters,
+  computedFilteredData,
+  clearFilters,
+  resetFiltersToDefaultValues,
+  resetFiltersToInitialValues,
+  generateFilteredData,
+} = useNewTableWrapperFilteredData(
+  () => props.data,
+  () => props.initialFilters,
+);
+
+const {
   computedFlatData,
   computedOnlyExpandedFlatData
 } = useNewTableWrapperComputeData(
-  () => props.data,
+  () => computedFilteredData.value,
   () => modeIds.value?.[ROW_MODES.EXPANDED]
 );
 
@@ -132,7 +147,12 @@ function onChangeColumnsWidth(event: INewTableChangeColumnWidthEvent) {
 }
 
 function onChangeFilterSearch(event: INewTableChangeFilterSearch) {
-
+  filters.value = {
+    ...filters.value,
+    [event.key]: {
+      currentValue: event.searchStr
+    }
+  }
 }
 </script>
 
@@ -144,6 +164,7 @@ function onChangeFilterSearch(event: INewTableChangeFilterSearch) {
         :data="computedOnlyExpandedFlatDataToView"
         :columns="computedColumnsSortByOrderVisible"
         :columnsSettings="localColumnsSettings"
+        :filters="filters"
         :modeIds="modeIds"
         :startIndex="startIndex"
         :rowCount="rowCount"

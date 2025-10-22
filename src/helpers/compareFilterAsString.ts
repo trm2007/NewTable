@@ -6,16 +6,18 @@
  * По умолчанию применяется регулярное выраюение, которое независимо от регистра
  * проверяет является ли значение в фильтре частью строки в ячейки.
  *
- * @param {String} FilterData - первым аргументом, принимает значение фильтра для текущей колонки
- * @param {String} ItemData - вторым аргументом, принимает значение самой ячейки,
+ * @param {String} filterString - первым аргументом, принимает значение фильтра для текущей колонки
+ * @param {String} cellData - вторым аргументом, принимает значение самой ячейки,
  * эта функция будет вызываться в NewTable для каждой ячейки,
  * и, соответственно, эта функция будет вызвана последовательно для всего набора данных
- * @param {String} PatternFlags - флаги для регулярного выражения, по умолчанию - gmi
+ * @param {String} patternFlags - флаги для регулярного выражения, по умолчанию - gmi
  */
-export function compareFilterAsString(FilterData, ItemData, PatternFlags = "gmi") {
-    const reg = new RegExp(".*" + FilterData + ".*", PatternFlags);
+export function compareFilterAsString(
+    filterString: string,
+    cellData: string,
+    patternFlags: string = "gmi"
+): boolean {
+    const reg = new RegExp(".*" + filterString + ".*", patternFlags);
 
-    return reg.test(ItemData);
+    return reg.test(cellData);
 }
-
-export default compareFilterAsString;

@@ -11,6 +11,8 @@ import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/typ
 import { generateLargeTestData } from './constants/testData';
 import { columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
+import { filters } from './constants/filters';
+
 import { findParentRowsById, findRowById } from './helpers/finders';
 
 import { NEW_TABLE_STANDART_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
@@ -111,6 +113,7 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
             task: '--task',
           }
         }"
+        :initial-filters="filters"
         @row-action="onAction"
         @update:cell-data="onUpdateCellData"
       />

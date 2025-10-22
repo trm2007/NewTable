@@ -1,5 +1,7 @@
 import { computed, Ref, ref, toValue, watchEffect } from "vue";
-import { INewTableRow } from "../../../constants/testData";
+
+import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
+import { generateFilteredDataForNested } from "../../../helpers/filterForNested";
 
 export function useNewTableWrapperComputeData(
   data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),

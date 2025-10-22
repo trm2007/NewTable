@@ -8,6 +8,7 @@ import type {
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent
 } from '../../types/NewTableEventTypes';
+import type { INewTableFilters } from '../../types/NewTableFilterTypes';
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
 import { useNewTableHeaderMouseWidth } from './composables/NewTableHeaderMouseWidth';
@@ -15,6 +16,8 @@ import { useNewTableHeaderMouseWidth } from './composables/NewTableHeaderMouseWi
 const props = defineProps<{
   visibleSortedColumns: INewTableColumn[];
   localColumnsSettings: Record<string, INewTableHeaderSetting>;
+  // фильтры для полей-колонок данных
+  filters?: INewTableFilters,
   isNumberColumnShown?: boolean;
   isCheckboxColumnShown?: boolean;
   isExpandColumnShown?: boolean;
@@ -132,7 +135,7 @@ function getFilterTeleportName(key: string | null): string | undefined {
         {{ header.name }}
 
         <div
-          v-if="!!activeHeaderFilterName"
+          v-if="!!activeHeaderFilterName && header.key in (filters || {})"
           :id="getFilterTeleportName(header.key)"
           :style="{
             position: 'absolute',
@@ -154,7 +157,7 @@ function getFilterTeleportName(key: string | null): string | undefined {
     </div>
 
     <teleport
-      v-if="!!activeHeaderFilterName"
+      v-if="!!activeHeaderFilterName && activeHeaderFilterName in (filters || {})"
       :to="`#${getFilterTeleportName(activeHeaderFilterName)}`"
     >
       <div class="new-table__header__filter">

@@ -11,6 +11,7 @@ import type {
   INewTableRowActionEvent,
   INewTableUpdateCellDataEvent
 } from './types/NewTableEventTypes';
+import type { INewTableFilters } from './types/NewTableFilterTypes';
 
 import { ROW_MODES } from './constants/rowModes';
 
@@ -22,6 +23,8 @@ const props = defineProps<{
   data: INewTableRow[];
   // подгттовленные колокни - отсортированные и отображаемые
   columns: INewTableColumn[];
+  // фильтры для полей-колонок данных
+  filters?: INewTableFilters,
   // настройки колонок, тут важна установленная ширина
   columnsSettings: Record<string, INewTableHeaderSetting>;
   // габоры ID-шников в разлиных режимах отображения
@@ -77,6 +80,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
     <NewTableHeader
       :visibleSortedColumns="columns"
       :localColumnsSettings="columnsSettings"
+      :filters="filters"
       :isNumberColumnShown="true"
       :isCheckboxColumnShown="true"
       :isExpandColumnShown="true"
