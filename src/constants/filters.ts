@@ -15,10 +15,10 @@ export const filters: Record<string, INewTableFilter> = {
     availableValue: null,
     // функция для проверки - соответствует ли значение в строке row в ячейке cellName значению фильтра filterValue
     compare: (
-      filterValue: any,
+      filterValue: string,
       cellName: string,
       row: INewTableRow,
-      data: INewTableRow[]
+      // data: INewTableRow[], // как пример, может передаваться перелаваться в другие функции сравнения
     ) => compareFilterAsString(filterValue, row.data[cellName]),
   }
 }

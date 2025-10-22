@@ -2,7 +2,11 @@
 import { computed, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-import type { INewTableRow, INewTableRowCommonMeta } from '../../types/NewTableRowTypes';
+import type {
+  INewTableRow,
+  INewTableRowAction,
+  INewTableRowCommonMeta
+} from '../../types/NewTableRowTypes';
 import type { INewTableColumn } from '../../types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from '../NewTableHeader/types/NewTableHeaderTypes';
 import type {
@@ -51,10 +55,10 @@ const actions = computed(() => props.row?.actions || {});
 
 const computedCssClasses = computed(
   () => {
-    if (!!props.row.meta.class) {
+    if (props.row.meta.class) {
       return props.row.meta.class;
     }
-    if (!!props.row.meta?.rowType) {
+    if (props.row.meta?.rowType) {
       return props.commonMeta?.class?.[props.row.meta.rowType] || '';
     }
 
@@ -90,7 +94,7 @@ function getComponentName(header: INewTableColumn, rowType?: string | number) {
   return header.components[rowType]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
 }
 
-function checkIsActionEnabled(action: any) {
+function checkIsActionEnabled(action: INewTableRowAction) {
   if (!action.modes?.length) {
     return true;
   }
@@ -114,7 +118,7 @@ function getComponentProps(header: INewTableColumn, rowType?: string | number) {
   return header.components[rowType]?.props || {};
 }
 
-function onCellUpdate(key: string, value: any) {
+function onCellUpdate(key: string, value: unknown) {
   localRow.data[key] = value
   emit('update:cell-data', {
     key,
@@ -123,7 +127,7 @@ function onCellUpdate(key: string, value: any) {
   });
 }
 
-function onCellAction(key: string, value: any) {
+function onCellAction(key: string, value: unknown) {
   emit('cell-action', {
     key,
     row: props.row,
@@ -157,7 +161,7 @@ function onCellAction(key: string, value: any) {
           row: localRow,
           value: (($event as InputEvent).target as HTMLInputElement)?.checked,
         })"
-      />
+      >
     </div>
 
     <div
@@ -185,8 +189,8 @@ function onCellAction(key: string, value: any) {
       }"
     >
       <component
-        v-if="header?.components"
         :is="getComponentName(header, row.meta.rowType || props.commonMeta?.rowType)"
+        v-if="header?.components"
         :value="row.data[header.key]"
         :row="row"
         :column="header"

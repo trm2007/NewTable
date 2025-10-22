@@ -8,7 +8,7 @@ export interface IId {
 }
 
 export interface ILocalNewTableRowDataCommon extends IId {
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface INewTableRowAction {
@@ -28,7 +28,7 @@ export interface INewTableRowCommonMeta {
   class?: Record<string, string>;
 }
 
-export interface INewTableRowTemplate<T extends Record<string, any>> {
+export interface INewTableRowTemplate<T extends Record<string, unknown>> {
   meta: INewTableRowMeta;
   data: T;
   children?: INewTableRowTemplate<T>[];
@@ -36,4 +36,4 @@ export interface INewTableRowTemplate<T extends Record<string, any>> {
   __level?: number; // for internal use in flat data generation
 }
 
-export interface INewTableRow extends INewTableRowTemplate<ILocalNewTableRowDataCommon> { }
+export type INewTableRow = INewTableRowTemplate<ILocalNewTableRowDataCommon>

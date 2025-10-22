@@ -5,8 +5,6 @@ import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
 import type { IChangeColumnSettingsEvent } from './types';
 
-import { columns } from '../../constants/columns';
-
 type TListOfColumnSettings = Record<string, Partial<INewTableHeaderSetting & INewTableColumn>>
 
 const props = defineProps<{
@@ -25,8 +23,8 @@ const omputedListOfColumnSettings = computed<TListOfColumnSettings>(
         acc: TListOfColumnSettings,
         currentColumnSetttingName: string,
       ): TListOfColumnSettings => {
-        const currentColumn = columns.find(
-          (column) => column.key === currentColumnSetttingName
+        const currentColumn = props.columns.find(
+          (column: INewTableColumn) => column.key === currentColumnSetttingName
         );
 
         if (!currentColumn) {

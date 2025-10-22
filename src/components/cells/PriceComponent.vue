@@ -2,13 +2,15 @@
   <div class="cell">
     <template v-if="mode === 'edit'">
       <input
-        type="number"
         v-model.number="localValue"
+        type="number"
         @blur="commit"
-      />
+      >
     </template>
     <template v-else>
-      <span>{{ formatted }}</span>
+      <span>
+        {{ formatted }}
+      </span>
     </template>
   </div>
 </template>
@@ -17,15 +19,18 @@
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
-  value: number | string
+  value: number
   mode?: 'view' | 'edit'
 }>();
 
 const emit = defineEmits(['update:value']);
 
-const localValue = ref<number | string>(props.value as any);
+const localValue = ref<number>(props.value);
 
-watch(() => props.value, (v) => (localValue.value = v as any));
+watch(
+  () => props.value,
+  (v) => (localValue.value = v)
+);
 
 const formatted = computed(() => {
   const v = Number(props.value);

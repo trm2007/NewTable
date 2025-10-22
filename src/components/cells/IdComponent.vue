@@ -1,12 +1,12 @@
 <template>
   <div class="cell">
-    <span>{{ value }}</span>
+    <span>{{ props.value }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 const props = defineProps<{
-  value: any
+  value: number | string
 }>();
 </script>
 
