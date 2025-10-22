@@ -1,0 +1,223 @@
+<script setup lang="ts">
+import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/types/NewTableRowTypes';
+import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
+import type { INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
+import type {
+  INewTableChangeFilterSearch,
+  INewTableChangeColumnsOrderEvent,
+  INewTableChangeColumnWidthEvent,
+  INewTableRowActionEvent,
+  INewTableUpdateCellDataEvent
+} from '../NewTable/types/NewTableEventTypes';
+
+import { useNewTableWrapperModesIds } from './composables/NewTableWrapperModesIds';
+import { useNewTableWrapperComputeData } from './composables/NewTableWrapperComputeData';
+import { useNewTablePagination } from './composables/NewTableWrapperPagination';
+import { useNewTableWrapperWheelEvent } from './composables/NewTableWrapperWheelEvent';
+import { useNewTableWrapperHeader } from './composables/NewTableWrapperHeader';
+
+import { ROW_MODES } from '../NewTable/constants/rowModes';
+import { NEW_TABLE_STANDART_ACTIONS } from './constants/standartActions';
+
+import NewTable from '../NewTable/NewTable.vue';
+import NewScroller from '../NewScroller/NewScroller.vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+
+const props = defineProps<{
+  data: INewTableRow[];
+  columns: INewTableColumn[];
+  columnsSettings: Record<string, INewTableHeaderSetting>;
+  commonMeta?: INewTableRowCommonMeta
+}>();
+
+const emit = defineEmits<{
+  (e: 'row-action', event: INewTableRowActionEvent): void;
+  (e: 'update:cell-data', event: INewTableUpdateCellDataEvent): void;
+  (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
+}>();
+
+const {
+  modeIds,
+  switchOnModeForRow,
+  switchOffModeForRow,
+  toggleModeForRow
+} = useNewTableWrapperModesIds();
+
+const {
+  computedFlatData,
+  computedOnlyExpandedFlatData
+} = useNewTableWrapperComputeData(
+  () => props.data,
+  () => modeIds.value?.[ROW_MODES.EXPANDED]
+);
+
+const {
+  startIndex,
+  rowCount,
+  computedOnlyExpandedFlatDataToView,
+  setRowCount,
+  onPrevious,
+  onNext
+} = useNewTablePagination(computedFlatData, computedOnlyExpandedFlatData);
+
+const {
+  localColumnsSettings,
+  computedColumnsSortByOrderVisible,
+  changeColumnsOrder,
+  changeColumnsWidth,
+} = useNewTableWrapperHeader(() => props.columns, () => props.columnsSettings);
+
+const { onWheelEvent } = useNewTableWrapperWheelEvent(onNext, onPrevious);
+
+const el = ref<InstanceType<typeof NewTable> | null>(null);
+
+onMounted(() => {
+  if (!el.value?.$el) return;
+  const element = el.value.$el as HTMLElement;
+  element.addEventListener('wheel', onWheelEvent, { passive: true });
+  // document.addEventListener('wheel', onWheelEvent, { passive: true });
+});
+
+onBeforeUnmount(() => {
+  if (!el.value?.$el) return;
+  const element = el.value.$el as HTMLElement;
+  element.removeEventListener('wheel', onWheelEvent);
+  // document.removeEventListener('wheel', onWheelEvent);
+});
+
+function onAction(event: INewTableRowActionEvent) {
+  // TODO нужно продумать такой функционал:
+  // от родителя передается объект соответствия - имя дествия - устанавливаемый или снимаемый статцс
+  // { actionName: { onMode, offMode } }
+  if (event.name === NEW_TABLE_STANDART_ACTIONS.CHECK) {
+    if (event.value) {
+      switchOnModeForRow(ROW_MODES.CHECKED, event.row.data.id);
+    } else {
+      switchOffModeForRow(ROW_MODES.CHECKED, event.row.data.id);
+    }
+  }
+  if (event.name === NEW_TABLE_STANDART_ACTIONS.EDIT) {
+    switchOnModeForRow(ROW_MODES.EDIT, event.row.data.id);
+  }
+  if (event.name === NEW_TABLE_STANDART_ACTIONS.CANCEL) {
+    switchOffModeForRow(ROW_MODES.EDIT, event.row.data.id);
+  }
+  if (event.name === NEW_TABLE_STANDART_ACTIONS.SAVE) {
+    switchOffModeForRow(ROW_MODES.EDIT, event.row.data.id);
+  }
+  if (event.name === NEW_TABLE_STANDART_ACTIONS.DELETE) {
+    switchOffModeForRow(ROW_MODES.EDIT, event.row.data.id);
+  }
+  if (event.name === NEW_TABLE_STANDART_ACTIONS.EXPAND) {
+    switchOnModeForRow(ROW_MODES.EXPANDED, event.row.data.id);
+  }
+
+  emit('row-action', event);
+}
+
+function onChangeColumns(event: INewTableChangeColumnsOrderEvent) {
+  if (
+    !event.columnFrom
+    || !event.columnTo
+    || event.columnFrom === event.columnTo
+  ) {
+    return;
+  }
+  changeColumnsOrder(event.columnFrom, event.columnTo);
+}
+
+function onChangeColumnsWidth(event: INewTableChangeColumnWidthEvent) {
+  changeColumnsWidth(event.columnName, event.delta, event.currentWidth);
+}
+
+function onChangeFilterSearch(event: INewTableChangeFilterSearch) {
+
+}
+</script>
+
+<template>
+  <div>
+    <div class="new-table-wrapper">
+      <NewTable
+        ref="el"
+        :data="computedOnlyExpandedFlatDataToView"
+        :columns="computedColumnsSortByOrderVisible"
+        :columnsSettings="localColumnsSettings"
+        :modeIds="modeIds"
+        :startIndex="startIndex"
+        :rowCount="rowCount"
+        :commonMeta="props.commonMeta"
+        @row-action="onAction"
+        @toggle:expand-row="toggleModeForRow(ROW_MODES.EXPANDED, $event)"
+        @change:columns-order="onChangeColumns"
+        @update:cell-data="$emit('update:cell-data', $event)"
+        @change:column-width="onChangeColumnsWidth"
+        @change:filter-search="onChangeFilterSearch"
+      />
+      <NewScroller
+        :count="computedOnlyExpandedFlatData.length"
+        :position="startIndex"
+        :rowCount="rowCount"
+        class="new-table__scroller"
+        @chenge:position="(newPosition: number) => { startIndex = newPosition }"
+      />
+    </div>
+
+    <div class="new-table-pagination">
+      <div>
+        <label>
+          Str count:
+          <input
+            :value="rowCount"
+            @change="setRowCount(Number(($event.target as HTMLInputElement).value || 5))"
+          />
+        </label>
+      </div>
+      <button
+        @click="onPrevious"
+        :disabled="startIndex === 0"
+      >
+        Previous
+      </button>
+      <button
+        @click="onNext"
+        :disabled="startIndex + rowCount >= computedOnlyExpandedFlatData.length"
+      >
+        Next
+      </button>
+      <div class="new-table-pagination__info">
+        <span>Total</span>
+        <span>{{ computedFlatData.length }}</span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.new-table-wrapper {
+  display: flex;
+  padding: 16px;
+  height: 50vh;
+  width: 50vw;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.new-table__scroller {
+  flex: 0 0;
+}
+
+.new-table-pagination {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.new-table-pagination__info {
+  margin-left: 16px;
+  display: flex;
+  gap: 8px;
+  display: flex;
+  align-items: center;
+}
+</style>
