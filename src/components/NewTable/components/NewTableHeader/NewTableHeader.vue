@@ -143,7 +143,8 @@ function getFilterTeleportName(key: string | null): string | undefined {
 
         <span
           class="new-table__header__cell__separator"
-          @mousedown="onMouseDown(header.key, $event)"
+          @mousedown.stop.prevent="onMouseDown(header.key, $event)"
+          @click.stop.prevent=""
         />
       </div>
       <div
