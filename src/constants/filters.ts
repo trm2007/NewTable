@@ -24,7 +24,7 @@ export const filters: Record<string, INewTableFilter> = {
     ) => compareFilterAsString(filterValue, row.data[cellName] as string),
     component: {
       name: 'TextComponent',
-      changeEventName: 'update:value',
+      changeEventName: 'input',
       props: {
         mode: ROW_MODES.EDIT,
       },
