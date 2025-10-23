@@ -180,4 +180,9 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
 :deep() .--task {
   background-color: #ffffff;
 }
+
+/* так можно переопределять стили */
+:deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
+  color: red;
+}
 </style>

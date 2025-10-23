@@ -37,15 +37,6 @@ export function useNewTableWrapperFlatData(
     expandedRowsForTransform: Set<number | string>,
     level: number = 0
   ): INewTableRow[] {
-    console.log('[generateOnlyExpandedFlatData]', dataForTransform);
-
-    // return [
-    //   dataForTransform[0],
-    //   dataForTransform[2],
-    //   dataForTransform[4],
-    //   dataForTransform[7],
-    //   dataForTransform[10],
-    // ];
     const flatData: INewTableRow[] = [];
 
     dataForTransform.forEach((row) => {

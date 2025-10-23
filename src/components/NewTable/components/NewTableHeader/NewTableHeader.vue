@@ -16,6 +16,7 @@ import type { INewTableFilters, INewTableSorts } from '../../types/NewTableFilte
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
 import { useNewTableHeaderMouseWidth } from './composables/NewTableHeaderMouseWidth';
+import NewTableHeaderFilterTeleport from './components/NewTableHeaderFilterTeleport.vue';
 
 const props = defineProps<{
   visibleSortedColumns: INewTableColumn[];
@@ -65,6 +66,16 @@ const computedIconName = computed<string>(
   }
 );
 
+const computedFilterTeleportNames = computed<Record<string, string>>(
+  () => Object.keys(props.filters || {}).reduce(
+    (acc: Record<string, string>, filterName: string) => {
+      acc[filterName] = filterName ? `new-table-header-${filterName}-filter` : undefined;
+      return acc;
+    },
+    {},
+  )
+)
+
 function getSortIconNameForField(fieldName: string) {
   if (fieldName === computedSortFieldName.value) {
     return computedIconName.value;
@@ -104,7 +115,7 @@ function onDrop(event: DragEvent) {
   emit('change:columns-order', { columnFrom: draggedColumnKey, columnTo: droppedColumnKey });
 }
 
-function onChangeFilterValue(key: string, value: string) {
+function onChangeFilterValue({ key, value }: INewTableChangeFilterValue) {
   emit('change:filter-value', { key, value });
 }
 
@@ -122,6 +133,13 @@ async function onClickOnFilter(key: string) {
   activeHeaderFilterName.value = key;
 }
 
+async function onCloseFilterComponent(key: string) {
+  if (activeHeaderFilterName.value === key) {
+    activeHeaderFilterName.value = null;
+    return;
+  }
+}
+
 function onClickOnSort(key: string) {
   if (!props.sorts?.[key]) {
     emit('change:column-sort', { [key]: 1 });
@@ -129,10 +147,6 @@ function onClickOnSort(key: string) {
   }
 
   emit('change:column-sort', { [key]: props.sorts[key] === 1 ? -1 : 0 });
-}
-
-function getFilterTeleportName(key: string | null): string | undefined {
-  return key ? `new-table-header-${key}-filter` : undefined;
 }
 </script>
 
@@ -179,7 +193,7 @@ function getFilterTeleportName(key: string | null): string | undefined {
               && props.filters[header.key].currentValue !== props.filters[header.key]?.defaultValue,
           }"
           style="cursor: pointer;"
-          @click="onClickOnFilter(header.key)"
+          @click.stop.prevent="onClickOnFilter(header.key)"
         />
 
         <FontAwesomeIcon
@@ -189,9 +203,10 @@ function getFilterTeleportName(key: string | null): string | undefined {
           @click="onClickOnSort(header.key)"
         />
 
+        <!-- Teleport target -->
         <div
-          v-if="!!activeHeaderFilterName && header.key in (filters || {})"
-          :id="getFilterTeleportName(header.key)"
+          v-if="!!activeHeaderFilterName && !!computedFilterTeleportNames[header.key]"
+          :id="computedFilterTeleportNames[header.key]"
           :style="{
             position: 'absolute',
             zIndex: 3,
@@ -210,22 +225,13 @@ function getFilterTeleportName(key: string | null): string | undefined {
       />
     </div>
 
-    <teleport
-      v-if="!!activeHeaderFilterName && activeHeaderFilterName in (filters || {})"
-      :to="`#${getFilterTeleportName(activeHeaderFilterName)}`"
-    >
-      <div class="new-table__header__filter">
-        <component
-          :is="props.filters[activeHeaderFilterName]?.component.name || 'input'"
-          :value="props.filters[activeHeaderFilterName]?.currentValue"
-          :filter="props.filters[activeHeaderFilterName]"
-          v-bind="props.filters[activeHeaderFilterName]?.component.props || {}"
-          v-on="{
-            [props.filters[activeHeaderFilterName]?.component.changeEventName || 'change']:
-              ($event) => onChangeFilterValue(activeHeaderFilterName, $event)
-          }"
-        />
-      </div>
-    </teleport>
+    <NewTableHeaderFilterTeleport
+      v-if="activeHeaderFilterName"
+      :activeHeaderFilterName="activeHeaderFilterName"
+      :computedFilterTeleportNames="computedFilterTeleportNames"
+      :filters="filters"
+      @change:filter-value="onChangeFilterValue"
+      @close="onCloseFilterComponent"
+    />
   </div>
 </template>
