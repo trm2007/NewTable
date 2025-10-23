@@ -39,7 +39,13 @@ export function generateFilteredDataForNested(
                 || currentFilter.currentValue === currentFilter.defaultValue
                 || (('compare' in currentFilter && typeof currentFilter.compare === 'function')
                     ? currentFilter.compare(currentFilter.currentValue, currentColumnName, currentRow, currentData)
-                        : compareFilterAsString(String(currentFilter.currentValue ?? ''), String(resultRow.data[currentColumnName] ?? ''))
+                        : (() => {
+                            const fv = currentFilter.currentValue;
+                            const cell = resultRow.data[currentColumnName];
+                            const filterStr = (typeof fv === 'string' || typeof fv === 'number' || typeof fv === 'boolean') ? String(fv) : '';
+                            const cellStr = (typeof cell === 'string' || typeof cell === 'number' || typeof cell === 'boolean') ? String(cell) : '';
+                            return compareFilterAsString(filterStr, cellStr);
+                        })()
                 )
             ) {
                 resultData.push(resultRow);
