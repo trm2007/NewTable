@@ -125,9 +125,16 @@ function getFilterTeleportName(key: string | null): string | undefined {
         @dragstart="onDragStart"
         @dragover="onDragOver"
         @drop="onDrop"
-        @click="onClickOnHeader(header.key)"
       >
         {{ header.name }}
+
+        <FontAwesomeIcon
+          v-if="Object.keys(props.filters || {}).includes(header.key)"
+          icon="fa-solid fa-filter"
+          class="icon"
+          style="cursor: pointer;"
+          @click="onClickOnHeader(header.key)"
+        />
 
         <div
           v-if="!!activeHeaderFilterName && header.key in (filters || {})"

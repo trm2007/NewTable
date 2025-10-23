@@ -12,6 +12,7 @@ import {
   faFloppyDisk,
   faTrash,
   faXmark,
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -22,6 +23,7 @@ library.add(
   faFloppyDisk,
   faTrash,
   faXmark,
+  faFilter,
 )
 
 // Import cell components with type checking
