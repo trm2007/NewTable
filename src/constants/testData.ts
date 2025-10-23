@@ -151,7 +151,7 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
 
   const createNode = (level: number = 0): ILocalNewTableRow => {
     currentId++;
-    const hasChildren = level < MAX_LEVEL && Math.random() > 0.3;
+    const hasChildren = level === 0 || (level < MAX_LEVEL && Math.random() > 0.3);
     const rowType = level === 0
       ? 'stage'
       : hasChildren ? 'subStage' : 'task';
@@ -161,7 +161,7 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
       data: {
         id: `node-${currentId}`,
         name: `${rowType} ${currentId}`,
-        status: availableStatuses[Math.floor(Math.random() * availableStatuses.length)]
+        status: availableStatuses[Math.floor(Math.random() * availableStatuses.length)],
       },
       actions: {
         edit: {
@@ -187,13 +187,13 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
     };
 
     if (!hasChildren) {
-      node.data.pricePIR = Math.round(Math.random() * 100000);
-      node.data.pricePNR = Math.round(Math.random() * 100000);
-      node.data.priceSMR = Math.round(Math.random() * 100000);
+      node.data.pricePIR = Math.round(Math.random() * 1000);
+      node.data.pricePNR = Math.round(Math.random() * 1000);
+      node.data.priceSMR = Math.round(Math.random() * 1000);
       node.data.priceTotal = node.data.pricePIR + node.data.pricePNR + node.data.priceSMR;
-      node.data.customPricePIR = Math.round(Math.random() * 100000);
-      node.data.customPricePNR = Math.round(Math.random() * 100000);
-      node.data.customPriceSMR = Math.round(Math.random() * 100000);
+      node.data.customPricePIR = Math.round(Math.random() * 1000);
+      node.data.customPricePNR = Math.round(Math.random() * 1000);
+      node.data.customPriceSMR = Math.round(Math.random() * 1000);
       node.data.customPriceTotal = node.data.customPricePIR + node.data.customPricePNR + node.data.customPriceSMR;
     }
 

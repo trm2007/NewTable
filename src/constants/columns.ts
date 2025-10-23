@@ -8,6 +8,17 @@ export const statusOptions = [
   { value: 'active', name: 'Active' },
 ];
 
+export const columnsToCalc: string[] = [
+  'pricePIR',
+  'pricePNR',
+  'priceSMR',
+  'priceTotal',
+  'customPricePIR',
+  'customPricePNR',
+  'customPriceSMR',
+  'customPriceTotal'
+];
+
 export const columns: INewTableColumn[] = [
   {
     name: 'ID',
@@ -87,11 +98,11 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
@@ -108,11 +119,11 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
@@ -129,11 +140,11 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
@@ -150,15 +161,15 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
     },
   },
@@ -171,11 +182,11 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
@@ -192,11 +203,11 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
@@ -213,11 +224,11 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
@@ -234,15 +245,15 @@ export const columns: INewTableColumn[] = [
     components: {
       stage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       subStage: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
       task: {
         name: 'PriceComponent',
-        props: {},
+        props: { mode: 'view' },
       },
     },
   },

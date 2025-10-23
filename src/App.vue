@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { ref } from 'vue';
 
 import type { INewTableRow } from './components/NewTable/types/NewTableRowTypes';
@@ -8,14 +7,13 @@ import type { INewTableHeaderSetting } from './components/NewTable/components/Ne
 import type { INewTableRowActionEvent, INewTableUpdateCellDataEvent } from './components/NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/types';
 
+import { NEW_TABLE_STANDART_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
 import { generateLargeTestData } from './constants/testData';
-import { columns as testColumns } from './constants/columns';
+import { columnsToCalc, columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
-
-import { findParentRowWithChildIndexByChildRowId, findParentRowsById, findRowById } from './helpers/finders';
-
-import { NEW_TABLE_STANDART_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
+import { findParentRowsById, findRowById } from './helpers/finders';
+import { calcParentSums, recursiveCalcSumsForAllData } from './helpers/calacSums';
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
@@ -27,7 +25,9 @@ const columnsSettings = ref<Record<string, INewTableHeaderSetting>>({});
 const timeStamp = ref(Date.now());
 
 function initData() {
-  data.value = generateLargeTestData(); // testData;
+  data.value = generateLargeTestData(2000); // testData;
+  recursiveCalcSumsForAllData(data.value, columnsToCalc);
+
   columns.value = testColumns;
   columnsSettings.value = testColumnsSettings;
   timeStamp.value = Date.now();
@@ -63,7 +63,7 @@ function onAction(event: INewTableRowActionEvent) {
   switch (event.name) {
     case NEW_TABLE_STANDART_ACTIONS.SAVE:
       onSave(event.row);
-      calcParentSums(event)
+      calcParentSums(event.row, data.value, columnsToCalc);
       break;
     case NEW_TABLE_STANDART_ACTIONS.DELETE:
       onDelete(event.row);
@@ -84,38 +84,6 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
   const row = findRowById(event.row.data.id, data.value);
   if (row) {
     row.data[event.key] = event.value;
-  }
-}
-
-function calcParentSums(event: INewTableRowActionEvent) {
-  console.log('[calcParentValues] event', event);
-
-  const columnsToCalc = [
-    'pricePIR',
-    'pricePNR',
-    'priceSMR',
-    'priceTotal',
-    'customPricePIR',
-    'customPricePNR',
-    'customPriceSMR',
-    'customPriceTotal'
-  ];
-
-  let currentParent = null;
-  let newParentRowWithChildIndex = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
-  console.log('[calcParentValues] newParent', newParentRowWithChildIndex);
-
-  while (currentParent !== newParentRowWithChildIndex && !!newParentRowWithChildIndex) {
-    columnsToCalc.forEach(
-      (columnName: string) => {
-        newParentRowWithChildIndex.parent.data[columnName] = newParentRowWithChildIndex.parent.children.reduce(
-          (acc: number, childRow: INewTableRow): number => acc = acc + Number(childRow.data[columnName] || 0),
-          0,
-        );
-      }
-    )
-    currentParent = newParentRowWithChildIndex;
-    newParentRowWithChildIndex = findParentRowWithChildIndexByChildRowId(currentParent.parent.data.id, data.value);
   }
 }
 </script>

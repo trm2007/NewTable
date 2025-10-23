@@ -1,5 +1,7 @@
 import type { INewTableRow } from "../components/NewTable/types/NewTableRowTypes";
 
+export type TFindParentRowWithChildIndexByChildRowId = { parent: INewTableRow, index: number };
+
 export function findRowById(
   rowId: number | string,
   rows: INewTableRow[],
@@ -41,7 +43,7 @@ export function findParentRowsById(
 export function findParentRowWithChildIndexByChildRowId(
   childRowId: number | string,
   rows: INewTableRow[],
-): { parent: INewTableRow, index: number } | undefined {
+): TFindParentRowWithChildIndexByChildRowId | undefined {
   for (const row of rows) {
     if (!row.children?.length) {
       continue;
