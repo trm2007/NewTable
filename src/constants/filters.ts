@@ -32,6 +32,7 @@ export const filters: Record<string, INewTableFilter> = {
   },
   status: {
     currentValue: null,
+    defaultValue: null,
     compare: (
       filterValue: string,
       cellName: string,

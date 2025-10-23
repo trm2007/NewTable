@@ -50,10 +50,6 @@ function onDragStart(event: DragEvent) {
   event.dataTransfer?.setData('column-key', target.getAttribute('data-column-key') || '');
 }
 
-// function onDragEnd(event: DragEvent) {
-//   // console.log('[onDragEnd]', event);
-// }
-
 function onDragOver(event: DragEvent) {
   event.preventDefault();
 }
