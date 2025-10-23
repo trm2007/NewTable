@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import type { INewTableRow } from './components/NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from './components/NewTable/types/INewTableHeadTypes';
@@ -25,6 +25,10 @@ const columnsSettings = ref<Record<string, INewTableHeaderSetting>>({});
 const timeStamp = ref(Date.now());
 
 const lastActionEvent = ref<INewTableRowActionEvent | null>(null)
+
+const newTableWrapperRef = ref<typeof NewTableWrapper>();
+
+const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
 
 function initData() {
   data.value = generateLargeTestData(2000);
@@ -127,6 +131,7 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
       </div>
 
       <NewTableWrapper
+        ref="newTableWrapperRef"
         :key="timeStamp"
         :data="data"
         :columns="columns"
@@ -145,10 +150,12 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
     </div>
 
     <div>
-      {{ lastActionEvent }}
-      <!-- <ul>
-        <li v-for=""></li>
-      </ul> -->
+      <ul>
+        <li
+          v-for="checkedRowId in checkedIds"
+          :key="checkedRowId"
+        >{{ checkedRowId }}</li>
+      </ul>
     </div>
   </div>
 </template>

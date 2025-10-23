@@ -4,8 +4,14 @@ import { ROW_MODES } from "../../NewTable/constants/rowModes";
 export function useNewTableWrapperModesIds() {
   const modeIds = ref<Record<string, Set<number | string>>>({});
 
-  const editingIds = computed(
-    () => modeIds.value[ROW_MODES.EDIT] || new Set<number | string>()
+  const editingIds = computed<Set<number | string> | undefined>(
+    () => modeIds.value[ROW_MODES.EDIT]
+  );
+  const expandedIds = computed<Set<number | string> | undefined>(
+    () => modeIds.value[ROW_MODES.EXPANDED]
+  );
+  const checkedIds = computed<Set<number | string> | undefined>(
+    () => modeIds.value[ROW_MODES.CHECKED]
   );
 
   function switchOnModeForRow(mode: string, id: number | string) {
@@ -40,6 +46,8 @@ export function useNewTableWrapperModesIds() {
   return {
     modeIds,
     editingIds,
+    expandedIds,
+    checkedIds,
     addEditingId,
     deleteEditingId,
     switchOnModeForRow,

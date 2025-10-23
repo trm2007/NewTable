@@ -42,10 +42,19 @@ const emit = defineEmits<{
 
 const {
   modeIds,
+  editingIds,
+  expandedIds,
+  checkedIds,
   switchOnModeForRow,
   switchOffModeForRow,
   toggleModeForRow
 } = useNewTableWrapperModesIds();
+
+defineExpose({
+  editingIds,
+  expandedIds,
+  checkedIds,
+})
 
 const {
   filters,
