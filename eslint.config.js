@@ -1,27 +1,17 @@
-import eslint from '@eslint/js';
-import eslintPluginVue from 'eslint-plugin-vue';
-import globals from 'globals';
-import typescriptEslint from 'typescript-eslint';
+// eslint.config.mjs
+import pluginVue from 'eslint-plugin-vue'
+import { defineConfigWithVueTs, vueTsConfigs, configureVueProject } from '@vue/eslint-config-typescript'
 
-export default typescriptEslint.config(
-  { ignores: ['*.d.ts', '**/coverage', '**/dist'] },
-  {
-    extends: [
-      eslint.configs.recommended,
-      ...typescriptEslint.configs.recommended,
-      ...eslintPluginVue.configs['flat/recommended'],
-    ],
-    files: ['**/*.{ts,vue}'],
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      globals: globals.browser,
-      parserOptions: {
-        parser: typescriptEslint.parser,
-      },
-    },
-    rules: {
-      // your rules
-    },
-  },
-);
+// Minimal ESLint configuration for Vite + Vue 3 + TypeScript
+configureVueProject({
+  tsSyntaxInTemplates: true,
+  allowComponentTypeUnsafety: true,
+  rootDir: import.meta.dirname,
+})
+
+export default defineConfigWithVueTs(
+  // use plugin-vue flat config and the recommended type-checked rules for Vue + TS
+  pluginVue.configs['flat/essential'],
+  // use recommended type-checked config for stricter, type-aware linting
+  vueTsConfigs.recommendedTypeChecked
+)
