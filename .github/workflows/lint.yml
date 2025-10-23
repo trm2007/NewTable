@@ -35,3 +35,5 @@ jobs:
 
       - name: Type-check and ESLint
         run: yarn lint:ci
+      - name: Build
+        run: yarn build
