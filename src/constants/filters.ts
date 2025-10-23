@@ -19,6 +19,6 @@ export const filters: Record<string, INewTableFilter> = {
       cellName: string,
       row: INewTableRow,
       // data: INewTableRow[], // как пример, может передаваться перелаваться в другие функции сравнения
-    ) => compareFilterAsString(filterValue, row.data[cellName]),
+    ) => compareFilterAsString(String(filterValue ?? ''), String(row.data[cellName] ?? '')),
   }
 }

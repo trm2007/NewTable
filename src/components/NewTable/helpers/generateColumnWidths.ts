@@ -1,5 +1,5 @@
-import type { INewTableColumn } from "../../../constants/columns";
-import type { INewTableHeaderSetting } from "../../../constants/testColumnsSettings";
+import type { INewTableColumn } from "../types/INewTableHeadTypes";
+import type { INewTableHeaderSetting } from "../components/NewTableHeader/types/NewTableHeaderTypes";
 
 export function generateColumnWidths(
   visibleSortedColumns: INewTableColumn[],
