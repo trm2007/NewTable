@@ -28,7 +28,7 @@ defineOptions({
 });
 
 const props = defineProps<{
-  value: number | string
+  value?: number | string
   mode?: 'view' | 'edit'
   options: { value: number | string, name: string }[]
 }>();

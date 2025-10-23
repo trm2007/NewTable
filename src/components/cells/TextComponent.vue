@@ -16,7 +16,7 @@
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
-  value: string
+  value?: string
   mode?: 'view' | 'edit'
 }>();
 

@@ -36,6 +36,7 @@ export function generateFilteredDataForNested(
 
       if (
         !!resultRow.children?.length
+        || currentFilter.currentValue === null || currentFilter.currentValue === undefined
         || currentFilter.currentValue === currentFilter.defaultValue
         || (
           ('compare' in currentFilter && typeof currentFilter.compare === 'function')

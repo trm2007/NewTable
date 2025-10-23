@@ -6,7 +6,8 @@ export interface INewTableColumnMeta {
 
 export interface INewTableColumnComponent {
   name: string;
-  props: Record<string, unknown>;
+  props?: Record<string, unknown>;
+  changeEventName?: string
 }
 
 export interface INewTableColumnComponents extends Record<string, INewTableColumnComponent | undefined> {

@@ -1,3 +1,4 @@
+import { INewTableColumnComponent } from "./INewTableHeadTypes";
 import type { INewTableRow } from "./NewTableRowTypes";
 
 export interface INewTableFilter {
@@ -11,6 +12,7 @@ export interface INewTableFilter {
   availableValue?: unknown;
   // функция для проверки - соответствует ли значение в строке row в ячейке cellName значению фильтра filterValue
   compare?: (filterValue: unknown, cellName: string, row: INewTableRow, data?: INewTableRow[]) => boolean;
+  component?: INewTableColumnComponent;
 }
 
 export type INewTableFilters = Record<string, INewTableFilter>

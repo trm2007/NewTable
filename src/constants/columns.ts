@@ -1,7 +1,8 @@
 import type { INewTableColumn } from "../components/NewTable/types/INewTableHeadTypes";
 
-const statusOptions = [
+export const statusOptions = [
   { value: 'not-set', name: 'Not set' },
+  { value: 'not-started', name: 'Not started' },
   { value: 'in-progress', name: 'In progress' },
   { value: 'completed', name: 'Completed' },
   { value: 'active', name: 'Active' },

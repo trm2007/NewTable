@@ -75,7 +75,7 @@ function onDrop(event: DragEvent) {
   emit('change:columns-order', { columnFrom: draggedColumnKey, columnTo: droppedColumnKey });
 }
 
-function onInputFilterSearch(key: string, value: string) {
+function onChangeFilterValue(key: string, value: string) {
   emit('change:filter-value', { key, value });
 }
 
@@ -160,9 +160,15 @@ function getFilterTeleportName(key: string | null): string | undefined {
       :to="`#${getFilterTeleportName(activeHeaderFilterName)}`"
     >
       <div class="new-table__header__filter">
-        <input
-          @input="onInputFilterSearch(activeHeaderFilterName, (($event as InputEvent)?.target as HTMLInputElement).value || '')"
-        >
+        <component
+          :is="props.filters[activeHeaderFilterName]?.component.name || 'input'"
+          :value="props.filters[activeHeaderFilterName]?.currentValue"
+          v-bind="props.filters[activeHeaderFilterName]?.component.props || {}"
+          v-on="{
+            [props.filters[activeHeaderFilterName]?.component.changeEventName || 'change']:
+              ($event) => onChangeFilterValue(activeHeaderFilterName, $event)
+          }"
+        />
       </div>
     </teleport>
   </div>
