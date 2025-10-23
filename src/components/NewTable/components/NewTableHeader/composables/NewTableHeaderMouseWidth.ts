@@ -35,8 +35,6 @@ export function useNewTableHeaderMouseWidth(
   }
 
   function onMouseMove(columnName: string, event: MouseEvent) {
-    console.log('[onMouseMove]', columnName, event);
-
     event.preventDefault();
     event.stopPropagation();
 
@@ -45,7 +43,6 @@ export function useNewTableHeaderMouseWidth(
     if (!currentWidth) {
       currentWidth = (event.target as HTMLElement)?.getBoundingClientRect().width
     }
-    console.log('[onMouseMove]', columnName, currentWidth);
 
     emit('change:column-width', { columnName, delta: event.movementX, currentWidth });
   }
