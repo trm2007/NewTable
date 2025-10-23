@@ -24,17 +24,25 @@ const props = defineProps<{
   mode?: 'view' | 'edit'
 }>();
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits<{
+  (e: 'update:value', value: string),
+  (e: 'input', value: string),
+}>();
 
 const localValue = ref(props.value || '');
 
 watch(
   () => props.value,
-  (v) => (localValue.value = v || '')
+  (v) => (localValue.value = v || ''),
+);
+
+watch(
+  () => localValue.value,
+  (v) => emit('input', localValue.value),
 );
 
 function commit() {
-  emit('update:value', localValue.value)
+  emit('update:value', localValue.value);
 }
 </script>
 

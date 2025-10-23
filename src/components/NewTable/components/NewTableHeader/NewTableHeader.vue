@@ -143,7 +143,6 @@ function getFilterTeleportName(key: string | null): string | undefined {
             position: 'absolute',
             zIndex: 3,
           }"
-          @click.stop=""
         />
 
         <span
