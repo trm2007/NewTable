@@ -13,7 +13,7 @@ import { columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
 
-import { findParentRowsById, findRowById } from './helpers/finders';
+import { findParentRowWithChildIndexByChildRowId, findParentRowsById, findRowById } from './helpers/finders';
 
 import { NEW_TABLE_STANDART_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
 
@@ -63,6 +63,7 @@ function onAction(event: INewTableRowActionEvent) {
   switch (event.name) {
     case NEW_TABLE_STANDART_ACTIONS.SAVE:
       onSave(event.row);
+      calcParentSums(event)
       break;
     case NEW_TABLE_STANDART_ACTIONS.DELETE:
       onDelete(event.row);
@@ -83,6 +84,38 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
   const row = findRowById(event.row.data.id, data.value);
   if (row) {
     row.data[event.key] = event.value;
+  }
+}
+
+function calcParentSums(event: INewTableRowActionEvent) {
+  console.log('[calcParentValues] event', event);
+
+  const columnsToCalc = [
+    'pricePIR',
+    'pricePNR',
+    'priceSMR',
+    'priceTotal',
+    'customPricePIR',
+    'customPricePNR',
+    'customPriceSMR',
+    'customPriceTotal'
+  ];
+
+  let currentParent = null;
+  let newParentRowWithChildIndex = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
+  console.log('[calcParentValues] newParent', newParentRowWithChildIndex);
+
+  while (currentParent !== newParentRowWithChildIndex && !!newParentRowWithChildIndex) {
+    columnsToCalc.forEach(
+      (columnName: string) => {
+        newParentRowWithChildIndex.parent.data[columnName] = newParentRowWithChildIndex.parent.children.reduce(
+          (acc: number, childRow: INewTableRow): number => acc = acc + Number(childRow.data[columnName] || 0),
+          0,
+        );
+      }
+    )
+    currentParent = newParentRowWithChildIndex;
+    newParentRowWithChildIndex = findParentRowWithChildIndexByChildRowId(currentParent.parent.data.id, data.value);
   }
 }
 </script>
