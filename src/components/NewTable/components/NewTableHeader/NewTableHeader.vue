@@ -4,7 +4,7 @@ import { computed, nextTick, ref } from 'vue';
 import type { INewTableColumn } from '../../types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './types/NewTableHeaderTypes';
 import type {
-  INewTableChangeFilterSearch,
+  INewTableChangeFilterValue,
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent
 } from '../../types/NewTableEventTypes';
@@ -28,7 +28,7 @@ const emit = defineEmits<{
   (e: 'toggle:expand-row'): void;
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
-  (e: 'change:filter-value', event: INewTableChangeFilterSearch): void;
+  (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
 }>();
 
 
@@ -75,8 +75,8 @@ function onDrop(event: DragEvent) {
   emit('change:columns-order', { columnFrom: draggedColumnKey, columnTo: droppedColumnKey });
 }
 
-function onInputFilterSearch(key: string, searchStr: string) {
-  emit('change:filter-value', { key, searchStr });
+function onInputFilterSearch(key: string, value: string) {
+  emit('change:filter-value', { key, value });
 }
 
 async function onClickOnHeader(key: string) {

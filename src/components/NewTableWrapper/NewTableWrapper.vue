@@ -5,7 +5,7 @@ import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/types/New
 import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
 import type {
-  INewTableChangeFilterSearch,
+  INewTableChangeFilterValue,
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent,
   INewTableRowActionEvent,
@@ -142,11 +142,12 @@ function onChangeColumnsWidth(event: INewTableChangeColumnWidthEvent) {
   changeColumnsWidth(event.columnName, event.delta, event.currentWidth);
 }
 
-function onChangeFilterSearch(event: INewTableChangeFilterSearch) {
+function onChangeFilterValue(event: INewTableChangeFilterValue) {
   filters.value = {
     ...filters.value,
     [event.key]: {
-      currentValue: event.searchStr
+      ...(filters.value[event.key] || {}),
+      currentValue: event.value
     }
   }
 }
@@ -170,7 +171,7 @@ function onChangeFilterSearch(event: INewTableChangeFilterSearch) {
         @change:columns-order="onChangeColumns"
         @update:cell-data="$emit('update:cell-data', $event)"
         @change:column-width="onChangeColumnsWidth"
-        @change:filter-value="onChangeFilterSearch"
+        @change:filter-value="onChangeFilterValue"
       />
       <NewScroller
         :count="computedOnlyExpandedFlatData.length"

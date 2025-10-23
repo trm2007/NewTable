@@ -5,7 +5,7 @@ import type { INewTableRow, INewTableRowCommonMeta } from './types/NewTableRowTy
 import type { INewTableColumn } from './types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './components/NewTableHeader/types/NewTableHeaderTypes';
 import type {
-  INewTableChangeFilterSearch,
+  INewTableChangeFilterValue,
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent,
   INewTableRowActionEvent,
@@ -43,7 +43,7 @@ const emit = defineEmits<{
   (e: 'update:cell-data', event: INewTableUpdateCellDataEvent): void;
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
-  (e: 'change:filter-value', event: INewTableChangeFilterSearch): void;
+  (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
 }>();
 
 const computedModeIds = computed(() => props.modeIds);

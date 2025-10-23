@@ -30,7 +30,7 @@ export interface INewTableChangeColumnWidthEvent {
   currentWidth: number;
 }
 
-export interface INewTableChangeFilterSearch {
+export interface INewTableChangeFilterValue {
   key: string;
-  searchStr: string;
+  value: string;
 }
