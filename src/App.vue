@@ -37,7 +37,11 @@ function onSave(row: INewTableRow) {
   setRow(row);
 }
 
-function onDelete(row: INewTableRow) {
+function onDelete(event: INewTableRowActionEvent) {
+  const row: INewTableRow = event.row;
+
+  const parentRowWithChildRowId = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
+
   const parenRows = findParentRowsById(row.data.id, data.value);
   parenRows?.splice(
     parenRows.findIndex(r => r.data.id === row.data.id),
@@ -46,6 +50,11 @@ function onDelete(row: INewTableRow) {
 
   if (!row.children) {
     row.meta.rowType = TEST_DATA_ROW_TYPES.TASK;
+  }
+
+  if (parentRowWithChildRowId) {
+    calcChildSums(parentRowWithChildRowId.parent, data.value, columnsToCalc);
+    calcParentSums(parentRowWithChildRowId.parent, data.value, columnsToCalc);
   }
 }
 
@@ -71,9 +80,11 @@ function onAction(event: INewTableRowActionEvent) {
       break;
     case NEW_TABLE_STANDART_ACTIONS.DELETE:
       const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
-      onDelete(event.row);
-      calcChildSums(parentRow.parent, data.value, columnsToCalc);
-      calcParentSums(parentRow.parent, data.value, columnsToCalc);
+      onDelete(event);
+      if (parentRow) {
+        calcChildSums(parentRow.parent, data.value, columnsToCalc);
+        calcParentSums(parentRow.parent, data.value, columnsToCalc);
+      }
       break;
     default:
       console.log('Unknown action:', event.name, 'for row:', event.row);
