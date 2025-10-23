@@ -28,7 +28,7 @@ const emit = defineEmits<{
   (e: 'toggle:expand-row'): void;
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
-  (e: 'change:filter-search', event: INewTableChangeFilterSearch): void;
+  (e: 'change:filter-value', event: INewTableChangeFilterSearch): void;
 }>();
 
 
@@ -76,7 +76,7 @@ function onDrop(event: DragEvent) {
 }
 
 function onInputFilterSearch(key: string, searchStr: string) {
-  emit('change:filter-search', { key, searchStr });
+  emit('change:filter-value', { key, searchStr });
 }
 
 async function onClickOnHeader(key: string) {

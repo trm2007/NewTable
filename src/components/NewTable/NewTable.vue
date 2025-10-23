@@ -43,7 +43,7 @@ const emit = defineEmits<{
   (e: 'update:cell-data', event: INewTableUpdateCellDataEvent): void;
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
-  (e: 'change:filter-search', event: INewTableChangeFilterSearch): void;
+  (e: 'change:filter-value', event: INewTableChangeFilterSearch): void;
 }>();
 
 const computedModeIds = computed(() => props.modeIds);
@@ -87,7 +87,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       :isActionsColumnShown="true"
       @change:columns-order="$emit('change:columns-order', $event)"
       @change:column-width="$emit('change:column-width', $event)"
-      @change:filter-search="emit('change:filter-search', $event);"
+      @change:filter-value="emit('change:filter-value', $event);"
     />
 
     <div class="new-table__body">

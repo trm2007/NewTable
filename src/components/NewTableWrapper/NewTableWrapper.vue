@@ -14,7 +14,7 @@ import type {
 import type { INewTableFilters } from '../NewTable/types/NewTableFilterTypes';
 
 import { useNewTableWrapperModesIds } from './composables/NewTableWrapperModesIds';
-import { useNewTableWrapperComputeData } from './composables/NewTableWrapperComputeData';
+import { useNewTableWrapperFlatData } from './composables/NewTableWrapperFlatData';
 import { useNewTablePagination } from './composables/NewTableWrapperPagination';
 import { useNewTableWrapperWheelEvent } from './composables/NewTableWrapperWheelEvent';
 import { useNewTableWrapperHeader } from './composables/NewTableWrapperHeader';
@@ -58,7 +58,7 @@ const {
 const {
   computedFlatData,
   computedOnlyExpandedFlatData
-} = useNewTableWrapperComputeData(
+} = useNewTableWrapperFlatData(
   () => computedFilteredData.value,
   () => modeIds.value?.[ROW_MODES.EXPANDED]
 );
@@ -170,7 +170,7 @@ function onChangeFilterSearch(event: INewTableChangeFilterSearch) {
         @change:columns-order="onChangeColumns"
         @update:cell-data="$emit('update:cell-data', $event)"
         @change:column-width="onChangeColumnsWidth"
-        @change:filter-search="onChangeFilterSearch"
+        @change:filter-value="onChangeFilterSearch"
       />
       <NewScroller
         :count="computedOnlyExpandedFlatData.length"

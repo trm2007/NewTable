@@ -2,7 +2,7 @@ import { computed, Ref, ref, toValue, watchEffect } from "vue";
 
 import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
 
-export function useNewTableWrapperComputeData(
+export function useNewTableWrapperFlatData(
   data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   expandedRows: Ref<Set<number | string>> | Set<number | string> | (() => Set<number | string>)
 ) {

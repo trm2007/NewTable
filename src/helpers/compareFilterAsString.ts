@@ -13,11 +13,19 @@
  * @param {String} patternFlags - флаги для регулярного выражения, по умолчанию - gmi
  */
 export function compareFilterAsString(
-    filterString: string,
-    cellData: string,
-    patternFlags: string = "gmi"
+  filterString?: string | null,
+  cellData?: string | null,
+  patternFlags: string = "gmi"
 ): boolean {
-    const reg = new RegExp(".*" + filterString + ".*", patternFlags);
+  if (filterString === cellData) {
+    return true;
+  }
 
-    return reg.test(cellData);
+  if (!filterString || !cellData) {
+    return false;
+  }
+
+  const reg = new RegExp(".*" + filterString + ".*", patternFlags);
+
+  return reg.test(cellData);
 }
