@@ -45,10 +45,18 @@ export function generateFilteredDataForNested(
               currentRow,
               currentData
             )
-            : compareFilterAsString(
-              String(currentFilter.currentValue),
-              String(currentRow.data[currentColumnName])
-            )
+            : () => {
+              if (
+                typeof currentFilter.currentValue !== 'string'
+                || typeof currentRow.data[currentColumnName] !== 'string'
+              ) {
+                return false;
+              }
+              return compareFilterAsString(
+                currentFilter.currentValue,
+                currentRow.data[currentColumnName],
+              )
+            }
         )
       ) {
         resultData.push(resultRow);
