@@ -15,3 +15,6 @@ export default defineConfigWithVueTs(
   // use recommended type-checked config for stricter, type-aware linting
   vueTsConfigs.recommendedTypeChecked
 )
+
+// Ignore build/artifact folders (replaces deprecated .eslintignore)
+export const ignores = ['dist/**', 'node_modules/**']
