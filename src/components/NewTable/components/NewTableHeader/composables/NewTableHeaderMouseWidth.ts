@@ -23,17 +23,15 @@ export function useNewTableHeaderMouseWidth(
     event.stopPropagation();
 
     const onMouseMoveLocal = (mouseEvent: MouseEvent) => onMouseMove(columnName, mouseEvent);
-    const onMouseUpLocal = (mouseEvent: MouseEvent) => {
+    const onMouseUpLocal = () => {
       event.preventDefault();
       event.stopPropagation();
       document.removeEventListener('mousemove', onMouseMoveLocal);
       document.removeEventListener('mouseup', onMouseUpLocal);
-      // document.removeEventListener('mouseleave', onMouseUpLocal);
     }
 
     document.addEventListener('mousemove', onMouseMoveLocal);
     document.addEventListener('mouseup', onMouseUpLocal);
-    // document.addEventListener('mouseleave', onMouseUpLocal);
   }
 
   function onMouseMove(columnName: string, event: MouseEvent) {

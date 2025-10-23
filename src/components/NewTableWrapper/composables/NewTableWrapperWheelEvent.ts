@@ -1,5 +1,3 @@
-import { onBeforeUnmount, onMounted, Ref, toValue } from "vue";
-
 export function useNewTableWrapperWheelEvent(
   onNext: () => void,
   onPrevious: () => void,

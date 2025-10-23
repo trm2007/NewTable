@@ -16,15 +16,15 @@ export const columns: INewTableColumn[] = [
     },
     components: {
       stage: {
-        name: 'Idcomponent',
+        name: 'IdComponent',
         props: {},
       },
       subStage: {
-        name: 'Idcomponent',
+        name: 'IdComponent',
         props: {},
       },
       task: {
-        name: 'Idcomponent',
+        name: 'IdComponent',
         props: {},
       },
     },

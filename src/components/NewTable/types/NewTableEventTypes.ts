@@ -3,14 +3,14 @@ import type { INewTableRow } from "./NewTableRowTypes";
 export interface INewTableRowActionEvent {
   name: string; // action name
   row: INewTableRow; // row
-  value?: any | null; // event data from action component
+  value?: unknown; // event data from action component
 }
 
 export interface INewTableCellActionEvent {
   key: string; // cell name
   row: INewTableRow; // row
   name?: string; // action name
-  value?: any | null; // event data from cell component
+  value?: unknown; // event data from cell component
 }
 
 export interface INewTableChangeColumnsOrderEvent {
@@ -20,7 +20,7 @@ export interface INewTableChangeColumnsOrderEvent {
 
 export interface INewTableUpdateCellDataEvent {
   key: string; // cell name
-  value: any | null; // event data from cell component
+  value: unknown; // event data from cell component
   row: INewTableRow; // row
 }
 

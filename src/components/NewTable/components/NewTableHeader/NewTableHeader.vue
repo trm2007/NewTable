@@ -50,9 +50,9 @@ function onDragStart(event: DragEvent) {
   event.dataTransfer?.setData('column-key', target.getAttribute('data-column-key') || '');
 }
 
-function onDragEnd(event: DragEvent) {
-  // console.log('[onDragEnd]', event);
-}
+// function onDragEnd(event: DragEvent) {
+//   // console.log('[onDragEnd]', event);
+// }
 
 function onDragOver(event: DragEvent) {
   event.preventDefault();
@@ -85,7 +85,7 @@ async function onClickOnHeader(key: string) {
     return;
   }
 
-  if (!!activeHeaderFilterName.value) {
+  if (activeHeaderFilterName.value) {
     activeHeaderFilterName.value = null;
     await nextTick();
   }
@@ -127,7 +127,6 @@ function getFilterTeleportName(key: string | null): string | undefined {
         :data-column-key="header.key"
         :draggable="true"
         @dragstart="onDragStart"
-        @dragend="onDragEnd"
         @dragover="onDragOver"
         @drop="onDrop"
         @click="onClickOnHeader(header.key)"
@@ -142,7 +141,7 @@ function getFilterTeleportName(key: string | null): string | undefined {
             zIndex: 3,
           }"
           @click.stop=""
-        ></div>
+        />
 
         <span
           class="new-table__header__cell__separator"
@@ -153,7 +152,7 @@ function getFilterTeleportName(key: string | null): string | undefined {
       <div
         v-if="isActionsColumnShown"
         class="new-table__actions__cell"
-      ></div>
+      />
     </div>
 
     <teleport
@@ -166,6 +165,5 @@ function getFilterTeleportName(key: string | null): string | undefined {
         >
       </div>
     </teleport>
-
   </div>
 </template>

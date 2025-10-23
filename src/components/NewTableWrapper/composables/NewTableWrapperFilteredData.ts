@@ -1,9 +1,9 @@
-import { computed, Ref, ref, toValue, watch, watchEffect } from "vue";
+import { computed, Ref, ref, toValue, watch } from "vue";
 
 import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
 import type { INewTableFilter, INewTableFilters } from "../../NewTable/types/NewTableFilterTypes";
 
-import { generateFilteredDataForNested } from "../../../helpers/filterForNested";
+import { generateFilteredDataForNested } from "../../../helpers/generateFilteredDataForNested";
 
 export function useNewTableWrapperFilteredData(
   data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),

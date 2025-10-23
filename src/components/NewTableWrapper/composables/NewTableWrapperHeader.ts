@@ -58,7 +58,6 @@ export function useNewTableWrapperHeader(
 
     const fromOrder = localColumnsSettings.value?.[columnFrom].order;
     const toOrder = localColumnsSettings.value?.[columnTo].order;
-    const startOrder = Math.min(fromOrder, toOrder);
 
     // слева-направо
     if (toOrder > fromOrder) {

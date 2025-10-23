@@ -1,5 +1,4 @@
-import { createApp, h, Component, PropType, defineComponent } from 'vue'
-import type { VNode, ComponentPublicInstance } from 'vue'
+import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 
@@ -24,14 +23,6 @@ library.add(
   faTrash,
   faXmark,
 )
-
-// Cell component types
-interface CellData {
-  value?: unknown
-  row?: Record<string, unknown>
-  column?: Record<string, unknown>
-  mode?: 'view' | 'edit'
-}
 
 // Import cell components with type checking
 import * as Cells from './components/cells'

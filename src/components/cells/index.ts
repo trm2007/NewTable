@@ -1,6 +1,6 @@
 // Auto-generated index of cell components
 
-export { default as Idcomponent } from './Idcomponent.vue'
+export { default as Idcomponent } from './IdComponent.vue'
 
 export { default as TextComponent } from './TextComponent.vue'
 

@@ -50,10 +50,6 @@ const {
 const {
   filters,
   computedFilteredData,
-  clearFilters,
-  resetFiltersToDefaultValues,
-  resetFiltersToInitialValues,
-  generateFilteredData,
 } = useNewTableWrapperFilteredData(
   () => props.data,
   () => props.initialFilters,
@@ -192,18 +188,18 @@ function onChangeFilterSearch(event: INewTableChangeFilterSearch) {
           <input
             :value="rowCount"
             @change="setRowCount(Number(($event.target as HTMLInputElement).value || 5))"
-          />
+          >
         </label>
       </div>
       <button
-        @click="onPrevious"
         :disabled="startIndex === 0"
+        @click="onPrevious"
       >
         Previous
       </button>
       <button
-        @click="onNext"
         :disabled="startIndex + rowCount >= computedOnlyExpandedFlatData.length"
+        @click="onNext"
       >
         Next
       </button>

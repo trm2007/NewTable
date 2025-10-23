@@ -2,15 +2,15 @@ import type { INewTableRow } from "./NewTableRowTypes";
 
 export interface INewTableFilter {
   // для моделей фильтров и текщих значений вводимых пользователем
-  currentValue: any;
+  currentValue: unknown;
   // последнее примененное значение фильтра для отображаемых данных
-  initialValue?: any;
+  initialValue?: unknown;
   // значения фильтра по умлочанию
-  defaultValue?: any;
+  defaultValue?: unknown;
   // доступные значения, может быть списком доступных значений, диапазоном, максимальныс значением или др.
-  availableValue?: any;
+  availableValue?: unknown;
   // функция для проверки - соответствует ли значение в строке row в ячейке cellName значению фильтра filterValue
-  compare?: (filterValue: any, cellName: string, row: INewTableRow, data: INewTableRow[]) => boolean;
+  compare?: (filterValue: unknown, cellName: string, row: INewTableRow, data?: INewTableRow[]) => boolean;
 }
 
 export type INewTableFilters = Record<string, INewTableFilter>

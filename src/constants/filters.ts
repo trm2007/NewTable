@@ -15,10 +15,16 @@ export const filters: Record<string, INewTableFilter> = {
     availableValue: null,
     // функция для проверки - соответствует ли значение в строке row в ячейке cellName значению фильтра filterValue
     compare: (
-      filterValue: any,
+      filterValue: string,
       cellName: string,
       row: INewTableRow,
-      data: INewTableRow[]
-    ) => compareFilterAsString(filterValue, row.data[cellName]),
+      // data: INewTableRow[], // как пример, может передаваться перелаваться в другие функции сравнения
+    ) => {
+      const fv = filterValue;
+      const cell = row.data[cellName];
+      const filterStr = (typeof fv === 'string' || typeof fv === 'number' || typeof fv === 'boolean') ? String(fv) : '';
+      const cellStr = (typeof cell === 'string' || typeof cell === 'number' || typeof cell === 'boolean') ? String(cell) : '';
+      return compareFilterAsString(filterStr, cellStr);
+    },
   }
 }

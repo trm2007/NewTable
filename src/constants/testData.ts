@@ -1,6 +1,8 @@
-import type { INewTableRow, INewTableRowTemplate } from "../components/NewTable/types/NewTableRowTypes";
+import type { INewTableRowTemplate } from "../components/NewTable/types/NewTableRowTypes";
 
-export interface ILocalNewTableRowData extends Record<string, any> {
+type TTestDataType = string | number | [] | object | null | undefined;
+
+export interface ILocalNewTableRowData extends Record<string, TTestDataType> {
   id: string;
   name: string;
   status: string;
@@ -14,7 +16,7 @@ export interface ILocalNewTableRowData extends Record<string, any> {
   customPriceTotal?: number;
 }
 
-interface ILocalNewTableRow extends INewTableRowTemplate<ILocalNewTableRowData> { }
+type ILocalNewTableRow = INewTableRowTemplate<ILocalNewTableRowData>
 
 export const testData: ILocalNewTableRow[] = [
   {
@@ -145,7 +147,6 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
   let currentId = 0;
 
   const MAX_LEVEL = 4;
-  const availableRowTypes = ['stage', 'subStage', 'task'];
   const availableStatuses = ['active', 'completed', 'in-progress', 'not-started'];
 
   const createNode = (level: number = 0): ILocalNewTableRow => {

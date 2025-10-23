@@ -1,11 +1,12 @@
 export interface INewTableColumnMeta {
   width?: number;
-  [key: string]: any;
+  class?: string;
+  headerClass?: string;
 }
 
 export interface INewTableColumnComponent {
   name: string;
-  props: Record<string, any>;
+  props: Record<string, unknown>;
 }
 
 export interface INewTableColumnComponents extends Record<string, INewTableColumnComponent | undefined> {

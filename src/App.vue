@@ -98,7 +98,9 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
     />
     <div>
       <div>
-        <button @click="initData">Init Data</button>
+        <button @click="initData">
+          Init Data
+        </button>
       </div>
 
       <NewTableWrapper

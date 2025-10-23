@@ -4,7 +4,7 @@
       <input
         v-model="localValue"
         @blur="commit"
-      />
+      >
     </template>
     <template v-else>
       <span>{{ value }}</span>
@@ -16,7 +16,7 @@
 import { ref, watch } from 'vue';
 
 const props = defineProps<{
-  value: any
+  value: string
   mode?: 'view' | 'edit'
 }>();
 
