@@ -1,5 +1,8 @@
 <template>
-  <div class="cell">
+  <div
+    v-if="value"
+    class="cell"
+  >
     <template v-if="mode === 'edit'">
       <input
         v-model.number="localValue"
@@ -19,7 +22,7 @@
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
-  value: number
+  value?: number
   mode?: 'view' | 'edit'
 }>();
 
