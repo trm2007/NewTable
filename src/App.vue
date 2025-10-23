@@ -8,12 +8,12 @@ import type { INewTableRowActionEvent, INewTableUpdateCellDataEvent } from './co
 import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/types';
 
 import { NEW_TABLE_STANDART_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
-import { generateLargeTestData } from './constants/testData';
+import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData';
 import { columnsToCalc, columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
-import { findParentRowsById, findRowById } from './helpers/finders';
-import { calcParentSums, recursiveCalcSumsForAllData } from './helpers/calacSums';
+import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
+import { calcChildSums, calcParentSums, recursiveCalcSumsForAllData } from './helpers/calacSums';
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
@@ -25,7 +25,7 @@ const columnsSettings = ref<Record<string, INewTableHeaderSetting>>({});
 const timeStamp = ref(Date.now());
 
 function initData() {
-  data.value = generateLargeTestData(2000); // testData;
+  data.value = generateLargeTestData(2000);
   recursiveCalcSumsForAllData(data.value, columnsToCalc);
 
   columns.value = testColumns;
@@ -43,6 +43,10 @@ function onDelete(row: INewTableRow) {
     parenRows.findIndex(r => r.data.id === row.data.id),
     1
   );
+
+  if (!row.children) {
+    row.meta.rowType = TEST_DATA_ROW_TYPES.TASK;
+  }
 }
 
 function setRow(row: INewTableRow) {
@@ -66,7 +70,10 @@ function onAction(event: INewTableRowActionEvent) {
       calcParentSums(event.row, data.value, columnsToCalc);
       break;
     case NEW_TABLE_STANDART_ACTIONS.DELETE:
+      const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
       onDelete(event.row);
+      calcChildSums(parentRow.parent, data.value, columnsToCalc);
+      calcParentSums(parentRow.parent, data.value, columnsToCalc);
       break;
     default:
       console.log('Unknown action:', event.name, 'for row:', event.row);

@@ -18,129 +18,11 @@ export interface ILocalNewTableRowData extends Record<string, TTestDataType> {
 
 type ILocalNewTableRow = INewTableRowTemplate<ILocalNewTableRowData>
 
-export const testData: ILocalNewTableRow[] = [
-  {
-    meta: {
-      rowType: 'stage',
-    },
-    data: {
-      id: 'stage-1',
-      name: 'Stage 1',
-      status: 'active',
-    },
-    children: [
-      {
-        meta: {
-          rowType: 'subStage',
-        },
-        data: {
-          id: 'subStage-1.1',
-          name: 'subStage 1,1',
-          status: 'completed',
-          pricePIR: 11000,
-          pricePNR: 11200,
-          priceSMR: 11800,
-          customPricePIR: 111200,
-          customPricePNR: 112400,
-          customPriceSMR: 113600,
-          customPriceTotal: 114800,
-        },
-      },
-      {
-        meta: {
-          rowType: 'subStage',
-        },
-        data: {
-          id: 'subStage-1.2',
-          name: 'subStage 1.2',
-          status: 'in-progress',
-          pricePIR: 12210,
-          pricePNR: 12220,
-          priceSMR: 12290,
-          customPricePIR: 22120,
-          customPricePNR: 22220,
-          customPriceSMR: 22320,
-          customPriceTotal: 22420,
-        },
-      },
-    ],
-  },
-  {
-    meta: {
-      rowType: 'stage',
-    },
-    data: {
-      id: 'stage-2',
-      name: 'Stage 2',
-      status: 'inactive',
-    },
-    children: [
-      {
-        meta: {
-          rowType: 'subStage',
-        },
-        data: {
-          id: 'subStage-2.1',
-          name: 'subStage 2.1',
-          status: 'not-started',
-          pricePIR: 21510,
-          pricePNR: 21620,
-          priceSMR: 21790,
-          customPricePIR: 25120,
-          customPricePNR: 25220,
-          customPriceSMR: 25320,
-          customPriceTotal: 25420,
-        },
-      },
-      {
-        meta: {
-          rowType: 'subStage',
-        },
-        data: {
-          id: 'subStage-2.2',
-          name: 'subStage 2.2',
-          status: 'axive',
-        },
-        children: [
-          {
-            meta: {
-              rowType: 'task',
-            },
-            data: {
-              id: 'task-2.2.1',
-              name: 'Task 2.2.1',
-              status: 'axive',
-              pricePIR: 23110,
-              pricePNR: 23220,
-              priceSMR: 23390,
-              customPricePIR: 34120,
-              customPricePNR: 34220,
-              customPriceSMR: 34320,
-              customPriceTotal: 34420,
-            },
-          },
-          {
-            meta: {
-              rowType: 'task',
-            },
-            data: {
-              id: 'task-2.2.2',
-              name: 'Task 2.2.2',
-              status: 'not-started',
-              pricePIR: 24110,
-              pricePNR: 24220,
-              priceSMR: 24390,
-              customPricePIR: 44120,
-              customPricePNR: 44220,
-              customPriceSMR: 44320,
-              customPriceTotal: 44420,
-            },
-          },
-        ],
-      }
-    ],
-  },
-];
+export const TEST_DATA_ROW_TYPES: Record<string, string> = {
+  STAGE: 'stage',
+  SUB_STAGE: 'subStage',
+  TASK: 'task',
+};
 
 export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[] => {
   const result: ILocalNewTableRow[] = [];
@@ -153,8 +35,8 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
     currentId++;
     const hasChildren = level === 0 || (level < MAX_LEVEL && Math.random() > 0.3);
     const rowType = level === 0
-      ? 'stage'
-      : hasChildren ? 'subStage' : 'task';
+      ? TEST_DATA_ROW_TYPES.STAGE
+      : hasChildren ? TEST_DATA_ROW_TYPES.SUB_STAGE : TEST_DATA_ROW_TYPES.TASK;
 
     const node: ILocalNewTableRow = {
       meta: { rowType },
