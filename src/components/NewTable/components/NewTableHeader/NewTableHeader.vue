@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faSort, faSortUp, faSortDown);
 
 import type { INewTableColumn } from '../../types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './types/NewTableHeaderTypes';
@@ -8,7 +12,7 @@ import type {
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent
 } from '../../types/NewTableEventTypes';
-import type { INewTableFilters } from '../../types/NewTableFilterTypes';
+import type { INewTableFilters, INewTableSorts } from '../../types/NewTableFilterTypes';
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
 import { useNewTableHeaderMouseWidth } from './composables/NewTableHeaderMouseWidth';
@@ -18,6 +22,8 @@ const props = defineProps<{
   localColumnsSettings: Record<string, INewTableHeaderSetting>;
   // фильтры для полей-колонок данных
   filters?: INewTableFilters,
+  // объект сортировки, потенциально для нескольких полей
+  sorts?: INewTableSorts,
   isNumberColumnShown?: boolean;
   isCheckboxColumnShown?: boolean;
   isExpandColumnShown?: boolean;
@@ -29,6 +35,7 @@ const emit = defineEmits<{
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
+  (e: 'change:column-sort', event: INewTableSorts): void;
 }>();
 
 
@@ -39,6 +46,32 @@ const activeHeaderFilterName = ref<string | null>(null)
 const conputedColumnWidths = computed<Record<string, string>>(
   () => generateColumnWidths(props.visibleSortedColumns, props.localColumnsSettings),
 );
+
+// пока сортировка реализована только по одному полю - первому встретившимуся в localSorts
+const computedSortFieldName = computed<string>(() => Object.keys(props.sorts || {})[0]);
+
+const computedSortDirection = computed<-1 | 0 | 1>(
+  () => computedSortFieldName.value ? props.sorts[computedSortFieldName.value] || 0 : 0
+);
+
+const computedIconName = computed<string>(
+  () => {
+    let iconName = computedSortDirection.value === 1
+      ? 'sort-up'
+      : computedSortDirection.value === -1
+        ? 'sort-down'
+        : 'sort';
+    return `fa-solid fa-${iconName}`;
+  }
+);
+
+function getIconNameForField(fieldName: string) {
+  if (fieldName === computedSortFieldName.value) {
+    return computedIconName.value;
+  }
+
+  return 'fa-solid fa-sort';
+}
 
 function onExpandCellClick() {
   emit('toggle:expand-row');
@@ -75,7 +108,7 @@ function onChangeFilterValue(key: string, value: string) {
   emit('change:filter-value', { key, value });
 }
 
-async function onClickOnHeader(key: string) {
+async function onClickOnFilter(key: string) {
   if (activeHeaderFilterName.value === key) {
     activeHeaderFilterName.value = null;
     return;
@@ -87,6 +120,15 @@ async function onClickOnHeader(key: string) {
   }
 
   activeHeaderFilterName.value = key;
+}
+
+function onClickOnSort(key: string) {
+  if (!props.sorts?.[key]) {
+    emit('change:column-sort', { [key]: 1 });
+    return;
+  }
+
+  emit('change:column-sort', { [key]: props.sorts[key] === 1 ? -1 : 0 });
 }
 
 function getFilterTeleportName(key: string | null): string | undefined {
@@ -133,7 +175,14 @@ function getFilterTeleportName(key: string | null): string | undefined {
           icon="fa-solid fa-filter"
           class="icon"
           style="cursor: pointer;"
-          @click="onClickOnHeader(header.key)"
+          @click="onClickOnFilter(header.key)"
+        />
+
+        <FontAwesomeIcon
+          :icon="getIconNameForField(header.key)"
+          class="icon"
+          style="cursor: pointer;"
+          @click="onClickOnSort(header.key)"
         />
 
         <div

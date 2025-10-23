@@ -12,6 +12,7 @@ import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData
 import { columnsToCalc, columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
+import { sorts } from './constants/sirts';
 import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
 import { calcChildSums, calcParentSums, recursiveCalcSumsForAllData } from './helpers/calacSums';
 
@@ -144,6 +145,7 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
           }
         }"
         :initial-filters="filters"
+        :initial-sorts="sorts"
         @row-action="onAction"
         @update:cell-data="onUpdateCellData"
       />

@@ -9,19 +9,12 @@ export function useNewTableWrapperFilteredData(
   data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   initialFilters: Ref<INewTableFilters> | INewTableFilters | (() => INewTableFilters) | undefined,
 ) {
-  const localData = ref<INewTableRow[]>(toValue(data || []));
+  const localData = computed<INewTableRow[]>(() => toValue(data || []));
 
   const filters = ref<Record<string, INewTableFilter>>(toValue(initialFilters) || {})
 
   const computedFilteredData = computed(
     () => generateFilteredData(localData.value, filters.value),
-  );
-
-  watch(
-    () => toValue(data),
-    () => {
-      localData.value = toValue(data);
-    }
   );
 
   watch(

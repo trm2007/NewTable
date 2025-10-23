@@ -1,4 +1,4 @@
-import { computed, Ref, ref, toValue, watchEffect } from "vue";
+import { computed, Ref, toValue } from "vue";
 
 import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
 
@@ -6,28 +6,21 @@ export function useNewTableWrapperFlatData(
   data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   expandedRows: Ref<Set<number | string>> | Set<number | string> | (() => Set<number | string>)
 ) {
-
-  const localData = ref<INewTableRow[]>(toValue(data));
-
-  watchEffect(() => {
-    localData.value = toValue(data);
-  });
-
   const computedFlatData = computed(
-    () => generateFlatData(localData.value),
+    () => generateFlatData(toValue(data)),
   );
 
   const computedOnlyExpandedFlatData = computed(
-    () => generateOnlyExpandedFlatData(localData.value),
+    () => generateOnlyExpandedFlatData(toValue(data), toValue(expandedRows)),
   );
 
   function generateFlatData(
-    data: INewTableRow[],
+    dataForTransform: INewTableRow[],
     level: number = 0
   ): INewTableRow[] {
     const flatData: INewTableRow[] = [];
 
-    data.forEach((row) => {
+    dataForTransform.forEach((row) => {
       row.__level = level;
       flatData.push(row);
       if (row.children && row.children.length > 0) {
@@ -40,20 +33,30 @@ export function useNewTableWrapperFlatData(
   }
 
   function generateOnlyExpandedFlatData(
-    data: INewTableRow[],
+    dataForTransform: INewTableRow[],
+    expandedRowsForTransform: Set<number | string>,
     level: number = 0
   ): INewTableRow[] {
+    console.log('[generateOnlyExpandedFlatData]', dataForTransform);
+
+    // return [
+    //   dataForTransform[0],
+    //   dataForTransform[2],
+    //   dataForTransform[4],
+    //   dataForTransform[7],
+    //   dataForTransform[10],
+    // ];
     const flatData: INewTableRow[] = [];
 
-    data.forEach((row) => {
+    dataForTransform.forEach((row) => {
       row.__level = level;
       flatData.push(row);
       if (
         row.children
         && row.children.length > 0
-        && toValue(expandedRows)?.has(row.data.id)
+        && expandedRowsForTransform?.has(row.data.id)
       ) {
-        const childFlatData = generateOnlyExpandedFlatData(row.children, level + 1);
+        const childFlatData = generateOnlyExpandedFlatData(row.children, expandedRowsForTransform, level + 1);
         flatData.push(...childFlatData);
       }
     });

@@ -11,7 +11,7 @@ import type {
   INewTableRowActionEvent,
   INewTableUpdateCellDataEvent
 } from './types/NewTableEventTypes';
-import type { INewTableFilters } from './types/NewTableFilterTypes';
+import type { INewTableFilters, INewTableSorts } from './types/NewTableFilterTypes';
 
 import { ROW_MODES } from './constants/rowModes';
 
@@ -25,6 +25,8 @@ const props = defineProps<{
   columns: INewTableColumn[];
   // фильтры для полей-колонок данных
   filters?: INewTableFilters,
+  // объект сортировки, потенциально для нескольких полей
+  sorts?: INewTableSorts,
   // настройки колонок, тут важна установленная ширина
   columnsSettings: Record<string, INewTableHeaderSetting>;
   // габоры ID-шников в разлиных режимах отображения
@@ -44,6 +46,7 @@ const emit = defineEmits<{
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
+  (e: 'change:column-sort', event: INewTableSorts): void;
 }>();
 
 const computedModeIds = computed(() => props.modeIds);
@@ -81,13 +84,15 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       :visibleSortedColumns="columns"
       :localColumnsSettings="columnsSettings"
       :filters="filters"
+      :sorts="sorts"
       :isNumberColumnShown="true"
       :isCheckboxColumnShown="true"
       :isExpandColumnShown="true"
       :isActionsColumnShown="true"
       @change:columns-order="$emit('change:columns-order', $event)"
       @change:column-width="$emit('change:column-width', $event)"
-      @change:filter-value="emit('change:filter-value', $event);"
+      @change:filter-value="emit('change:filter-value', $event)"
+      @change:column-sort="emit('change:column-sort', $event)"
     />
 
     <div class="new-table__body">

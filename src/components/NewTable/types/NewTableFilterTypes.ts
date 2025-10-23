@@ -16,3 +16,5 @@ export interface INewTableFilter {
 }
 
 export type INewTableFilters = Record<string, INewTableFilter>
+
+export type INewTableSorts = Record<string, -1 | 0 | 1>

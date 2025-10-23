@@ -11,7 +11,7 @@ import type {
   INewTableRowActionEvent,
   INewTableUpdateCellDataEvent
 } from '../NewTable/types/NewTableEventTypes';
-import type { INewTableFilters } from '../NewTable/types/NewTableFilterTypes';
+import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTableFilterTypes';
 
 import { useNewTableWrapperModesIds } from './composables/NewTableWrapperModesIds';
 import { useNewTableWrapperFlatData } from './composables/NewTableWrapperFlatData';
@@ -25,6 +25,7 @@ import { NEW_TABLE_STANDART_ACTIONS } from './constants/standartActions';
 import NewTable from '../NewTable/NewTable.vue';
 import NewScroller from '../NewScroller/NewScroller.vue';
 import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFilteredData';
+import { useNewTableWrapperSortData } from './composables/NewTableWrapperSortData';
 
 const props = defineProps<{
   data: INewTableRow[];
@@ -32,6 +33,7 @@ const props = defineProps<{
   columnsSettings: Record<string, INewTableHeaderSetting>;
   commonMeta?: INewTableRowCommonMeta;
   initialFilters: INewTableFilters;
+  initialSorts: INewTableSorts;
 }>();
 
 const emit = defineEmits<{
@@ -65,11 +67,19 @@ const {
 );
 
 const {
-  computedFlatData,
-  computedOnlyExpandedFlatData
-} = useNewTableWrapperFlatData(
+  sorts,
+  sortedData,
+} = useNewTableWrapperSortData(
   () => computedFilteredData.value,
-  () => modeIds.value?.[ROW_MODES.EXPANDED]
+  () => props.initialSorts,
+);
+
+const {
+  computedFlatData,
+  computedOnlyExpandedFlatData,
+} = useNewTableWrapperFlatData(
+  () => sortedData.value,
+  () => expandedIds.value
 );
 
 const {
@@ -79,14 +89,20 @@ const {
   setRowCount,
   onPrevious,
   onNext
-} = useNewTablePagination(computedFlatData, computedOnlyExpandedFlatData);
+} = useNewTablePagination(
+  () => computedFlatData.value,
+  () => computedOnlyExpandedFlatData.value,
+);
 
 const {
   localColumnsSettings,
   computedColumnsSortByOrderVisible,
   changeColumnsOrder,
   changeColumnsWidth,
-} = useNewTableWrapperHeader(() => props.columns, () => props.columnsSettings);
+} = useNewTableWrapperHeader(
+  () => props.columns,
+  () => props.columnsSettings
+);
 
 const { onWheelEvent } = useNewTableWrapperWheelEvent(onNext, onPrevious);
 
@@ -96,14 +112,12 @@ onMounted(() => {
   if (!el.value?.$el) return;
   const element = el.value.$el as HTMLElement;
   element.addEventListener('wheel', onWheelEvent, { passive: true });
-  // document.addEventListener('wheel', onWheelEvent, { passive: true });
 });
 
 onBeforeUnmount(() => {
   if (!el.value?.$el) return;
   const element = el.value.$el as HTMLElement;
   element.removeEventListener('wheel', onWheelEvent);
-  // document.removeEventListener('wheel', onWheelEvent);
 });
 
 function onAction(event: INewTableRowActionEvent) {
@@ -160,6 +174,10 @@ function onChangeFilterValue(event: INewTableChangeFilterValue) {
     }
   }
 }
+
+function onChangeColumnSort(event: INewTableSorts) {
+  sorts.value = event;
+}
 </script>
 
 <template>
@@ -171,6 +189,7 @@ function onChangeFilterValue(event: INewTableChangeFilterValue) {
         :columns="computedColumnsSortByOrderVisible"
         :columnsSettings="localColumnsSettings"
         :filters="filters"
+        :sorts="sorts"
         :modeIds="modeIds"
         :startIndex="startIndex"
         :rowCount="rowCount"
@@ -181,6 +200,7 @@ function onChangeFilterValue(event: INewTableChangeFilterValue) {
         @update:cell-data="$emit('update:cell-data', $event)"
         @change:column-width="onChangeColumnsWidth"
         @change:filter-value="onChangeFilterValue"
+        @change:column-sort="onChangeColumnSort"
       />
       <NewScroller
         :count="computedOnlyExpandedFlatData.length"
