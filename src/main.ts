@@ -27,7 +27,7 @@ library.add(
 )
 
 // Import cell components with type checking
-import * as Cells from './components/cells'
+import * as Cells from './components/CellComponents'
 
 const app = createApp(App)
 

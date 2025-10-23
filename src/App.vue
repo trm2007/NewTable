@@ -24,9 +24,11 @@ const columnsSettings = ref<Record<string, INewTableHeaderSetting>>({});
 
 const timeStamp = ref(Date.now());
 
+const lastActionEvent = ref<INewTableRowActionEvent | null>(null)
+
 function initData() {
   data.value = generateLargeTestData(2000);
-  recursiveCalcSumsForAllData(data.value, columnsToCalc);
+  // recursiveCalcSumsForAllData(data.value, columnsToCalc);
 
   columns.value = testColumns;
   columnsSettings.value = testColumnsSettings;
@@ -73,6 +75,8 @@ function setRow(row: INewTableRow) {
 }
 
 function onAction(event: INewTableRowActionEvent) {
+  lastActionEvent.value = event;
+
   switch (event.name) {
     case NEW_TABLE_STANDART_ACTIONS.SAVE:
       onSave(event.row);
@@ -138,6 +142,13 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
         @row-action="onAction"
         @update:cell-data="onUpdateCellData"
       />
+    </div>
+
+    <div>
+      {{ lastActionEvent }}
+      <!-- <ul>
+        <li v-for=""></li>
+      </ul> -->
     </div>
   </div>
 </template>

@@ -166,6 +166,7 @@ function getFilterTeleportName(key: string | null): string | undefined {
         <component
           :is="props.filters[activeHeaderFilterName]?.component.name || 'input'"
           :value="props.filters[activeHeaderFilterName]?.currentValue"
+          :filter="props.filters[activeHeaderFilterName]"
           v-bind="props.filters[activeHeaderFilterName]?.component.props || {}"
           v-on="{
             [props.filters[activeHeaderFilterName]?.component.changeEventName || 'change']:

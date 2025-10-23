@@ -1,12 +1,16 @@
 <template>
   <div class="cell">
-    <span>{{ props.value }}</span>
+    <span>{{ props.value || '' }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
+defineOptions({
+  inheritAttrs: false
+})
+
 const props = defineProps<{
-  value: number | string
+  value?: number | string
 }>();
 </script>
 

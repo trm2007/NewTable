@@ -15,6 +15,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
+defineOptions({
+  inheritAttrs: false
+});
+
 const props = defineProps<{
   value?: string
   mode?: 'view' | 'edit'
@@ -22,9 +26,12 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:value']);
 
-const localValue = ref(props.value);
+const localValue = ref(props.value || '');
 
-watch(() => props.value, (v) => (localValue.value = v));
+watch(
+  () => props.value,
+  (v) => (localValue.value = v || '')
+);
 
 function commit() {
   emit('update:value', localValue.value)
