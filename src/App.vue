@@ -32,7 +32,7 @@ const newTableWrapperRef = ref<typeof NewTableWrapper>();
 const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
 
 function initData() {
-  data.value = generateLargeTestData(2000);
+  data.value = generateLargeTestData(20000);
   // recursiveCalcSumsForAllData(data.value, columnsToCalc);
 
   columns.value = testColumns;

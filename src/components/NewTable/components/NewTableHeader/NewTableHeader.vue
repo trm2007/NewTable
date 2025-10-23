@@ -65,7 +65,7 @@ const computedIconName = computed<string>(
   }
 );
 
-function getIconNameForField(fieldName: string) {
+function getSortIconNameForField(fieldName: string) {
   if (fieldName === computedSortFieldName.value) {
     return computedIconName.value;
   }
@@ -173,13 +173,17 @@ function getFilterTeleportName(key: string | null): string | undefined {
         <FontAwesomeIcon
           v-if="Object.keys(props.filters || {}).includes(header.key)"
           icon="fa-solid fa-filter"
-          class="icon"
+          class="icon new-table__header__cell__filter__icon"
+          :class="{
+            '--active': props.filters[header.key]?.currentValue !== undefined
+              && props.filters[header.key].currentValue !== props.filters[header.key]?.defaultValue,
+          }"
           style="cursor: pointer;"
           @click="onClickOnFilter(header.key)"
         />
 
         <FontAwesomeIcon
-          :icon="getIconNameForField(header.key)"
+          :icon="getSortIconNameForField(header.key)"
           class="icon"
           style="cursor: pointer;"
           @click="onClickOnSort(header.key)"

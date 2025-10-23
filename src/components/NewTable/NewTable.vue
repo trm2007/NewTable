@@ -153,6 +153,10 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   position: relative;
 }
 
+.new-table :deep(.new-table__header__cell .new-table__header__cell__filter__icon.--active) {
+  color: blue;
+}
+
 .new-table :deep(.new-table__header__cell__separator) {
   top: 0;
   width: 5px;
