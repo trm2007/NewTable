@@ -26,6 +26,7 @@ import NewTable from '../NewTable/NewTable.vue';
 import NewScroller from '../NewScroller/NewScroller.vue';
 import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFilteredData';
 import { useNewTableWrapperSortData } from './composables/NewTableWrapperSortData';
+import { useDebounceFn } from '@vueuse/core';
 
 const props = defineProps<{
   data: INewTableRow[];
@@ -107,6 +108,11 @@ const {
 const { onWheelEvent } = useNewTableWrapperWheelEvent(onNext, onPrevious);
 
 const el = ref<InstanceType<typeof NewTable> | null>(null);
+
+const onChangeFilterValueDebounced = useDebounceFn(
+  (event: INewTableChangeFilterValue) => onChangeFilterValue(event),
+  300
+);
 
 onMounted(() => {
   if (!el.value?.$el) return;
@@ -199,7 +205,7 @@ function onChangeColumnSort(event: INewTableSorts) {
         @change:columns-order="onChangeColumns"
         @update:cell-data="$emit('update:cell-data', $event)"
         @change:column-width="onChangeColumnsWidth"
-        @change:filter-value="onChangeFilterValue"
+        @change:filter-value="onChangeFilterValueDebounced"
         @change:column-sort="onChangeColumnSort"
       />
       <NewScroller
