@@ -57,7 +57,7 @@ const computedSortDirection = computed<-1 | 0 | 1>(
 
 const computedIconName = computed<string>(
   () => {
-    let iconName = computedSortDirection.value === 1
+    const iconName = computedSortDirection.value === 1
       ? 'sort-up'
       : computedSortDirection.value === -1
         ? 'sort-down'
@@ -133,7 +133,7 @@ async function onClickOnFilter(key: string) {
   activeHeaderFilterName.value = key;
 }
 
-async function onCloseFilterComponent(key: string) {
+function onCloseFilterComponent(key: string) {
   if (activeHeaderFilterName.value === key) {
     activeHeaderFilterName.value = null;
     return;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import type { INewTableRow } from './components/NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from './components/NewTable/types/INewTableHeadTypes';
@@ -14,7 +14,7 @@ import { testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
 import { sorts } from './constants/sirts';
 import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
-import { calcChildSums, calcParentSums, recursiveCalcSumsForAllData } from './helpers/calacSums';
+import { calcChildSums, calcParentSums } from './helpers/calacSums';
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';

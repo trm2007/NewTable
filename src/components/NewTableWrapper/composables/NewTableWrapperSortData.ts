@@ -1,4 +1,4 @@
-import { computed, ref, Ref, toValue, watchEffect } from "vue";
+import { computed, ref, Ref, toValue } from "vue";
 
 import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
 import type { INewTableSorts } from "../../NewTable/types/NewTableFilterTypes";

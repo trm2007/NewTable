@@ -38,7 +38,7 @@ watch(
 
 watch(
   () => localValue.value,
-  (v) => emit('input', localValue.value),
+  (v) => emit('input', v),
 );
 
 function commit() {
