@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
+import { faSort, faSortUp, faSortDown, faFilter } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faSort, faSortUp, faSortDown);
+library.add(faSort, faSortUp, faSortDown, faFilter);
 
 import type { INewTableColumn } from '../../types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './types/NewTableHeaderTypes';

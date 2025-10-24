@@ -1,3 +1,18 @@
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faPenToSquare,
+  faFloppyDisk,
+  faTrash,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(
+  faPenToSquare,
+  faFloppyDisk,
+  faTrash,
+  faXmark,
+)
+
 import type { INewTableRowTemplate } from "../components/NewTable/types/NewTableRowTypes";
 
 type TTestDataType = string | number | [] | object | null | undefined;
