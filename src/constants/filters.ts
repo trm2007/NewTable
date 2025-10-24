@@ -5,8 +5,8 @@ import type { INewTableRow } from "../components/NewTable/types/NewTableRowTypes
 import { compareFilterAsString } from "../helpers/compareFilterAsString";
 import { statusOptions } from "./columns";
 
-export const filters: Record<string, INewTableFilter> = {
-  name: {
+function generateEmptyTextFilter(): INewTableFilter {
+  return {
     // для моделей фильтров и текщих значений вводимых пользователем
     currentValue: '',
     // последнее примененное значение фильтра для отображаемых данных
@@ -29,6 +29,15 @@ export const filters: Record<string, INewTableFilter> = {
         mode: ROW_MODES.EDIT,
       },
     },
+  }
+}
+
+export const filters: Record<string, INewTableFilter> = {
+  id: {
+    ...generateEmptyTextFilter(),
+  },
+  name: {
+    ...generateEmptyTextFilter(),
   },
   status: {
     currentValue: null,
