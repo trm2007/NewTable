@@ -256,18 +256,29 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
         'max-width': conputedColumnWidths[header.key],
       }"
     >
-      <component
-        :is="getComponentName(header, row.meta.rowType || props.commonMeta?.rowType)"
-        v-if="header?.components"
-        :value="row.data[header.key]"
-        :row="row"
-        :column="header"
-        :mode="props.modes?.includes(ROW_MODES.EDIT) ? ROW_MODES.EDIT : ROW_MODES.VIEW || ROW_MODES.VIEW"
-        v-bind="getComponentProps(header, row.meta.rowType || props.commonMeta?.rowType)"
-        @update:value="onCellUpdateValue({ key: header.key, value: $event })"
-        @cell-action="onCellAction({ key: header.key, value: $event.value, name: $event.name })"
-      />
-      <span v-else>{{ row.data[header.key] }}</span>
+      <slot
+        :name="`cell[${header.key}]`"
+        v-bind="{
+          cellName: header.key,
+          value: row.data[header.key],
+          row,
+          header,
+          columnSettings: localColumnsSettings,
+        }"
+      >
+        <component
+          :is="getComponentName(header, row.meta.rowType || props.commonMeta?.rowType)"
+          v-if="header?.components"
+          :value="row.data[header.key]"
+          :row="row"
+          :column="header"
+          :mode="props.modes?.includes(ROW_MODES.EDIT) ? ROW_MODES.EDIT : ROW_MODES.VIEW || ROW_MODES.VIEW"
+          v-bind="getComponentProps(header, row.meta.rowType || props.commonMeta?.rowType)"
+          @update:value="onCellUpdateValue({ key: header.key, value: $event })"
+          @cell-action="onCellAction({ key: header.key, value: $event.value, name: $event.name })"
+        />
+        <span v-else>{{ row.data[header.key] }}</span>
+      </slot>
     </div>
 
     <div

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useSlots } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from './types/NewTableRowTypes';
 import type { INewTableColumn } from './types/INewTableHeadTypes';
@@ -17,6 +17,7 @@ import { ROW_MODES } from './constants/rowModes';
 
 import NewTableHeader from './components/NewTableHeader/NewTableHeader.vue';
 import NewTableRow from './components/NewTableRow/NewTableRow.vue';
+import { useNewTableCellSlots } from './composables/NewTableCellSlots';
 
 const props = defineProps<{
   // подготовленные данные, которые полностьб будут отображаться
@@ -53,6 +54,11 @@ const emit = defineEmits<{
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
   (e: 'change:column-sort', event: INewTableSorts): void;
 }>();
+
+const {
+  computedHeadSlots,
+  computedCellSlots
+} = useNewTableCellSlots();
 
 const computedModeIds = computed(() => props.modeIds);
 
@@ -103,7 +109,18 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       @change:column-width="$emit('change:column-width', $event)"
       @change:filter-value="emit('change:filter-value', $event)"
       @change:column-sort="emit('change:column-sort', $event)"
-    />
+    >
+      <template
+        v-for="slot in computedHeadSlots"
+        #[slot]="slotProps"
+      >
+        <slot
+          :key="slot"
+          :name="slot"
+          v-bind="slotProps"
+        ></slot>
+      </template>
+    </NewTableHeader>
 
     <div class="new-table__body">
       <!-- 
@@ -127,7 +144,18 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         :commonMeta="props.commonMeta"
         :style="computedRowStyle"
         @row-action="$emit('row-action', $event)"
-      />
+      >
+        <template
+          v-for="slot in computedCellSlots"
+          #[slot]="slotProps"
+        >
+          <slot
+            :key="slot"
+            :name="slot"
+            v-bind="slotProps"
+          ></slot>
+        </template>
+      </NewTableRow>
     </div>
   </div>
 </template>

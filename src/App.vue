@@ -192,7 +192,25 @@ function onChangeCellData(event: INewTableChangeCellData) {
           }
         }"
         @row-action="onRowAction"
-      />
+      >
+        <template v-slot:head[id].sort="idSlotProps">
+          <span
+            v-if="idSlotProps.sorts[idSlotProps.cellName]"
+            style="color: green;"
+          >{{ idSlotProps.cellName }} - sorted</span>
+          <span
+            v-else
+            style="color: gray;"
+          >{{ idSlotProps.cellName }} - unsorted</span>
+        </template>
+
+        <template v-slot:cell[id]="idSlotProps">
+          <span style="color: red;">id[{{ idSlotProps.value }}]</span>
+        </template>
+        <template v-slot:cell[name]="nameSlotProps">
+          <span style="color: blue;">id[{{ nameSlotProps.value }}]</span>
+        </template>
+      </NewTableWrapper>
     </div>
 
     <div>

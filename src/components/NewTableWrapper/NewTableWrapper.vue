@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
@@ -28,6 +28,7 @@ import NewScroller from '../NewScroller/NewScroller.vue';
 import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFilteredData';
 import { useNewTableWrapperSortData } from './composables/NewTableWrapperSortData';
 import { useDebounceFn } from '@vueuse/core';
+import { useNewTableCellSlots } from '../NewTable/composables/NewTableCellSlots';
 
 const props = defineProps<{
   data: INewTableRow[];
@@ -122,6 +123,11 @@ const onChangeFilterValueDebounced = useDebounceFn(
   300
 );
 
+const {
+  computedCellSlots,
+  computedHeadSlots,
+} = useNewTableCellSlots();
+
 onMounted(() => {
   if (!el.value?.$el) return;
   const element = el.value.$el as HTMLElement;
@@ -215,7 +221,29 @@ function onChangeColumnSort(event: INewTableSorts) {
         @change:column-width="onChangeColumnsWidth"
         @change:filter-value="onChangeFilterValueDebounced"
         @change:column-sort="onChangeColumnSort"
-      />
+      >
+        <template
+          v-for="slot in computedHeadSlots"
+          #[slot]="slotProps"
+        >
+          <slot
+            :key="slot"
+            :name="slot"
+            v-bind="slotProps"
+          ></slot>
+        </template>
+
+        <template
+          v-for="slot in computedCellSlots"
+          #[slot]="slotProps"
+        >
+          <slot
+            :key="slot"
+            :name="slot"
+            v-bind="slotProps"
+          ></slot>
+        </template>
+      </NewTable>
       <NewScroller
         :count="computedOnlyExpandedFlatData.length"
         :position="startIndex"

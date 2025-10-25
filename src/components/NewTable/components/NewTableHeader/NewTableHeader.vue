@@ -182,26 +182,59 @@ function onClickOnSort(key: string) {
         @dragover="onDragOver"
         @drop="onDrop"
       >
-        {{ header.name }}
-
-        <FontAwesomeIcon
-          v-if="Object.keys(props.filters || {}).includes(header.key)"
-          icon="fa-solid fa-filter"
-          class="icon new-table__header__cell__filter__icon"
-          :class="{
-            '--active': props.filters[header.key]?.currentValue !== undefined
-              && props.filters[header.key].currentValue !== props.filters[header.key]?.defaultValue,
+        <slot
+          :name="`head[${header.key}]`"
+          v-bind="{
+            cellName: header.key,
+            header,
+            columnSettings: localColumnsSettings,
+            filters: props.filters,
+            sorts: props.sorts,
           }"
-          style="cursor: pointer;"
-          @click.stop.prevent="onClickOnFilter(header.key)"
-        />
+        >
+          {{ header.name }}
+        </slot>
 
-        <FontAwesomeIcon
-          :icon="getSortIconNameForField(header.key)"
-          class="icon"
-          style="cursor: pointer;"
-          @click="onClickOnSort(header.key)"
-        />
+        <slot
+          :name="`head[${header.key}].filter`"
+          v-bind="{
+            cellName: header.key,
+            header,
+            columnSettings: localColumnsSettings,
+            filters: props.filters,
+            sorts: props.sorts,
+          }"
+        >
+          <FontAwesomeIcon
+            v-if="Object.keys(props.filters || {}).includes(header.key)"
+            icon="fa-solid fa-filter"
+            class="icon new-table__header__cell__filter__icon"
+            :class="{
+              '--active': props.filters[header.key]?.currentValue !== undefined
+                && props.filters[header.key].currentValue !== props.filters[header.key]?.defaultValue,
+            }"
+            style="cursor: pointer;"
+            @click.stop.prevent="onClickOnFilter(header.key)"
+          />
+        </slot>
+
+        <slot
+          :name="`head[${header.key}].sort`"
+          v-bind="{
+            cellName: header.key,
+            header,
+            columnSettings: localColumnsSettings,
+            filters: props.filters,
+            sorts: props.sorts,
+          }"
+        >
+          <FontAwesomeIcon
+            :icon="getSortIconNameForField(header.key)"
+            class="icon"
+            style="cursor: pointer;"
+            @click="onClickOnSort(header.key)"
+          />
+        </slot>
 
         <!-- Teleport target -->
         <div
