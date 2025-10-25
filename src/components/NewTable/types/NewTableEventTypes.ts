@@ -3,7 +3,7 @@ import type { INewTableRow } from "./NewTableRowTypes";
 export interface INewTableRowActionEvent {
   name: string; // action name
   row: INewTableRow; // row
-  value?: INewTableCellActionData | unknown; // event data from action component
+  value?: unknown; // INewTableCellActionData // event data from action component
 }
 
 export interface INewTableCellActionData {

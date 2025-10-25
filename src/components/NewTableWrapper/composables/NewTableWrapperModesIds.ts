@@ -84,5 +84,6 @@ export function useNewTableWrapperModesIds() {
     switchOnModeForRowWithChildren,
     switchOffModeForRowWithChildren,
     toggleModeForRow,
+    toggleModeForRowWithChildren,
   };
 }

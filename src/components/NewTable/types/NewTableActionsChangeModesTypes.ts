@@ -4,4 +4,4 @@ export interface INewTableOnOffModes {
   withChildren?: boolean;
 };
 
-export type TNewTableActionsChangeModesStandart = Record<'default' | string, INewTableOnOffModes>;
+export type TNewTableActionsChangeModesStandart = Record<string, INewTableOnOffModes>;
