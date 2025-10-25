@@ -4,10 +4,11 @@ import { computed, ref } from 'vue';
 import type { INewTableRow } from './components/NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from './components/NewTable/types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './components/NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
-import type { INewTableRowActionEvent, INewTableUpdateCellDataEvent } from './components/NewTable/types/NewTableEventTypes';
+import type { INewTableCellActionData, INewTableRowActionEvent } from './components/NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/types';
+import type { TTActionsChangeModesStandart } from './constants/modeToChange';
 
-import { NEW_TABLE_STANDART_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
+import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
 import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData';
 import { columnsToCalc, columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
@@ -15,9 +16,16 @@ import { filters } from './constants/filters';
 import { sorts } from './constants/sirts';
 import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
 import { calcChildSums, calcParentSums } from './helpers/calacSums';
+import { standartActionsChangeModes } from './constants/modeToChange';
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
+
+interface INewTableChangeCellData {
+  row: INewTableRow, // row
+  key: string, // cell name
+  value: unknown, // event data from cell component        
+}
 
 const data = ref<INewTableRow[]>([]);
 const columns = ref<INewTableColumn[]>([]);
@@ -25,9 +33,9 @@ const columnsSettings = ref<Record<string, INewTableHeaderSetting>>({});
 
 const timeStamp = ref(Date.now());
 
-const lastActionEvent = ref<INewTableRowActionEvent | null>(null)
-
 const newTableWrapperRef = ref<typeof NewTableWrapper>();
+
+const actionsChangeModes = ref<TTActionsChangeModesStandart>(standartActionsChangeModes);
 
 const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
 
@@ -37,6 +45,17 @@ function initData() {
 
   columns.value = testColumns;
   columnsSettings.value = testColumnsSettings;
+  actionsChangeModes.value = {
+    ...actionsChangeModes.value,
+    default: {
+      ...(actionsChangeModes.value.default || {}),
+      [NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]: {
+        on: [...(actionsChangeModes.value.default?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.on || []), 'changed'],
+        off: actionsChangeModes.value.default?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.off || [],
+      }
+    },
+  }
+
   timeStamp.value = Date.now();
 }
 
@@ -79,15 +98,13 @@ function setRow(row: INewTableRow) {
   });
 }
 
-function onAction(event: INewTableRowActionEvent) {
-  lastActionEvent.value = event;
-
+function onRowAction(event: INewTableRowActionEvent) {
   switch (event.name) {
-    case NEW_TABLE_STANDART_ACTIONS.SAVE:
+    case NEW_TABLE_STANDART_ROW_ACTIONS.SAVE:
       onSave(event.row);
       calcParentSums(event.row, data.value, columnsToCalc);
       break;
-    case NEW_TABLE_STANDART_ACTIONS.DELETE:
+    case NEW_TABLE_STANDART_ROW_ACTIONS.DELETE:
       const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
       onDelete(event);
       if (parentRow) {
@@ -95,8 +112,25 @@ function onAction(event: INewTableRowActionEvent) {
         calcParentSums(parentRow.parent, data.value, columnsToCalc);
       }
       break;
+    case NEW_TABLE_STANDART_ROW_ACTIONS.CELL_ACTION:
+      onCellAction(event);
+      break;
     default:
       console.log('Unknown action:', event.name, 'for row:', event.row);
+  }
+}
+
+function onCellAction(event: INewTableRowActionEvent) {
+  const cellActionValue: INewTableCellActionData = event.value as INewTableCellActionData;
+
+  switch (cellActionValue.name) {
+    case NEW_TABLE_STANDART_CELL_ACTIONS.CHANGE_CELL:
+      onChangeCellData({
+        row: event.row, // row
+        key: cellActionValue?.key, // cell name
+        value: cellActionValue?.value, // event data from cell component        
+      });
+      break;
   }
 }
 
@@ -107,7 +141,7 @@ function onChangeColumnSettings(event: IChangeColumnSettingsEvent) {
   }
 }
 
-function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
+function onChangeCellData(event: INewTableChangeCellData) {
   const row = findRowById(event.row.data.id, data.value);
   if (row) {
     row.data[event.key] = event.value;
@@ -131,6 +165,9 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
         </button>
       </div>
 
+      <!-- 
+        @change:cell-data="onChangeCellData"
+      -->
       <NewTableWrapper
         ref="newTableWrapperRef"
         :key="timeStamp"
@@ -146,8 +183,8 @@ function onUpdateCellData(event: INewTableUpdateCellDataEvent) {
         }"
         :initial-filters="filters"
         :initial-sorts="sorts"
-        @row-action="onAction"
-        @update:cell-data="onUpdateCellData"
+        :actions-change-modes="actionsChangeModes"
+        @row-action="onRowAction"
       />
     </div>
 

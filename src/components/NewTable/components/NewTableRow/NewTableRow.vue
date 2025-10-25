@@ -14,14 +14,17 @@ import type {
 import type { INewTableColumn } from '../../types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from '../NewTableHeader/types/NewTableHeaderTypes';
 import type {
-  INewTableCellActionEvent,
+  INewTableCellActionData,
   INewTableRowActionEvent,
-  INewTableUpdateCellDataEvent
 } from '../../types/NewTableEventTypes';
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
 import { ROW_MODES } from '../../constants/rowModes';
 import { NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME } from '../../constants/defaultComponentName';
+import {
+  NEW_TABLE_STANDART_CELL_ACTIONS,
+  NEW_TABLE_STANDART_ROW_ACTIONS
+} from '../../../NewTableWrapper/constants/standartActions';
 
 const props = defineProps<{
   row: INewTableRow;
@@ -38,10 +41,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'toggle:expand-row', rowId: number | string): void;
+  // (e: 'toggle:expand-row', row: INewTableRow): void;
   (e: 'row-action', event: INewTableRowActionEvent): void;
-  (e: 'update:cell-data', event: INewTableUpdateCellDataEvent): void;
-  (e: 'cell-action', event: INewTableCellActionEvent): void;
+  // (e: 'change:cell-data', event: INewTableUpdateCellDataEvent): void;
+  // (e: 'cell-action', event: INewTableCellActionEvent): void;
 }>();
 
 const iconForExpandCell = computed(() => {
@@ -83,7 +86,12 @@ function onExpandCellClick() {
   if (!props.row?.children?.length) {
     return;
   }
-  emit('toggle:expand-row', props.row.data.id);
+
+  if (props.modes.includes(ROW_MODES.EXPANDED)) {
+    emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_OFF, row: props.row });
+  } else {
+    emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_ON, row: props.row });
+  }
 }
 
 function getComponentName(header: INewTableColumn, rowType?: string | number) {
@@ -122,20 +130,40 @@ function getComponentProps(header: INewTableColumn, rowType?: string | number) {
   return header.components[rowType]?.props || {};
 }
 
-function onCellUpdate(key: string, value: unknown) {
-  localRow.data[key] = value
-  emit('update:cell-data', {
-    key,
-    value,
+function onChangeCheck($event: InputEvent) {
+  const value = ($event.target as HTMLInputElement)?.checked;
+
+  let actionName = NEW_TABLE_STANDART_ROW_ACTIONS.CHECK_OFF; // 'check-off';
+
+  if (value) {
+    actionName = NEW_TABLE_STANDART_ROW_ACTIONS.CHECK_ON; // 'check-on';
+  }
+
+  emit('row-action', {
+    name: actionName,
     row: props.row,
-  });
+    value: value,
+  })
 }
 
-function onCellAction(key: string, value: unknown) {
-  emit('cell-action', {
-    key,
+function onCellUpdateValue({ key, value }: { key: string, value: unknown }) {
+  // при изменениях значений ячеек отрабатывает специфическое поведение
+  // родителю никакие события не отправляются
+  // меняются локальные данны
+  // эти данные отправляются родителю только при срабатывании действия (нажатии кнопки)
+  localRow.data[key] = value;
+  // onCellAction({ key, value, name: NEW_TABLE_STANDART_CELL_ACTIONS.CHANGE_CELL });
+}
+
+function onCellAction({ key, value, name }: INewTableCellActionData) {
+  emit('row-action', {
+    name: NEW_TABLE_STANDART_ROW_ACTIONS.CELL_ACTION,
     row: props.row,
-    value,
+    value: {
+      name,
+      key,
+      value,
+    },
   });
 }
 </script>
@@ -160,11 +188,7 @@ function onCellAction(key: string, value: unknown) {
         :value="props.modes?.includes(ROW_MODES.CHECKED)"
         :checked="props.modes?.includes(ROW_MODES.CHECKED)"
         type="checkbox"
-        @change="$emit('row-action', {
-          name: 'check',
-          row: localRow,
-          value: (($event as InputEvent).target as HTMLInputElement)?.checked,
-        })"
+        @change="onChangeCheck"
       >
     </div>
 
@@ -200,8 +224,8 @@ function onCellAction(key: string, value: unknown) {
         :column="header"
         :mode="props.modes?.includes(ROW_MODES.EDIT) ? ROW_MODES.EDIT : ROW_MODES.VIEW || ROW_MODES.VIEW"
         v-bind="getComponentProps(header, row.meta.rowType || props.commonMeta?.rowType)"
-        @update:value="onCellUpdate(header.key, $event)"
-        @cell-action="onCellAction(header.key, $event)"
+        @update:value="onCellUpdateValue({ key: header.key, value: $event })"
+        @cell-action="onCellAction({ key: header.key, value: $event.value, name: $event.name })"
       />
       <span v-else>{{ row.data[header.key] }}</span>
     </div>

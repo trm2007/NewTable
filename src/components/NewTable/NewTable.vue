@@ -9,7 +9,6 @@ import type {
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent,
   INewTableRowActionEvent,
-  INewTableUpdateCellDataEvent
 } from './types/NewTableEventTypes';
 import type { INewTableFilters, INewTableSorts } from './types/NewTableFilterTypes';
 
@@ -40,9 +39,9 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'toggle:expand-row', rowId: number | string): void;
+  // (e: 'toggle:expand-row', row: INewTableRow): void;
   (e: 'row-action', event: INewTableRowActionEvent): void;
-  (e: 'update:cell-data', event: INewTableUpdateCellDataEvent): void;
+  // (e: 'change:cell-data', event: INewTableUpdateCellDataEvent): void;
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
@@ -96,6 +95,10 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
     />
 
     <div class="new-table__body">
+      <!-- 
+        @toggle:expand-row="$emit('toggle:expand-row', $event)"
+        @change:cell-data="$emit('change:cell-data', $event)"
+      -->
       <NewTableRow
         v-for="(row, rowIndex) in data"
         :key="`${startIndex + rowIndex + 1}-${row.data.id}`"
@@ -111,9 +114,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         :modes="getModesForRow(row)"
         :commonMeta="props.commonMeta"
         :style="computedRowStyle"
-        @toggle:expand-row="$emit('toggle:expand-row', $event)"
         @row-action="$emit('row-action', $event)"
-        @update:cell-data="$emit('update:cell-data', $event)"
       />
     </div>
   </div>
