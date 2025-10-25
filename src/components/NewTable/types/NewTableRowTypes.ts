@@ -11,13 +11,6 @@ export interface ILocalNewTableRowDataCommon extends IId {
   [key: string]: unknown
 }
 
-export interface INewTableRowAction {
-  eventName: string;
-  icon?: string;
-  label?: string;
-  modes?: TNewTableRowMode[];
-}
-
 export interface INewTableRowMeta {
   rowType?: string | number;
   class?: string;
@@ -32,7 +25,7 @@ export interface INewTableRowTemplate<T extends Record<string, unknown>> {
   meta: INewTableRowMeta;
   data: T;
   children?: INewTableRowTemplate<T>[];
-  actions?: Record<string, INewTableRowAction>;
+  // actions?: Record<string, INewTableRowAction>;
   __level?: number; // for internal use in flat data generation
 }
 

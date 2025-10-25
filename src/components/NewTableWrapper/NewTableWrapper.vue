@@ -11,7 +11,8 @@ import type {
   INewTableRowActionEvent,
 } from '../NewTable/types/NewTableEventTypes';
 import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTableFilterTypes';
-import type { TTActionsChangeModesStandart } from '../../constants/modeToChange';
+import type { INewTableActions } from '../NewTable/types/NewTableActionTypes';
+import type { TNewTableActionsChangeModesStandart } from '../NewTable/types/NewTableActionsChangeModesTypes';
 
 import { useNewTableWrapperModesIds } from './composables/NewTableWrapperModesIds';
 import { useNewTableWrapperFlatData } from './composables/NewTableWrapperFlatData';
@@ -35,7 +36,12 @@ const props = defineProps<{
   commonMeta?: INewTableRowCommonMeta;
   initialFilters: INewTableFilters;
   initialSorts: INewTableSorts;
-  actionsChangeModes: TTActionsChangeModesStandart
+  actionsChangeModes: TNewTableActionsChangeModesStandart;
+  // действия, доступные для каждой строки в зависимости от режима
+  actions?: INewTableActions;
+  isNumberColumnShown?: boolean;
+  isCheckboxColumnShown?: boolean;
+  isExpandColumnShown?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -200,6 +206,10 @@ function onChangeColumnSort(event: INewTableSorts) {
         :startIndex="startIndex"
         :rowCount="rowCount"
         :commonMeta="props.commonMeta"
+        :actions="actions"
+        :isNumberColumnShown="isNumberColumnShown"
+        :isCheckboxColumnShown="isCheckboxColumnShown"
+        :isExpandColumnShown="isExpandColumnShown"
         @row-action="onAction"
         @change:columns-order="onChangeColumns"
         @change:column-width="onChangeColumnsWidth"

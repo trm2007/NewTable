@@ -6,9 +6,10 @@ import type { INewTableColumn } from './components/NewTable/types/INewTableHeadT
 import type { INewTableHeaderSetting } from './components/NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
 import type { INewTableCellActionData, INewTableRowActionEvent } from './components/NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/types';
-import type { TTActionsChangeModesStandart } from './constants/modeToChange';
+import type { TNewTableActionsChangeModesStandart } from './components/NewTable/types/NewTableActionsChangeModesTypes';
+import type { INewTableActions } from './components/NewTable/types/NewTableActionTypes';
 
-import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS } from './components/NewTableWrapper/constants/standartActions';
+import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from './components/NewTableWrapper/constants/standartActions';
 import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData';
 import { columnsToCalc, columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
@@ -16,7 +17,7 @@ import { filters } from './constants/filters';
 import { sorts } from './constants/sirts';
 import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
 import { calcChildSums, calcParentSums } from './helpers/calacSums';
-import { standartActionsChangeModes } from './constants/modeToChange';
+import { newTableStandartActionsChangeModes } from './components/NewTableWrapper/constants/standartActionsChangeModes';
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
@@ -35,7 +36,9 @@ const timeStamp = ref(Date.now());
 
 const newTableWrapperRef = ref<typeof NewTableWrapper>();
 
-const actionsChangeModes = ref<TTActionsChangeModesStandart>(standartActionsChangeModes);
+const actions = ref<INewTableActions>(newTableStandartActions)
+
+const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>(newTableStandartActionsChangeModes);
 
 const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
 
@@ -174,6 +177,13 @@ function onChangeCellData(event: INewTableChangeCellData) {
         :data="data"
         :columns="columns"
         :columns-settings="columnsSettings"
+        :initial-filters="filters"
+        :initial-sorts="sorts"
+        :actions-change-modes="actionsChangeModes"
+        :actions="actions"
+        :isNumberColumnShown="true"
+        :isCheckboxColumnShown="true"
+        :isExpandColumnShown="true"
         :common-meta="{
           class: {
             stage: '--stage',
@@ -181,9 +191,6 @@ function onChangeCellData(event: INewTableChangeCellData) {
             task: '--task',
           }
         }"
-        :initial-filters="filters"
-        :initial-sorts="sorts"
-        :actions-change-modes="actionsChangeModes"
         @row-action="onRowAction"
       />
     </div>

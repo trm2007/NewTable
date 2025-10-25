@@ -1,18 +1,14 @@
-import { ROW_MODES } from "../components/NewTable/constants/rowModes";
-import { NEW_TABLE_STANDART_ROW_ACTIONS } from "../components/NewTableWrapper/constants/standartActions";
-import { TEST_DATA_ROW_TYPES } from "./testData";
+import type { TNewTableActionsChangeModesStandart } from "../../NewTable/types/NewTableActionsChangeModesTypes";
 
-export type TActionsChangeModesStandartIndexes = keyof typeof NEW_TABLE_STANDART_ROW_ACTIONS;
+import { ROW_MODES } from "../../NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_ACTIONS } from "./standartActions";
+import { TEST_DATA_ROW_TYPES } from "../../../constants/testData";
 
-export interface IOnOffModes {
-  on?: string[];
-  off?: string[];
-  withChildren?: boolean;
-};
-
-export type TTActionsChangeModesStandart = Record<TActionsChangeModesStandartIndexes, IOnOffModes>;
-
-export const standartActionsChangeModes: TTActionsChangeModesStandart = {
+/**
+ * @constant {TTActionsChangeModesStandart} standartActionsChangeModes для каждого типа строк заданы акции,
+ * которые включают или отключают несколько режимов
+ */
+export const newTableStandartActionsChangeModes: TNewTableActionsChangeModesStandart = {
   [TEST_DATA_ROW_TYPES.TASK]: {
     [NEW_TABLE_STANDART_ROW_ACTIONS.EDIT]: {
       on: [ROW_MODES.EDIT],

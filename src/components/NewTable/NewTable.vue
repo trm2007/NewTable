@@ -11,6 +11,7 @@ import type {
   INewTableRowActionEvent,
 } from './types/NewTableEventTypes';
 import type { INewTableFilters, INewTableSorts } from './types/NewTableFilterTypes';
+import type { INewTableActions } from './types/NewTableActionTypes';
 
 import { ROW_MODES } from './constants/rowModes';
 
@@ -36,6 +37,11 @@ const props = defineProps<{
   rowCount: number;
   // общие метаданные для строки данных, будут применяться, если такие не указаны для конкретной строки
   commonMeta?: INewTableRowCommonMeta
+  // действия, доступные для каждой строки в зависимости от режима
+  actions?: INewTableActions;
+  isNumberColumnShown?: boolean;
+  isCheckboxColumnShown?: boolean;
+  isExpandColumnShown?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -64,6 +70,11 @@ const computedRowStyle = computed(
   })
 );
 
+// если передать действия, то будет отображаться колонка с доступными для строки действиями
+const isActionsColumnShown = computed<boolean>(
+  () => !!Object.keys(props.actions || {}).length,
+);
+
 function getModesForRow(row: INewTableRow): string[] | undefined {
   const result = Object.keys(computedModeIds.value || {}).filter(
     (mode) => computedModeIds.value?.[mode]?.has(row.data.id)
@@ -84,10 +95,10 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       :localColumnsSettings="columnsSettings"
       :filters="filters"
       :sorts="sorts"
-      :isNumberColumnShown="true"
-      :isCheckboxColumnShown="true"
-      :isExpandColumnShown="true"
-      :isActionsColumnShown="true"
+      :isNumberColumnShown="isNumberColumnShown"
+      :isCheckboxColumnShown="isCheckboxColumnShown"
+      :isExpandColumnShown="isExpandColumnShown"
+      :isActionsColumnShown="isActionsColumnShown"
       @change:columns-order="$emit('change:columns-order', $event)"
       @change:column-width="$emit('change:column-width', $event)"
       @change:filter-value="emit('change:filter-value', $event)"
@@ -106,10 +117,11 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         :localColumnsSettings="columnsSettings"
         :isNumberColumnShown="true"
         :rowNumber="startIndex + rowIndex + 1"
-        :isCheckboxColumnShown="true"
-        :isExpandColumnShown="true"
         :isExpanded="expandedRows?.has(row.data.id)"
-        :isActionsColumnShown="true"
+        :actions="actions"
+        :isCheckboxColumnShown="isCheckboxColumnShown"
+        :isExpandColumnShown="isExpandColumnShown"
+        :isActionsColumnShown="isActionsColumnShown"
         :visibleSortedColumns="columns"
         :modes="getModesForRow(row)"
         :commonMeta="props.commonMeta"

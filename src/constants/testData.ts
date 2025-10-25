@@ -60,27 +60,27 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
         name: `${rowType} ${currentId}`,
         status: availableStatuses[Math.floor(Math.random() * availableStatuses.length)],
       },
-      actions: {
-        edit: {
-          eventName: 'edit',
-          icon: 'fa-solid fa-pen-to-square',
-          modes: ['view'],
-        },
-        save: {
-          eventName: 'save',
-          icon: 'fa-solid fa-floppy-disk',
-          modes: ['edit'],
-        },
-        cancel: {
-          eventName: 'cancel',
-          icon: 'fa-solid fa-xmark',
-          modes: ['edit'],
-        },
-        delete: {
-          eventName: 'delete',
-          icon: 'fa-solid fa-trash',
-        },
-      },
+      // actions: {
+      //   edit: {
+      //     eventName: 'edit',
+      //     icon: 'fa-solid fa-pen-to-square',
+      //     modes: ['view'],
+      //   },
+      //   save: {
+      //     eventName: 'save',
+      //     icon: 'fa-solid fa-floppy-disk',
+      //     modes: ['edit'],
+      //   },
+      //   cancel: {
+      //     eventName: 'cancel',
+      //     icon: 'fa-solid fa-xmark',
+      //     modes: ['edit'],
+      //   },
+      //   delete: {
+      //     eventName: 'delete',
+      //     icon: 'fa-solid fa-trash',
+      //   },
+      // },
     };
 
     if (!hasChildren) {

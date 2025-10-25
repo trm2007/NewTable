@@ -8,7 +8,7 @@ library.add(faFolder, faFolderOpen, faFile);
 
 import type {
   INewTableRow,
-  INewTableRowAction,
+  // INewTableRowAction,
   INewTableRowCommonMeta
 } from '../../types/NewTableRowTypes';
 import type { INewTableColumn } from '../../types/INewTableHeadTypes';
@@ -17,12 +17,13 @@ import type {
   INewTableCellActionData,
   INewTableRowActionEvent,
 } from '../../types/NewTableEventTypes';
+import type { INewTableActions, INewTableRowAction, INewTableRowActions } from '../../types/NewTableActionTypes';
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
 import { ROW_MODES } from '../../constants/rowModes';
 import { NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME } from '../../constants/defaultComponentName';
 import {
-  NEW_TABLE_STANDART_CELL_ACTIONS,
+  // NEW_TABLE_STANDART_CELL_ACTIONS,
   NEW_TABLE_STANDART_ROW_ACTIONS
 } from '../../../NewTableWrapper/constants/standartActions';
 
@@ -38,6 +39,7 @@ const props = defineProps<{
   rowNumber?: number;
   modes?: string[];
   commonMeta?: INewTableRowCommonMeta;
+  actions?: INewTableActions;
 }>();
 
 const emit = defineEmits<{
@@ -47,7 +49,7 @@ const emit = defineEmits<{
   // (e: 'cell-action', event: INewTableCellActionEvent): void;
 }>();
 
-const iconForExpandCell = computed(() => {
+const iconForExpandCell = computed<string>(() => {
   if (!props.row?.children?.length) {
     return 'fa-solid fa-file';
   }
@@ -58,9 +60,9 @@ const conputedColumnWidths = computed<Record<string, string>>(
   () => generateColumnWidths(props.visibleSortedColumns, props.localColumnsSettings),
 );
 
-const actions = computed(() => props.row?.actions || {});
+// const actions = computed(() => props.row?.actions || {});
 
-const computedCssClasses = computed(
+const computedCssClasses = computed<string>(
   () => {
     if (props.row.meta.class) {
       return props.row.meta.class;
@@ -71,6 +73,31 @@ const computedCssClasses = computed(
 
     return '';
   }
+);
+
+const enabledActions = computed<INewTableRowActions>(
+  () => {
+    if (!props.actions) {
+      return {};
+    }
+
+    const rowType = props.row.meta.rowType || 'default';
+    const rowActions = props.actions[rowType] || props.actions['default'];
+
+    if (!rowActions) {
+      return {};
+    }
+
+    return Object.keys(rowActions).filter(
+      (actionName: string) => checkIsActionEnabled(rowActions[actionName], props.modes),
+    ).reduce(
+      (acc: INewTableRowActions, enabledActionName: string): INewTableRowActions => {
+        acc[enabledActionName] = rowActions[enabledActionName];
+        return acc;
+      },
+      {}
+    )
+  },
 );
 
 let localRow: INewTableRow = JSON.parse(JSON.stringify(props.row));
@@ -87,7 +114,7 @@ function onExpandCellClick() {
     return;
   }
 
-  if (props.modes.includes(ROW_MODES.EXPANDED)) {
+  if (props.modes?.includes(ROW_MODES.EXPANDED)) {
     emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_OFF, row: props.row });
   } else {
     emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_ON, row: props.row });
@@ -106,16 +133,28 @@ function getComponentName(header: INewTableColumn, rowType?: string | number) {
   return header.components[rowType]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
 }
 
-function checkIsActionEnabled(action: INewTableRowAction) {
-  if (!action.modes?.length) {
+function checkIsActionEnabled(action: INewTableRowAction, modes: string[]) {
+  // если для действия не задан ни один режим, это подразумевает,
+  // что действие доступно для любого режима
+  if (!action?.modes?.length) {
     return true;
   }
 
-  if (!props.modes?.length) {
+  // если не переданы режимы для строки, т.е. они не настроены,
+  // то так же отображаем все действия
+  if (!modes) {
+    return true;
+  }
+
+  // если режимы переданы как пустой массив,
+  // то значит сейчас для строки все рижимы отклочены,
+  // и доступны будут только действия, для которых режимы не указаны (из первого условия)
+  if (!modes.length) {
     return false;
   }
 
-  return action.modes.some((mode: string) => !!props.modes?.includes(mode));
+  // проверяем, что хотябы один режим для строки присутвует у действия
+  return action.modes.some((mode: string) => !!modes.includes(mode));
 }
 
 function getComponentProps(header: INewTableColumn, rowType?: string | number) {
@@ -150,7 +189,7 @@ function onCellUpdateValue({ key, value }: { key: string, value: unknown }) {
   // при изменениях значений ячеек отрабатывает специфическое поведение
   // родителю никакие события не отправляются
   // меняются локальные данны
-  // эти данные отправляются родителю только при срабатывании действия (нажатии кнопки)
+  // эти данные отправляются родителю только при срабатывании action (действия нажатии иконки)
   localRow.data[key] = value;
   // onCellAction({ key, value, name: NEW_TABLE_STANDART_CELL_ACTIONS.CHANGE_CELL });
 }
@@ -195,15 +234,16 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
     <div
       v-if="isExpandColumnShown"
       class="new-table__expand-cell"
-      :style="{
-        paddingLeft: row.__level ? `${row.__level * 16}px` : '',
-      }"
       @click="onExpandCellClick"
     >
-      <FontAwesomeIcon
-        :icon="iconForExpandCell"
-        class="icon"
-      />
+      <div :style="{
+        paddingLeft: row.__level ? `${row.__level * 16}px` : '',
+      }">
+        <FontAwesomeIcon
+          :icon="iconForExpandCell"
+          class="icon"
+        />
+      </div>
     </div>
 
     <div
@@ -234,16 +274,20 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
       v-if="isActionsColumnShown"
       class="new-table__actions__cell"
     >
-      <template v-for="(action, actionKey) in actions">
-        <FontAwesomeIcon
-          v-if="checkIsActionEnabled(action)"
+      <div style="display: flex; gap: 4px;">
+        <div
+          v-for="(action, actionKey) in enabledActions"
           :key="actionKey"
-          :icon="action.icon || 'fa-solid fa-circle-info'"
-          class="icon new-table__action-icon"
-          :title="action.label || action.eventName"
-          @click="$emit('row-action', { name: action.eventName, row: localRow })"
-        />
-      </template>
+        >
+          <FontAwesomeIcon
+            :icon="action.icon || 'fa-solid fa-circle-info'"
+            class="icon new-table__action-icon"
+            :title="action.label || action.actionName"
+            @click="$emit('row-action', { name: action.actionName, row: localRow })"
+          />
+          <span v-if="!!action.label">{{ action.label }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
