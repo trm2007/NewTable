@@ -196,7 +196,7 @@ function onClickOnSort(key: string) {
         </slot>
 
         <slot
-          :name="`head[${header.key}].filter`"
+          :name="`head[${header.key}]filter`"
           v-bind="{
             cellName: header.key,
             header,
@@ -219,7 +219,7 @@ function onClickOnSort(key: string) {
         </slot>
 
         <slot
-          :name="`head[${header.key}].sort`"
+          :name="`head[${header.key}]sort`"
           v-bind="{
             cellName: header.key,
             header,

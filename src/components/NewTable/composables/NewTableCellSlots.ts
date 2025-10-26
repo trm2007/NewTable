@@ -1,4 +1,4 @@
-import { computed, onMounted, ref, useSlots } from "vue";
+import { computed, useSlots } from "vue";
 
 export function useNewTableCellSlots() {
   const slots = useSlots();

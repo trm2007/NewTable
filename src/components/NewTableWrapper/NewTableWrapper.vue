@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
@@ -224,10 +224,10 @@ function onChangeColumnSort(event: INewTableSorts) {
       >
         <template
           v-for="slot in computedHeadSlots"
+          :key="slot"
           #[slot]="slotProps"
         >
           <slot
-            :key="slot"
             :name="slot"
             v-bind="slotProps"
           ></slot>
@@ -235,10 +235,10 @@ function onChangeColumnSort(event: INewTableSorts) {
 
         <template
           v-for="slot in computedCellSlots"
+          :key="slot"
           #[slot]="slotProps"
         >
           <slot
-            :key="slot"
             :name="slot"
             v-bind="slotProps"
           ></slot>

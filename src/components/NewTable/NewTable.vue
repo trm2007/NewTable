@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useSlots } from 'vue';
+import { computed } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from './types/NewTableRowTypes';
 import type { INewTableColumn } from './types/INewTableHeadTypes';
@@ -112,10 +112,10 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
     >
       <template
         v-for="slot in computedHeadSlots"
+        :key="slot"
         #[slot]="slotProps"
       >
         <slot
-          :key="slot"
           :name="slot"
           v-bind="slotProps"
         ></slot>
@@ -147,10 +147,10 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       >
         <template
           v-for="slot in computedCellSlots"
+          :key="slot"
           #[slot]="slotProps"
         >
           <slot
-            :key="slot"
             :name="slot"
             v-bind="slotProps"
           ></slot>

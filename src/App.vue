@@ -193,7 +193,7 @@ function onChangeCellData(event: INewTableChangeCellData) {
         }"
         @row-action="onRowAction"
       >
-        <template v-slot:head[id].sort="idSlotProps">
+        <template v-slot:head[id]sort="idSlotProps">
           <span
             v-if="idSlotProps.sorts[idSlotProps.cellName]"
             style="color: green;"
