@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed, StyleValue, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFolder, faFolderOpen, faFile, } from '@fortawesome/free-solid-svg-icons';
@@ -52,6 +52,10 @@ const emit = defineEmits<{
   (e: 'contextmenu', event: INewTableCellNativeEvent): void;
 }>();
 
+// эта опция отключит передачу таких атрибутов как style и class
+// нужно подумать насколько необходима эта опция
+// стили сейчас применяются через
+// :style="$attrs.style as Partial<StyleValue>"
 defineOptions({
   inheritAttrs: false,
 });
@@ -218,6 +222,7 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
   <div
     class="new-table__body__row"
     :class="computedCssClasses"
+    :style="$attrs.style as Partial<StyleValue>"
   >
     <div
       v-if="isNumberColumnShown"
