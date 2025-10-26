@@ -116,8 +116,8 @@ const {
 const {
   localColumnsSettings,
   computedColumnsSortByOrderVisible,
-  changeColumnsOrder,
-  changeColumnsWidth,
+  changeColumnOrders,
+  changeColumnWidths,
 } = useNewTableWrapperHeader(
   () => props.columns,
   () => props.columnsSettings
@@ -173,7 +173,7 @@ function onAction(event: INewTableRowActionEvent) {
   emit('row-action', event);
 }
 
-function onChangeColumns(event: INewTableChangeColumnsOrderEvent) {
+function onChangeColumnOrders(event: INewTableChangeColumnsOrderEvent) {
   if (
     !event.columnFrom
     || !event.columnTo
@@ -181,11 +181,11 @@ function onChangeColumns(event: INewTableChangeColumnsOrderEvent) {
   ) {
     return;
   }
-  changeColumnsOrder(event.columnFrom, event.columnTo);
+  changeColumnOrders(event.columnFrom, event.columnTo);
 }
 
-function onChangeColumnsWidth(event: INewTableChangeColumnWidthEvent) {
-  changeColumnsWidth(event.columnName, event.delta, event.currentWidth);
+function onChangeColumnWidths(event: INewTableChangeColumnWidthEvent) {
+  changeColumnWidths(event.columnName, event.delta, event.currentWidth);
 }
 
 function onChangeFilterValue(event: INewTableChangeFilterValue) {
@@ -227,8 +227,8 @@ function onChangeColumnSort(event: INewTableSorts) {
         :isExpandColumnShown="isExpandColumnShown"
         v-bind="$attrs"
         @row-action="onAction"
-        @change:columns-order="onChangeColumns"
-        @change:column-width="onChangeColumnsWidth"
+        @change:columns-order="onChangeColumnOrders"
+        @change:column-width="onChangeColumnWidths"
         @change:filter-value="onChangeFilterValueDebounced"
         @change:column-sort="onChangeColumnSort"
       >

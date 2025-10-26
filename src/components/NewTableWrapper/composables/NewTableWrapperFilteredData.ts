@@ -11,29 +11,37 @@ export function useNewTableWrapperFilteredData(
 ) {
   const localData = computed<INewTableRow[]>(() => toValue(data || []));
 
-  const filters = ref<Record<string, INewTableFilter>>(toValue(initialFilters) || {})
+  const filters = ref<INewTableFilters>(
+    generateFilters(toValue(initialFilters || {}), null)
+  );
 
-  const computedFilteredData = computed(
+  const computedFilteredData = computed<INewTableRow[]>(
     () => generateFilteredData(localData.value, filters.value),
   );
 
   watch(
     () => toValue(initialFilters),
     () => {
-      const initialFiltersValue = toValue(initialFilters)
-      filters.value = Object.keys(initialFiltersValue || {}).reduce(
-        (acc: INewTableFilters, filterName: string) => {
-          acc[filterName] = {
-            ...(initialFiltersValue?.[filterName] || {}),
-            currentValue: filters.value?.[filterName]?.currentValue ?? initialFiltersValue?.[filterName].currentValue
-          }
-
-          return acc;
-        },
-        {},
-      );
-    }
+      filters.value = generateFilters(toValue(initialFilters || {}), filters.value);
+    },
   );
+
+  function generateFilters(
+    filtersToGenerateFrom: INewTableFilters,
+    currenFilters: INewTableFilters
+  ): INewTableFilters {
+    return Object.keys(filtersToGenerateFrom || {}).reduce(
+      (acc: INewTableFilters, filterName: string): INewTableFilters => {
+        acc[filterName] = {
+          ...(filtersToGenerateFrom?.[filterName] || {}),
+          currentValue: currenFilters?.[filterName]?.currentValue ?? filtersToGenerateFrom?.[filterName].currentValue
+        }
+
+        return acc;
+      },
+      {},
+    );
+  }
 
   function clearFilters() {
     filters.value = {};

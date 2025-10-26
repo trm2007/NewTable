@@ -88,10 +88,13 @@ function onExpandCellClick() {
   emit('toggle:expand-row');
 }
 
-function onDragStart(event: DragEvent) {
-  const target = event.target as HTMLElement;
-  event.dataTransfer?.setData('text/plain', target.innerText);
-  event.dataTransfer?.setData('column-key', target.getAttribute('data-column-key') || '');
+function onDragStart(event: DragEvent, key: string) {
+  const headerCell = (event.target as HTMLElement).closest('.new-table__header__cell');
+  if (!headerCell || !event.dataTransfer) return;
+
+  // event.dataTransfer.setData('text/plain', (headerCell as HTMLElement).innerText);
+  // event.dataTransfer.setData('column-key', headerCell.getAttribute('data-column-key') || '');
+  event.dataTransfer.setData('column-key', key);
 }
 
 function onDragOver(event: DragEvent) {
@@ -100,19 +103,19 @@ function onDragOver(event: DragEvent) {
 
 function onDrop(event: DragEvent) {
   event.preventDefault();
-  const target = event.target as HTMLElement;
-  const draggedColumnKey = event.dataTransfer?.getData('column-key');
-  const droppedColumnKey = target.getAttribute('data-column-key');
 
-  if (
-    !draggedColumnKey
-    || !droppedColumnKey
-    || draggedColumnKey === droppedColumnKey
-  ) {
-    return;
-  }
+  const targetCell = (event.target as HTMLElement).closest('.new-table__header__cell');
+  if (!targetCell || !event.dataTransfer) return;
 
-  emit('change:columns-order', { columnFrom: draggedColumnKey, columnTo: droppedColumnKey });
+  const columnKey = event.dataTransfer.getData('column-key');
+  const targetKey = targetCell.getAttribute('data-column-key') || '';
+
+  if (columnKey === targetKey || !columnKey) return;
+
+  emit('change:columns-order', {
+    columnFrom: columnKey,
+    columnTo: targetKey,
+  });
 }
 
 function onChangeFilterValue({ key, value }: INewTableChangeFilterValue) {
@@ -178,7 +181,7 @@ function onClickOnSort(key: string) {
         }"
         :data-column-key="header.key"
         :draggable="true"
-        @dragstart="onDragStart"
+        @dragstart="onDragStart($event, header.key)"
         @dragover="onDragOver"
         @drop="onDrop"
       >

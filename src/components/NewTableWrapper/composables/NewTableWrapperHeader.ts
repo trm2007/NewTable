@@ -10,24 +10,26 @@ export function useNewTableWrapperHeader(
   columns: Ref<INewTableColumn[]> | INewTableColumn[] | (() => INewTableColumn[]),
   columnsSettings: Ref<Record<string, INewTableHeaderSetting>> | Record<string, INewTableHeaderSetting> | (() => Record<string, INewTableHeaderSetting>),
 ) {
-  const localColumnsSettings = ref<Record<string, INewTableHeaderSetting>>(toValue(columnsSettings));
-  const localColumns = ref<INewTableColumn[]>(toValue(columns));
+  const localColumnsSettings = ref<Record<string, INewTableHeaderSetting>>(
+    JSON.parse(JSON.stringify(toValue(columnsSettings))),
+  );
+  // const localColumns = ref<INewTableColumn[]>(toValue(columns));
 
   watchEffect(() => {
-    localColumnsSettings.value = toValue(columnsSettings);
-    localColumns.value = toValue(columns);
+    localColumnsSettings.value = JSON.parse(JSON.stringify(toValue(columnsSettings)));
+    // localColumns.value = toValue(columns);
   });
 
   const computedColumns = computed<Record<string, INewTableColumn>>(
     () => {
-      return localColumns.value.reduce((acc, col) => {
+      return toValue(columns).reduce((acc, col) => {
         acc[col.key] = col;
         return acc;
       }, {} as Record<string, INewTableColumn>);
     }
   );
 
-  const computedColumnsSortByOrder = computed(
+  const computedColumnsSortByOrder = computed<INewTableColumn[]>(
     () => {
       return Object.keys(localColumnsSettings.value)
         .sort((keyA, keyB) => {
@@ -39,7 +41,7 @@ export function useNewTableWrapperHeader(
     }
   );
 
-  const computedColumnsSortByOrderVisible = computed(
+  const computedColumnsSortByOrderVisible = computed<INewTableColumn[]>(
     () => {
       return computedColumnsSortByOrder.value.filter(
         (col) => localColumnsSettings.value[col.key]?.visible !== false
@@ -47,7 +49,7 @@ export function useNewTableWrapperHeader(
     }
   );
 
-  function changeColumnsOrder(columnFrom: string, columnTo: string) {
+  function changeColumnOrders(columnFrom: string, columnTo: string) {
     if (
       !columnFrom
       || !columnTo
@@ -92,16 +94,17 @@ export function useNewTableWrapperHeader(
       );
     }
 
-    localColumnsSettings.value = {
-      ...localColumnsSettings.value,
-      [columnFrom]: {
-        ...localColumnsSettings.value[columnFrom],
-        order: toOrder
-      },
-    };
+    localColumnsSettings.value[columnFrom].order = toOrder;
+    // localColumnsSettings.value = {
+    //   ...localColumnsSettings.value,
+    //   [columnFrom]: {
+    //     ...localColumnsSettings.value[columnFrom],
+    //     order: toOrder
+    //   },
+    // };
   }
 
-  function changeColumnsWidth(columnName: string, delta: number, currentWidth: number) {
+  function changeColumnWidths(columnName: string, delta: number, currentWidth: number) {
     const newWidth = currentWidth + delta;
     if (
       newWidth < NEW_TABLE_HEAD_MIN_WIDTH
@@ -123,7 +126,7 @@ export function useNewTableWrapperHeader(
     localColumnsSettings,
     computedColumnsSortByOrder,
     computedColumnsSortByOrderVisible,
-    changeColumnsOrder,
-    changeColumnsWidth,
+    changeColumnOrders,
+    changeColumnWidths,
   };
 };

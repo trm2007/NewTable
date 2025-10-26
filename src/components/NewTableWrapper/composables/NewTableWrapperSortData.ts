@@ -1,4 +1,4 @@
-import { computed, ref, Ref, toValue } from "vue";
+import { computed, ref, Ref, toValue, watch } from "vue";
 
 import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
 import type { INewTableSorts } from "../../NewTable/types/NewTableFilterTypes";
@@ -7,7 +7,7 @@ export function useNewTableWrapperSortData(
   data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   initialSorts: Ref<INewTableSorts> | INewTableSorts | (() => INewTableSorts),
 ) {
-  const sorts = ref<INewTableSorts>(toValue(initialSorts));
+  const sorts = ref<INewTableSorts>(JSON.parse(JSON.stringify(toValue(initialSorts))));
 
   // пока сортировка реализована только по одному полю - первому встретившимуся в localSorts
   const sortFieldName = computed<string>(() => Object.keys(sorts.value || {})[0]);
@@ -18,6 +18,13 @@ export function useNewTableWrapperSortData(
 
   const sortedData = computed<INewTableRow[]>(
     () => generateSortData(toValue(data), sortFieldName.value, sortDirection.value),
+  );
+
+  watch(
+    () => initialSorts,
+    () => {
+      sorts.value = JSON.parse(JSON.stringify(toValue(initialSorts)));
+    }
   );
 
   function generateSortData(dataToSort: INewTableRow[], fieldToSort: string, direction: -1 | 0 | 1): INewTableRow[] {
