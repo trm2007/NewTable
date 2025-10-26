@@ -64,21 +64,11 @@ export function useNewTableWrapperModesIds() {
     }
   }
 
-  // function addEditingId(row: INewTableRow) {
-  //   switchOnModeForRow(ROW_MODES.EDIT, id);
-  // }
-
-  // function deleteEditingId(row: INewTableRow) {
-  //   switchOffModeForRow(ROW_MODES.EDIT, id);
-  // }
-
   return {
     modeIds,
     editingIds,
     expandedIds,
     checkedIds,
-    // addEditingId,
-    // deleteEditingId,
     switchOnModeForRow,
     switchOffModeForRow,
     switchOnModeForRowWithChildren,

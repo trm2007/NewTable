@@ -55,6 +55,10 @@ const emit = defineEmits<{
   (e: 'change:column-sort', event: INewTableSorts): void;
 }>();
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const {
   computedHeadSlots,
   computedCellSlots
@@ -143,6 +147,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         :modes="getModesForRow(row)"
         :commonMeta="props.commonMeta"
         :style="computedRowStyle"
+        v-bind="$attrs"
         @row-action="$emit('row-action', $event)"
       >
         <template

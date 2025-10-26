@@ -21,6 +21,7 @@ import { newTableStandartActionsChangeModes } from './components/NewTableWrapper
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
+import { ROW_MODES } from './components/NewTable/constants/rowModes';
 
 interface INewTableChangeCellData {
   row: INewTableRow, // row
@@ -192,6 +193,7 @@ function onChangeCellData(event: INewTableChangeCellData) {
           }
         }"
         @row-action="onRowAction"
+        @dblclick.self="(event) => newTableWrapperRef.switchOnModeForRow(ROW_MODES.EDIT, event.row)"
       >
         <template v-slot:head[id]sort="idSlotProps">
           <span

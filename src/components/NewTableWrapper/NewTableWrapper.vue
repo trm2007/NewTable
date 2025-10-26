@@ -60,12 +60,21 @@ const {
   switchOffModeForRow,
   switchOnModeForRowWithChildren,
   switchOffModeForRowWithChildren,
+  toggleModeForRow,
+  toggleModeForRowWithChildren,
 } = useNewTableWrapperModesIds();
 
 defineExpose({
+  modeIds,
   editingIds,
   expandedIds,
   checkedIds,
+  switchOnModeForRow,
+  switchOffModeForRow,
+  switchOnModeForRowWithChildren,
+  switchOffModeForRowWithChildren,
+  toggleModeForRow,
+  toggleModeForRowWithChildren,
 })
 
 const {
@@ -216,6 +225,7 @@ function onChangeColumnSort(event: INewTableSorts) {
         :isNumberColumnShown="isNumberColumnShown"
         :isCheckboxColumnShown="isCheckboxColumnShown"
         :isExpandColumnShown="isExpandColumnShown"
+        v-bind="$attrs"
         @row-action="onAction"
         @change:columns-order="onChangeColumns"
         @change:column-width="onChangeColumnsWidth"

@@ -47,7 +47,12 @@ const emit = defineEmits<{
   (e: 'row-action', event: INewTableRowActionEvent): void;
   // (e: 'change:cell-data', event: INewTableUpdateCellDataEvent): void;
   // (e: 'cell-action', event: INewTableCellActionEvent): void;
+  (e: 'dblclick', event: { row: INewTableRow, header: INewTableColumn }): void;
 }>();
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 const iconForExpandCell = computed<string>(() => {
   if (!props.row?.children?.length) {
@@ -255,6 +260,7 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
         'min-width': conputedColumnWidths[header.key],
         'max-width': conputedColumnWidths[header.key],
       }"
+      @dblclick="$emit('dblclick', { row: props.row, header })"
     >
       <slot
         :name="`cell[${header.key}]`"
