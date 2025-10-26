@@ -220,6 +220,9 @@ function changeRowParent(sourceRow: INewTableRow, destinationRowId: number | str
     destinationRow.children = [];
   }
   destinationRow.children.push(sourceRow);
+  if (destinationRow.meta.rowType === TEST_DATA_ROW_TYPES.TASK) {
+    destinationRow.meta.rowType = TEST_DATA_ROW_TYPES.SUB_STAGE;
+  }
 }
 
 function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
