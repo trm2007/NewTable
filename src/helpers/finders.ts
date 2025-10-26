@@ -77,7 +77,7 @@ export function findAllParentRowsFor(
   checkingRowId: number | string,
   data: INewTableRow[],
 ): string[] {
-  const resArr: (number | string)[] = [];
+  const resArr: string[] = [];
 
   const findParent = (rowId: number | string, currentData: INewTableRow[]) => {
     for (const currentRow of currentData) {
