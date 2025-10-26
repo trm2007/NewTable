@@ -17,7 +17,7 @@ import type { TNewTableActionsChangeModesStandart } from '../NewTable/types/NewT
 import { useNewTableWrapperModesIds } from './composables/NewTableWrapperModesIds';
 import { useNewTableWrapperFlatData } from './composables/NewTableWrapperFlatData';
 import { useNewTablePagination } from './composables/NewTableWrapperPagination';
-import { useNewTableWrapperWheelEvent } from './composables/NewTableWrapperWheelEvent';
+import { useWheelEvent } from '../../composables/useWheelEvent';
 import { useNewTableWrapperHeader } from './composables/NewTableWrapperHeader';
 
 // import { ROW_MODES } from '../NewTable/constants/rowModes';
@@ -123,7 +123,7 @@ const {
   () => props.columnsSettings
 );
 
-const { onWheelEvent } = useNewTableWrapperWheelEvent(onNext, onPrevious);
+const { onWheelEvent } = useWheelEvent(onNext, onPrevious);
 
 const el = ref<InstanceType<typeof NewTable> | null>(null);
 

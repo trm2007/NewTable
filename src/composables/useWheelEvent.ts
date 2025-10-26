@@ -1,6 +1,6 @@
-export function useNewTableWrapperWheelEvent(
-  onNext: () => void,
-  onPrevious: () => void,
+export function useWheelEvent(
+  onNext: (e?: MouseEvent) => void,
+  onPrevious: (e?: MouseEvent) => void,
 ) {
   let resultDeltaY = 0;
   let ticking = false;
@@ -17,9 +17,9 @@ export function useNewTableWrapperWheelEvent(
         // Throttle the event to "do something" every 20ms
         setTimeout(() => {
           if (resultDeltaY > 0) {
-            onNext();
+            onNext(e);
           } else if (resultDeltaY < 0) {
-            onPrevious();
+            onPrevious(e);
           }
           resultDeltaY = 0;
           ticking = false;
