@@ -235,7 +235,8 @@ function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
       onDelete({ name: 'delete', row: payload.row });
       break;
     case 'cell-info':
-      alert(`${payload.row.data.id} - ${payload.header.key} => ${payload.row.data[payload.header.key]}`)
+      const strData = payload.row.data[payload.header.key] as string;
+      alert(`${payload.row.data.id} - ${payload.header.key} => ${String(strData)}`)
       break;
     case 'change-row-parent':
       activeSourceRow.value = payload.row;
