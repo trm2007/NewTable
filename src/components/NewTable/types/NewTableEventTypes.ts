@@ -1,3 +1,4 @@
+import { INewTableColumn } from "./INewTableHeadTypes";
 import type { INewTableRow } from "./NewTableRowTypes";
 
 export interface INewTableRowActionEvent {
@@ -26,4 +27,10 @@ export interface INewTableChangeColumnWidthEvent {
 export interface INewTableChangeFilterValue {
   key: string;
   value: string;
+}
+
+export interface INewTableCellNativeEvent {
+  row?: INewTableRow,
+  header?: INewTableColumn,
+  event?: MouseEvent
 }

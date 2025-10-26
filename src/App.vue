@@ -4,7 +4,11 @@ import { computed, ref } from 'vue';
 import type { INewTableRow } from './components/NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from './components/NewTable/types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './components/NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
-import type { INewTableCellActionData, INewTableRowActionEvent } from './components/NewTable/types/NewTableEventTypes';
+import type {
+  INewTableCellActionData,
+  INewTableCellNativeEvent,
+  INewTableRowActionEvent
+} from './components/NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/types';
 import type { TNewTableActionsChangeModesStandart } from './components/NewTable/types/NewTableActionsChangeModesTypes';
 import type { INewTableActions } from './components/NewTable/types/NewTableActionTypes';
@@ -27,7 +31,14 @@ interface INewTableChangeCellData {
   row: INewTableRow, // row
   key: string, // cell name
   value: unknown, // event data from cell component        
-}
+};
+
+interface INewTableContexMenuItem {
+  label: string;
+  icon?: string;
+  actionName: string;
+  data?: unknown;
+};
 
 const data = ref<INewTableRow[]>([]);
 const columns = ref<INewTableColumn[]>([]);
@@ -40,6 +51,13 @@ const newTableWrapperRef = ref<typeof NewTableWrapper>();
 const actions = ref<INewTableActions>(newTableStandartActions)
 
 const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>(newTableStandartActionsChangeModes);
+
+const activeMenuItems = ref<INewTableContexMenuItem[]>([])
+
+const actimeContextmenuXY = ref<{
+  x: number;
+  y: number;
+}>(null)
 
 const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
 
@@ -151,6 +169,38 @@ function onChangeCellData(event: INewTableChangeCellData) {
     row.data[event.key] = event.value;
   }
 }
+
+function onContextMenu(event: INewTableCellNativeEvent) {
+  console.log('[onContextMenu]', event);
+
+  activeMenuItems.value = [
+    {
+      label: 'Item 1',
+      actionName: 'item1',
+      data: event,
+    },
+    {
+      label: 'Item 2',
+      actionName: 'item2',
+      data: event,
+    },
+    {
+      label: 'Item 3',
+      actionName: 'item3',
+      data: event,
+    },
+  ];
+
+  actimeContextmenuXY.value = {
+    x: event.event.clientX,
+    y: event.event.clientY,
+  };
+}
+
+function onSelectContextMenuIte(menuItem: INewTableContexMenuItem) {
+  console.log('[onSelectContextMenuIte]', menuItem);
+  actimeContextmenuXY.value = null;
+}
 </script>
 
 <template>
@@ -194,6 +244,7 @@ function onChangeCellData(event: INewTableChangeCellData) {
         }"
         @row-action="onRowAction"
         @dblclick.self="(event) => newTableWrapperRef.switchOnModeForRow(ROW_MODES.EDIT, event.row)"
+        @contextmenu.self="onContextMenu"
       >
         <template v-slot:head[id]sort="idSlotProps">
           <span
@@ -223,6 +274,30 @@ function onChangeCellData(event: INewTableChangeCellData) {
         >{{ checkedRowId }}</li>
       </ul>
     </div>
+
+    <Teleport
+      v-if="actimeContextmenuXY"
+      to="body"
+    >
+      <div
+        :style="{
+          top: `${actimeContextmenuXY.y}px`,
+          left: `${actimeContextmenuXY.x}px`,
+          position: 'fixed',
+        }"
+        class="new-table-contextmenu"
+      >
+        <ul>
+          <li
+            v-for="menuItem in activeMenuItems"
+            :key="menuItem.actionName"
+            @click="onSelectContextMenuIte(menuItem)"
+          >
+            {{ menuItem.label }}
+          </li>
+        </ul>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -248,5 +323,17 @@ function onChangeCellData(event: INewTableChangeCellData) {
 /* так можно переопределять стили */
 :deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
   color: red;
+}
+
+.new-table-contextmenu {
+  background-color: white;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0 0 #ccc;
+  color: gray;
+}
+
+.new-table-contextmenu li {
+  cursor: pointer;
 }
 </style>

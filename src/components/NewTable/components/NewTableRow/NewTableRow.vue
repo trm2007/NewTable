@@ -15,6 +15,7 @@ import type { INewTableColumn } from '../../types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from '../NewTableHeader/types/NewTableHeaderTypes';
 import type {
   INewTableCellActionData,
+  INewTableCellNativeEvent,
   INewTableRowActionEvent,
 } from '../../types/NewTableEventTypes';
 import type { INewTableActions, INewTableRowAction, INewTableRowActions } from '../../types/NewTableActionTypes';
@@ -47,7 +48,8 @@ const emit = defineEmits<{
   (e: 'row-action', event: INewTableRowActionEvent): void;
   // (e: 'change:cell-data', event: INewTableUpdateCellDataEvent): void;
   // (e: 'cell-action', event: INewTableCellActionEvent): void;
-  (e: 'dblclick', event: { row: INewTableRow, header: INewTableColumn }): void;
+  (e: 'dblclick', event: INewTableCellNativeEvent): void;
+  (e: 'contextmenu', event: INewTableCellNativeEvent): void;
 }>();
 
 defineOptions({
@@ -260,7 +262,8 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
         'min-width': conputedColumnWidths[header.key],
         'max-width': conputedColumnWidths[header.key],
       }"
-      @dblclick="$emit('dblclick', { row: props.row, header })"
+      @dblclick.stop.prevent="$emit('dblclick', { row: props.row, header, event: $event })"
+      @contextmenu.stop.prevent="$emit('contextmenu', { row: props.row, header, event: $event })"
     >
       <slot
         :name="`cell[${header.key}]`"
