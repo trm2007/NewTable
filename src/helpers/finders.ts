@@ -6,7 +6,7 @@ export function findRowById(
   rowId: number | string,
   rows: INewTableRow[],
 ): INewTableRow | undefined {
-  const findedRow = rows.find(r => r.data.id === rowId);
+  const findedRow = rows.find(r => String(r.data.id) === String(rowId));
   if (!findedRow) {
     for (const row of rows) {
       if (row.children?.length) {
@@ -31,7 +31,7 @@ export function findParentRowsById(
   rowId: number | string,
   rows: INewTableRow[],
 ): INewTableRow[] | undefined {
-  const findedRow = rows.find(r => r.data.id === rowId);
+  const findedRow = rows.find(r => String(r.data.id) === String(rowId));
   if (!findedRow) {
     for (const row of rows) {
       if (row.children?.length) {
@@ -56,7 +56,7 @@ export function findParentRowWithChildIndexByChildRowId(
     }
 
     const childIndex: number = row.children.findIndex(
-      (r: INewTableRow): boolean => r.data.id === childRowId,
+      (r: INewTableRow): boolean => String(r.data.id) === String(childRowId),
     );
 
     if (childIndex !== -1) {
@@ -76,21 +76,21 @@ export function findParentRowWithChildIndexByChildRowId(
 export function findAllParentRowsFor(
   checkingRowId: number | string,
   data: INewTableRow[],
-): (number | string)[] {
+): string[] {
   const resArr: (number | string)[] = [];
 
   const findParent = (rowId: number | string, currentData: INewTableRow[]) => {
     for (const currentRow of currentData) {
       if (currentRow.children?.find(
-        (currentChildRow: INewTableRow) => currentChildRow.data.id === rowId
+        (currentChildRow: INewTableRow) => String(currentChildRow.data.id) === String(rowId)
       )) {
-        resArr.push(currentRow.data.id);
+        resArr.push(String(currentRow.data.id));
         return currentRow;
       }
 
       if (!!currentRow.children?.length) {
         if (findParent(rowId, currentRow.children)) {
-          resArr.push(currentRow.data.id);
+          resArr.push(String(currentRow.data.id));
           return currentRow;
         }
       }

@@ -259,7 +259,7 @@ function onSubmitDestinationRowIdDialog() {
 
   const sllParentIds = findAllParentRowsFor(activeDestinationRowId.value, data.value);
 
-  if (sllParentIds?.includes(activeSourceRow.value.data.id)) {
+  if (sllParentIds?.includes(String(activeSourceRow.value.data.id))) {
     console.warn('[onSubmitDestinationRowIdDialog] Loop parent!!!')
     alert('Warninh! Loop parent!')
     return;
