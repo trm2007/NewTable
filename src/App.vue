@@ -12,7 +12,7 @@ import type {
 import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/types';
 import type { TNewTableActionsChangeModesStandart } from './components/NewTable/types/NewTableActionsChangeModesTypes';
 import type { INewTableActions } from './components/NewTable/types/NewTableActionTypes';
-import type { INewContexMenuItem, INewContextMenuXY } from './components/NewContextMenu/types';
+import type { INewContexMenuItem } from './components/NewContextMenu/types';
 
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from './components/NewTableWrapper/constants/standartActions';
 import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData';
