@@ -1,6 +1,7 @@
 import { computed, Ref, toValue } from "vue";
 
 import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
+
 import { ROW_MODES } from "../../NewTable/constants/rowModes";
 
 export function useNewTableWrapperFlatData(
