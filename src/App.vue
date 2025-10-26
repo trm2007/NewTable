@@ -12,6 +12,7 @@ import type {
 import type { IChangeColumnSettingsEvent } from './components/ColumnSettings/types';
 import type { TNewTableActionsChangeModesStandart } from './components/NewTable/types/NewTableActionsChangeModesTypes';
 import type { INewTableActions } from './components/NewTable/types/NewTableActionTypes';
+import type { INewContexMenuItem, INewContextMenuXY } from './components/NewContextMenu/types';
 
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from './components/NewTableWrapper/constants/standartActions';
 import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData';
@@ -26,18 +27,12 @@ import { newTableStandartActionsChangeModes } from './components/NewTableWrapper
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
 import { ROW_MODES } from './components/NewTable/constants/rowModes';
+import NewContextMenu from './components/NewContextMenu/NewContextMenu.vue';
 
 interface INewTableChangeCellData {
   row: INewTableRow, // row
   key: string, // cell name
   value: unknown, // event data from cell component        
-};
-
-interface INewTableContexMenuItem {
-  label: string;
-  icon?: string;
-  actionName: string;
-  data?: unknown;
 };
 
 const data = ref<INewTableRow[]>([]);
@@ -52,12 +47,9 @@ const actions = ref<INewTableActions>(newTableStandartActions)
 
 const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>(newTableStandartActionsChangeModes);
 
-const activeMenuItems = ref<INewTableContexMenuItem[]>([])
+const activeContextMenuItems = ref<INewContexMenuItem[]>([])
 
-const actimeContextmenuXY = ref<{
-  x: number;
-  y: number;
-}>(null)
+const actimeContextMenuMouseEvent = ref<MouseEvent>(null)
 
 const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
 
@@ -173,38 +165,35 @@ function onChangeCellData(event: INewTableChangeCellData) {
 function onContextMenu(event: INewTableCellNativeEvent) {
   console.log('[onContextMenu]', event);
 
-  activeMenuItems.value = [
+  activeContextMenuItems.value = [
     {
       label: 'Item 1',
       actionName: 'item1',
-      data: event,
+      payload: event,
     },
     {
       label: 'Item 2',
       actionName: 'item2',
-      data: event,
+      payload: event,
     },
     {
       label: 'Item 3',
       actionName: 'item3',
-      data: event,
+      payload: event,
     },
   ];
 
-  actimeContextmenuXY.value = {
-    x: event.event.clientX,
-    y: event.event.clientY,
-  };
+  actimeContextMenuMouseEvent.value = event.event;
 }
 
-function onSelectContextMenuIte(menuItem: INewTableContexMenuItem) {
+function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
   console.log('[onSelectContextMenuIte]', menuItem);
-  actimeContextmenuXY.value = null;
+  actimeContextMenuMouseEvent.value = null;
 }
 </script>
 
 <template>
-  <div class="new-trable-app">
+  <div class="new-table-app">
     <ColumnSettings
       v-bind="{
         columns,
@@ -276,33 +265,21 @@ function onSelectContextMenuIte(menuItem: INewTableContexMenuItem) {
     </div>
 
     <Teleport
-      v-if="actimeContextmenuXY"
+      v-if="actimeContextMenuMouseEvent"
       to="body"
     >
-      <div
-        :style="{
-          top: `${actimeContextmenuXY.y}px`,
-          left: `${actimeContextmenuXY.x}px`,
-          position: 'fixed',
-        }"
-        class="new-table-contextmenu"
-      >
-        <ul>
-          <li
-            v-for="menuItem in activeMenuItems"
-            :key="menuItem.actionName"
-            @click="onSelectContextMenuIte(menuItem)"
-          >
-            {{ menuItem.label }}
-          </li>
-        </ul>
-      </div>
+      <NewContextMenu
+        :menuItems="activeContextMenuItems"
+        :menuMouseEvent="actimeContextMenuMouseEvent"
+        @select:item="onSelectContextMenuIte"
+        @close="actimeContextMenuMouseEvent = null"
+      />
     </Teleport>
   </div>
 </template>
 
 <style scoped>
-.new-trable-app {
+.new-table-app {
   display: flex;
   align-items: flex-start;
   gap: 16px;
@@ -323,17 +300,5 @@ function onSelectContextMenuIte(menuItem: INewTableContexMenuItem) {
 /* так можно переопределять стили */
 :deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
   color: red;
-}
-
-.new-table-contextmenu {
-  background-color: white;
-  padding: 8px;
-  border-radius: 6px;
-  box-shadow: 2px 2px 0 0 #ccc;
-  color: gray;
-}
-
-.new-table-contextmenu li {
-  cursor: pointer;
 }
 </style>

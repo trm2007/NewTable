@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { INewTableChangeFilterValue } from '../../../types/NewTableEventTypes';
-import { INewTableFilters } from '../../../types/NewTableFilterTypes';
+import { ref } from 'vue';
+
+import type { INewTableChangeFilterValue } from '../../../types/NewTableEventTypes';
+import type { INewTableFilters } from '../../../types/NewTableFilterTypes';
+
+import { useOutsideClickHandler } from '../../../../../composables/useOutsideClickHandler';
 
 const props = defineProps<{
   activeHeaderFilterName: string;
@@ -16,26 +19,13 @@ const emit = defineEmits<{
 
 const el = ref<HTMLElement>();
 
-onMounted(() => {
-  // el?.value.addEventListener('click', clickHandler, true);
-  window.addEventListener('click', clickHandler, true);
-});
+useOutsideClickHandler(
+  () => el.value,
+  onClose,
+)
 
-onBeforeUnmount(() => {
-  // el?.value.removeEventListener('click', clickHandler, true);
-  window.removeEventListener('click', clickHandler, true);
-});
-
-function clickHandler(event: MouseEvent) {
-  // event.stopPropagation();
-  // event.preventDefault();
-
-  if (
-    event.type === 'click'
-    && !el?.value.contains(event.target as HTMLElement)
-  ) {
-    emit('close', props.activeHeaderFilterName)
-  }
+function onClose() {
+  emit('close', props.activeHeaderFilterName);
 }
 </script>
 
