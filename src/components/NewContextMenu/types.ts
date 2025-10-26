@@ -2,7 +2,7 @@ export interface INewContexMenuItem {
   label: string;
   icon?: string;
   actionName: string;
-  payload?: unknown;
+  payload?: any;
 };
 
 export interface INewContextMenuXY {

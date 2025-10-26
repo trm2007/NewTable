@@ -126,7 +126,10 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       </template>
     </NewTableHeader>
 
-    <div class="new-table__body">
+    <div
+      v-if="!!data?.length"
+      class="new-table__body"
+    >
       <!-- 
         @toggle:expand-row="$emit('toggle:expand-row', $event)"
         @change:cell-data="$emit('change:cell-data', $event)"
@@ -162,6 +165,15 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         </template>
       </NewTableRow>
     </div>
+
+    <div
+      v-else
+      class="new-table__body"
+    >
+      <slot name="empty">
+        <div class="new-table__body__empty">No data!</div>
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -173,6 +185,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   border-radius: 4px;
   overflow: hidden;
   height: 100%;
+  width: 100%;
   overflow-x: scroll;
 }
 
@@ -184,6 +197,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   color: #333;
   flex: 0 0;
   width: fit-content;
+  min-width: 100%;
 }
 
 .new-table :deep(.new-table__header__row) {
@@ -226,6 +240,15 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   flex: 1 1;
   min-height: 0;
   width: fit-content;
+  min-width: 100%;
+}
+
+.new-table__body__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .new-table__body :deep(.new-table__body__row) {

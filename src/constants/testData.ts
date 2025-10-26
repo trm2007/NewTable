@@ -18,7 +18,7 @@ import type { INewTableRowTemplate } from "../components/NewTable/types/NewTable
 type TTestDataType = string | number | [] | object | null | undefined;
 
 export interface ILocalNewTableRowData extends Record<string, TTestDataType> {
-  id: string;
+  id: number | string;
   name: string;
   status: string;
   pricePIR?: number;
@@ -56,7 +56,7 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
     const node: ILocalNewTableRow = {
       meta: { rowType },
       data: {
-        id: `node-${currentId}`,
+        id: currentId,
         name: `${rowType} ${currentId}`,
         status: availableStatuses[Math.floor(Math.random() * availableStatuses.length)],
       },

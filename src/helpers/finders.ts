@@ -21,6 +21,12 @@ export function findRowById(
   }
 }
 
+/**
+ * находит массив, в котором содержится искомый rowId
+ * @param rowId искомый rowId
+ * @param rows все данные, которых нужно провести поиск
+ * @returns 
+ */
 export function findParentRowsById(
   rowId: number | string,
   rows: INewTableRow[],
@@ -65,4 +71,33 @@ export function findParentRowWithChildIndexByChildRowId(
       return parentRowWithChildIndex;
     }
   }
+}
+
+export function findAllParentRowsFor(
+  checkingRowId: number | string,
+  data: INewTableRow[],
+): (number | string)[] {
+  const resArr: (number | string)[] = [];
+
+  const findParent = (rowId: number | string, currentData: INewTableRow[]) => {
+    for (const currentRow of currentData) {
+      if (currentRow.children?.find(
+        (currentChildRow: INewTableRow) => currentChildRow.data.id === rowId
+      )) {
+        resArr.push(currentRow.data.id);
+        return currentRow;
+      }
+
+      if (!!currentRow.children?.length) {
+        if (findParent(rowId, currentRow.children)) {
+          resArr.push(currentRow.data.id);
+          return currentRow;
+        }
+      }
+    }
+  }
+
+  findParent(checkingRowId, data)
+
+  return resArr;
 }

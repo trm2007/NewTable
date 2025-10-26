@@ -20,7 +20,7 @@ import { columnsToCalc, columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
 import { sorts } from './constants/sirts';
-import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
+import { findAllParentRowsFor, findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
 import { calcChildSums, calcParentSums } from './helpers/calacSums';
 import { newTableStandartActionsChangeModes } from './components/NewTableWrapper/constants/standartActionsChangeModes';
 
@@ -49,7 +49,13 @@ const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>(newTableStan
 
 const activeContextMenuItems = ref<INewContexMenuItem[]>([])
 
-const actimeContextMenuMouseEvent = ref<MouseEvent>(null)
+const activeContextMenuMouseEvent = ref<MouseEvent>(null)
+
+const activeDestinationRowId = ref<number>(null);
+
+const activeSourceRow = ref<INewTableRow>(null);
+
+const isDestinationRowIdDialogShown = ref<boolean>(false);
 
 const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
 
@@ -78,6 +84,12 @@ function onSave(row: INewTableRow) {
 }
 
 function onDelete(event: INewTableRowActionEvent) {
+  const confirmRes = confirm('Are you sure&');
+
+  if (!confirmRes) {
+    return;
+  }
+
   const row: INewTableRow = event.row;
 
   const parentRowWithChildRowId = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
@@ -167,28 +179,92 @@ function onContextMenu(event: INewTableCellNativeEvent) {
 
   activeContextMenuItems.value = [
     {
-      label: 'Item 1',
-      actionName: 'item1',
+      label: 'Edit Row',
+      actionName: 'edit-row',
       payload: event,
     },
     {
-      label: 'Item 2',
-      actionName: 'item2',
+      label: 'Delete Row',
+      actionName: 'delete-row',
       payload: event,
     },
     {
-      label: 'Item 3',
-      actionName: 'item3',
+      label: 'Show Cell Info',
+      actionName: 'cell-info',
+      payload: event,
+    },
+    {
+      label: 'Change row parent',
+      actionName: 'change-row-parent',
       payload: event,
     },
   ];
 
-  actimeContextMenuMouseEvent.value = event.event;
+  activeContextMenuMouseEvent.value = event.event;
+}
+
+function changeRowParent(sourceRow: INewTableRow, destinationRowId: number | string) {
+  const destinationRow = findRowById(destinationRowId, data.value);
+
+  if (!destinationRow) {
+    alert('Warning! Wrong destinationRowId!');
+    console.warn('[changeRowParent] Wrong destinationRowId', destinationRowId);
+    return;
+  }
+
+  const sourceParentRow = findParentRowWithChildIndexByChildRowId(sourceRow.data.id, data.value);
+
+  sourceParentRow.parent.children.splice(sourceParentRow.index, 1);
+
+  if (!destinationRow.children) {
+    destinationRow.children = [];
+  }
+  destinationRow.children.push(sourceRow);
 }
 
 function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
   console.log('[onSelectContextMenuIte]', menuItem);
-  actimeContextMenuMouseEvent.value = null;
+
+  const payload: INewTableCellNativeEvent = menuItem.payload as INewTableCellNativeEvent;
+
+  switch (menuItem.actionName) {
+    case 'edit-row':
+      newTableWrapperRef.value.switchOnModeForRow(ROW_MODES.EDIT, payload.row);
+      break;
+    case 'delete-row':
+      onDelete({ name: 'delete', row: payload.row });
+      break;
+    case 'cell-info':
+      alert(`${payload.row.data.id} - ${payload.header.key} => ${payload.row.data[payload.header.key]}`)
+      break;
+    case 'change-row-parent':
+      activeSourceRow.value = payload.row;
+      activeDestinationRowId.value = null;
+      isDestinationRowIdDialogShown.value = true;
+      break;
+  }
+
+  activeContextMenuMouseEvent.value = null;
+}
+
+function onSubmitDestinationRowIdDialog() {
+  isDestinationRowIdDialogShown.value = false;
+  if (
+    !activeDestinationRowId.value
+    || !activeSourceRow.value?.data?.id
+  ) {
+    return;
+  }
+
+  const sllParentIds = findAllParentRowsFor(activeDestinationRowId.value, data.value);
+
+  if (sllParentIds?.includes(activeSourceRow.value.data.id)) {
+    console.warn('[onSubmitDestinationRowIdDialog] Loop parent!!!')
+    alert('Warninh! Loop parent!')
+    return;
+  }
+
+  changeRowParent(activeSourceRow.value, activeDestinationRowId.value);
 }
 </script>
 
@@ -264,15 +340,39 @@ function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
       </ul>
     </div>
 
+    <dialog
+      v-if="isDestinationRowIdDialogShown"
+      open
+      style="z-index: 100;"
+    >
+      <p>Try to change parent for [{{ activeSourceRow.data.id }}]</p>
+      <form
+        method="dialog"
+        @submit="onSubmitDestinationRowIdDialog"
+      >
+        <label>
+          activeDestinationRowId:
+          <input v-model="activeDestinationRowId">
+        </label>
+        <div class="dialog-buttons">
+          <button
+            type="button"
+            @click="isDestinationRowIdDialogShown = false"
+          >Cancel</button>
+          <button type="submit">OK</button>
+        </div>
+      </form>
+    </dialog>
+
     <Teleport
-      v-if="actimeContextMenuMouseEvent"
+      v-if="activeContextMenuMouseEvent"
       to="body"
     >
       <NewContextMenu
         :menuItems="activeContextMenuItems"
-        :menuMouseEvent="actimeContextMenuMouseEvent"
+        :menuMouseEvent="activeContextMenuMouseEvent"
         @select:item="onSelectContextMenuIte"
-        @close="actimeContextMenuMouseEvent = null"
+        @close="activeContextMenuMouseEvent = null"
       />
     </Teleport>
   </div>
@@ -300,5 +400,33 @@ function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
 /* так можно переопределять стили */
 :deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
   color: red;
+}
+
+dialog {
+  z-index: 100;
+  background-color: #eee;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 5px 1px #777;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+dialog p {
+  padding: 0;
+  margin: 0;
+}
+
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+dialog form .dialog-buttons {
+  display: flex;
+  gap: 8px;
 }
 </style>
