@@ -40,11 +40,13 @@ export const TEST_DATA_ROW_TYPES: Record<string, string> = {
   TASK: 'task',
 };
 
-export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[] => {
+export const generateLargeTestData = (
+  count: number = 10000,
+  maxLevel: number = 4
+): ILocalNewTableRow[] => {
   const result: ILocalNewTableRow[] = [];
   let currentId = 0;
 
-  const MAX_LEVEL = 4;
   const availableStatuses = ['active', 'completed', 'in-progress', 'not-started'];
 
 
@@ -72,7 +74,7 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
 
   const createNode = (level: number = 0): ILocalNewTableRow => {
     currentId++;
-    const hasChildren = level === 0 || (level < MAX_LEVEL && Math.random() > 0.3);
+    const hasChildren = level === 0 || (level < maxLevel && Math.random() > 0.3);
     const rowType = level === 0
       ? TEST_DATA_ROW_TYPES.STAGE
       : hasChildren ? TEST_DATA_ROW_TYPES.SUB_STAGE : TEST_DATA_ROW_TYPES.TASK;
@@ -99,7 +101,7 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
 
     if (hasChildren) {
       node.children = Array.from(
-        { length: Math.floor(Math.random() * MAX_LEVEL) + 1 },
+        { length: Math.floor(Math.random() * maxLevel) + 1 },
         (): ILocalNewTableRow => {
           const resNode = createNode(level + 1);
 
