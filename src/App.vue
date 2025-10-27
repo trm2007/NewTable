@@ -67,8 +67,6 @@ const activeSourceRow = ref<INewTableRow>(null);
 
 const isDestinationRowIdDialogShown = ref<boolean>(false);
 
-const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value?.checkedIds);
-
 function initData() {
   data.value = generateLargeTestData(20000);
 
@@ -344,7 +342,7 @@ function onSubmitDestinationRowIdDialog() {
       <!-- <div>
         <ul>
           <li
-            v-for="checkedRowId in checkedIds"
+            v-for="checkedRowId in newTableWrapperRef.checkedIds"
             :key="checkedRowId"
           >{{ checkedRowId }}</li>
         </ul>
