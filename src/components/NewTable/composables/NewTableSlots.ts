@@ -1,6 +1,6 @@
 import { computed, useSlots } from "vue";
 
-export function useNewTableCellSlots() {
+export function useNewTableSlots() {
   const slots = useSlots();
 
   const computedHeadSlots = computed<string[]>(

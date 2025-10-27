@@ -28,7 +28,7 @@ import NewScroller from '../NewScroller/NewScroller.vue';
 import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFilteredData';
 import { useNewTableWrapperSortData } from './composables/NewTableWrapperSortData';
 import { useDebounceFn } from '@vueuse/core';
-import { useNewTableCellSlots } from '../NewTable/composables/NewTableCellSlots';
+import { useNewTableSlots } from '../NewTable/composables/NewTableSlots';
 import { ROW_MODES } from '../NewTable/constants/rowModes';
 
 const props = defineProps<{
@@ -168,7 +168,7 @@ const onChangeFilterValueDebounced = useDebounceFn(
 const {
   computedCellSlots,
   computedHeadSlots,
-} = useNewTableCellSlots();
+} = useNewTableSlots();
 
 onMounted(() => {
   if (!el.value?.$el) return;
@@ -189,7 +189,7 @@ function onAction(event: INewTableRowActionEvent) {
 
   if (!!props.actionsChangeModes?.[rowType]?.[event.name]) {
     // если вызвано какое-то действие - action == event.name
-    // то это действие может установить определенный редим для строки
+    // то это действие может установить определенный режим для строки
     // и, при необходимости, для её дочерних строк
     props.actionsChangeModes[rowType][event.name].on?.forEach(
       (modeName: string) => props.actionsChangeModes[rowType][event.name].withChildren

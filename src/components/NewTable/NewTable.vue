@@ -17,7 +17,7 @@ import { ROW_MODES } from './constants/rowModes';
 
 import NewTableHeader from './components/NewTableHeader/NewTableHeader.vue';
 import NewTableRow from './components/NewTableRow/NewTableRow.vue';
-import { useNewTableCellSlots } from './composables/NewTableCellSlots';
+import { useNewTableSlots } from './composables/NewTableSlots';
 
 const props = defineProps<{
   // подготовленные данные, которые полностьб будут отображаться
@@ -66,7 +66,7 @@ defineOptions({
 const {
   computedHeadSlots,
   computedCellSlots
-} = useNewTableCellSlots();
+} = useNewTableSlots();
 
 const computedModeIds = computed(() => props.modeIds);
 
