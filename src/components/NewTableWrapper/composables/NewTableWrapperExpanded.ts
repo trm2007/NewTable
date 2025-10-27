@@ -15,9 +15,11 @@ export function useNewTableWrapperExpanded(
   );
 
   const isExpandedAll = computed<boolean>(
-    () => (allRowWithChildrenIds.value || []).every(
-      (currentRowId: string | number) => !!toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]?.has(currentRowId),
-    ),
+    () => !allRowWithChildrenIds.value?.length
+      ? false
+      : (allRowWithChildrenIds.value || []).every(
+        (currentRowId: string | number) => !!toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]?.has(currentRowId),
+      ),
   );
 
   function toggleExpandAllRow() {

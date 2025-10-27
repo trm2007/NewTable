@@ -12,9 +12,12 @@ export function useNewTableWrapperChecked(
     ),
   );
 
-  const isCheckedAll = computed<boolean>(() => (allRowIds.value || []).every(
-    (currentRowId: string | number) => !!toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.CHECKED]?.has(currentRowId),
-  ),
+  const isCheckedAll = computed<boolean>(
+    () => !allRowIds.value?.length
+      ? false
+      : (allRowIds.value || []).every(
+        (currentRowId: string | number) => !!toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.CHECKED]?.has(currentRowId),
+      ),
   );
 
   function toggleCheckAllRow() {
