@@ -1,7 +1,7 @@
 import { Ref, toValue } from "vue";
 
-import type { INewTableHeaderSetting } from "../types/NewTableHeaderTypes";
 import type { INewTableChangeColumnWidthEvent } from "../../../types/NewTableEventTypes";
+import type { INewTableHeaderSetting } from "../types/INewTableHeadTypes";
 
 type TNewTableHeaderMouseWidthEmit = (e: 'change:column-width', event: INewTableChangeColumnWidthEvent) => void;
 

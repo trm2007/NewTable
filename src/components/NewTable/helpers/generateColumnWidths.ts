@@ -1,5 +1,4 @@
-import type { INewTableColumn } from "../components/NewTableHeader/types/INewTableHeadTypes";
-import type { INewTableHeaderSetting } from "../components/NewTableHeader/types/NewTableHeaderTypes";
+import type { INewTableColumn, INewTableHeaderSetting } from "../components/NewTableHeader/types/INewTableHeadTypes";
 
 export function generateColumnWidths(
   visibleSortedColumns: INewTableColumn[],

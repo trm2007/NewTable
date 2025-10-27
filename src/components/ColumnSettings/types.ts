@@ -1,4 +1,4 @@
-import { INewTableHeaderSetting } from "../NewTable/components/NewTableHeader/types/NewTableHeaderTypes";
+import type { INewTableHeaderSetting } from "../NewTable/components/NewTableHeader/types/INewTableHeadTypes";
 
 export interface IChangeColumnSettingsEvent {
   columnName: string;

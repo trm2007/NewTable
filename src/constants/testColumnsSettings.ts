@@ -1,4 +1,4 @@
-import type { INewTableHeaderSetting } from "../components/NewTable/components/NewTableHeader/types/NewTableHeaderTypes";
+import type { INewTableHeaderSetting } from "../components/NewTable/components/NewTableHeader/types/INewTableHeadTypes";
 
 export const testColumnsSettings: Record<string, INewTableHeaderSetting> = {
   id: {
