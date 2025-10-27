@@ -4,3 +4,5 @@ export const NEW_TABLE_STANDART_ROW_MODES: Record<string, string> = {
   CHECKED: 'checked',
   EXPANDED: 'expanded',
 };
+
+export const NEW_TABLE_DEFAULT_MODE = 'default';

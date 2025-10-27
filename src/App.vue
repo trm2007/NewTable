@@ -2,8 +2,7 @@
 import { computed, ref } from 'vue';
 
 import type { INewTableRow } from './components/NewTable/components/NewTableRow/types/NewTableRowTypes';
-import type { INewTableColumn } from './components/NewTable/components/NewTableHeader/types/INewTableHeadTypes';
-import type { INewTableHeaderSetting } from './components/NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
+import type { INewTableColumn, INewTableHeaderSetting } from './components/NewTable/components/NewTableHeader/types/INewTableHeadTypes';
 import type {
   INewTableCellActionData,
   INewTableCellNativeEvent,
@@ -15,18 +14,24 @@ import type { INewTableActions } from './components/NewTable/types/NewTableActio
 import type { INewContexMenuItem } from './components/NewContextMenu/types';
 
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from './components/NewTableWrapper/constants/standartActions';
+import { NEW_TABLE_DEFAULT_MODE, NEW_TABLE_STANDART_ROW_MODES } from './components/NewTable/constants/rowModes';
 import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData';
 import { columnsToCalc, columns as testColumns } from './constants/columns';
 import { testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
 import { sorts } from './constants/sirts';
-import { findAllParentRowsFor, findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from './helpers/finders';
+import {
+  findAllParentRowsFor,
+  findParentRowsById,
+  findParentRowWithChildIndexByChildRowId,
+  findRowById
+} from './helpers/finders';
 import { calcChildSums, calcParentSums } from './helpers/calacSums';
 import { newTableStandartActionsChangeModes } from './components/NewTableWrapper/constants/standartActionsChangeModes';
+import { testActionsChangeModes } from './constants/actionsChangeModes';
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
-import { NEW_TABLE_STANDART_ROW_MODES } from './components/NewTable/constants/rowModes';
 import NewContextMenu from './components/NewContextMenu/NewContextMenu.vue';
 
 interface INewTableChangeCellData {
@@ -45,7 +50,12 @@ const newTableWrapperRef = ref<typeof NewTableWrapper>();
 
 const actions = ref<INewTableActions>(newTableStandartActions)
 
-const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>(newTableStandartActionsChangeModes);
+const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>(
+  {
+    ...newTableStandartActionsChangeModes,
+    ...testActionsChangeModes,
+  }
+);
 
 const activeContextMenuItems = ref<INewContexMenuItem[]>([])
 
@@ -66,11 +76,11 @@ function initData() {
   columnsSettings.value = testColumnsSettings;
   actionsChangeModes.value = {
     ...actionsChangeModes.value,
-    default: {
-      ...(actionsChangeModes.value.default || {}),
+    [NEW_TABLE_DEFAULT_MODE]: {
+      ...(actionsChangeModes.value[NEW_TABLE_DEFAULT_MODE] || {}),
       [NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]: {
-        on: [...(actionsChangeModes.value.default?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.on || []), 'changed'],
-        off: actionsChangeModes.value.default?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.off || [],
+        on: [...(actionsChangeModes.value[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.on || []), 'changed'],
+        off: actionsChangeModes.value[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.off || [],
       }
     },
   }
@@ -141,7 +151,7 @@ function onRowAction(event: INewTableRowActionEvent) {
       onCellAction(event);
       break;
     default:
-      console.log('Unknown action:', event.name, 'for row:', event.row);
+      console.warn('Unknown action:', event.name, 'for row:', event.row);
   }
 }
 

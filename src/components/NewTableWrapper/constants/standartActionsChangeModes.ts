@@ -3,6 +3,7 @@ import type { TNewTableActionsChangeModesStandart } from "../../NewTable/types/N
 import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
 import { NEW_TABLE_STANDART_ROW_ACTIONS } from "./standartActions";
 import { TEST_DATA_ROW_TYPES } from "../../../constants/testData";
+import { NEW_TABLE_DEFAULT_TYPE } from "../../NewTable/constants/defaultRowType";
 
 /**
  * @constant {TTActionsChangeModesStandart} standartActionsChangeModes для каждого типа строк заданы акции,
@@ -34,7 +35,7 @@ export const newTableStandartActionsChangeModes: TNewTableActionsChangeModesStan
     },
   },
 
-  default: {
+  [NEW_TABLE_DEFAULT_TYPE]: {
     [NEW_TABLE_STANDART_ROW_ACTIONS.EDIT]: {
       on: [NEW_TABLE_STANDART_ROW_MODES.EDIT],
       off: [],

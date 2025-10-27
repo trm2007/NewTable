@@ -25,6 +25,8 @@ import { useNewTableSlots } from '../NewTable/composables/NewTableSlots';
 import { useNewTableWrapperExpanded } from './composables/NewTableWrapperExpanded';
 import { useNewTableWrapperChecked } from './composables/NewTableWrapperChecked';
 
+import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
+
 import NewTable from '../NewTable/NewTable.vue';
 import NewScroller from '../NewScroller/NewScroller.vue';
 
@@ -45,7 +47,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'row-action', event: INewTableRowActionEvent): void;
-  // (e: 'change:cell-data', event: INewTableUpdateCellDataEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
 }>();
 
@@ -166,7 +167,7 @@ onBeforeUnmount(() => {
 function onAction(event: INewTableRowActionEvent) {
   const rowType = event.row.meta.rowType && event.row.meta.rowType in props.actionsChangeModes
     ? event.row.meta.rowType
-    : 'default';
+    : NEW_TABLE_DEFAULT_TYPE;
 
   if (!!props.actionsChangeModes?.[rowType]?.[event.name]) {
     // если вызвано какое-то действие - action == event.name
@@ -276,6 +277,7 @@ function onToggleCheckAllRow() {
           ></slot>
         </template>
       </NewTable>
+
       <NewScroller
         :count="computedOnlyExpandedFlatData.length"
         :position="startIndex"

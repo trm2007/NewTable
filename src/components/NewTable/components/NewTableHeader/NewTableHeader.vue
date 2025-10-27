@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSort, faSortUp, faSortDown, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faFolder, faFolderOpen, faSortUp, faSortDown, faSort } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faSort, faSortUp, faSortDown, faFilter);
-
-import type { INewTableColumn } from './types/INewTableHeadTypes';
-import type { INewTableHeaderSetting } from './types/NewTableHeaderTypes';
+import type { INewTableColumn, INewTableHeaderSetting } from './types/INewTableHeadTypes';
 import type {
   INewTableChangeFilterValue,
   INewTableChangeColumnsOrderEvent,
@@ -16,7 +13,9 @@ import type { INewTableFilters, INewTableSorts } from '../../types/NewTableFilte
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
 import { useNewTableHeaderMouseWidth } from './composables/NewTableHeaderMouseWidth';
+
 import NewTableHeaderFilterTeleport from './components/NewTableHeaderFilterTeleport.vue';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 const props = defineProps<{
   visibleSortedColumns: INewTableColumn[];
@@ -60,12 +59,11 @@ const computedSortDirection = computed<-1 | 0 | 1>(
 
 const computedIconName = computed<string>(
   () => {
-    const iconName = computedSortDirection.value === 1
-      ? 'sort-up'
+    return computedSortDirection.value === 1
+      ? faSortUp
       : computedSortDirection.value === -1
-        ? 'sort-down'
-        : 'sort';
-    return `fa-solid fa-${iconName}`;
+        ? faSortDown
+        : faSort;
   }
 );
 
@@ -80,7 +78,7 @@ const computedFilterTeleportNames = computed<Record<string, string>>(
 )
 
 const iconForExpandHead = computed<string>(
-  () => props.isExpandedAll ? 'fa-solid fa-folder-open' : 'fa-solid fa-folder'
+  () => props.isExpandedAll ? faFolderOpen : faFolder,
 );
 
 function getSortIconNameForField(fieldName: string) {
@@ -88,7 +86,7 @@ function getSortIconNameForField(fieldName: string) {
     return computedIconName.value;
   }
 
-  return 'fa-solid fa-sort';
+  return faSort;
 }
 
 function onExpandHeadClick() {
@@ -229,7 +227,7 @@ function onClickOnSort(key: string) {
         >
           <FontAwesomeIcon
             v-if="Object.keys(props.filters || {}).includes(header.key)"
-            icon="fa-solid fa-filter"
+            :icon="faFilter"
             class="icon new-table__header__cell__filter__icon"
             :class="{
               '--active': props.filters[header.key]?.currentValue !== undefined

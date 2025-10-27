@@ -1,7 +1,16 @@
 
 import type { INewTableActions } from '../../NewTable/types/NewTableActionTypes';
 
-import { NEW_TABLE_STANDART_ROW_MODES } from '../../NewTable/constants/rowModes';
+import {
+  NEW_TABLE_DEFAULT_MODE,
+  NEW_TABLE_STANDART_ROW_MODES
+} from '../../NewTable/constants/rowModes';
+import {
+  faPenToSquare,
+  faFloppyDisk,
+  faXmark,
+  faTrash
+} from '@fortawesome/free-solid-svg-icons';
 
 export const NEW_TABLE_STANDART_ROW_ACTIONS: Record<string, string> = {
   EDIT: 'edit',
@@ -22,25 +31,25 @@ export const NEW_TABLE_STANDART_CELL_ACTIONS: Record<string, string> = {
 
 // дкйствия, доступные для каждого типа строк
 export const newTableStandartActions: INewTableActions = {
-  default: {
+  [NEW_TABLE_DEFAULT_MODE]: {
     [NEW_TABLE_STANDART_ROW_ACTIONS.EDIT]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.EDIT,
-      icon: 'fa-solid fa-pen-to-square',
+      icon: faPenToSquare,
       modes: [NEW_TABLE_STANDART_ROW_MODES.VIEW],
     },
     [NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.SAVE,
-      icon: 'fa-solid fa-floppy-disk',
+      icon: faFloppyDisk,
       modes: [NEW_TABLE_STANDART_ROW_MODES.EDIT],
     },
     [NEW_TABLE_STANDART_ROW_ACTIONS.CANCEL]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.CANCEL,
-      icon: 'fa-solid fa-xmark',
+      icon: faXmark,
       modes: [NEW_TABLE_STANDART_ROW_MODES.EDIT],
     },
     [NEW_TABLE_STANDART_ROW_ACTIONS.DELETE]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.DELETE,
-      icon: 'fa-solid fa-trash',
+      icon: faTrash,
     },
   },
 };

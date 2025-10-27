@@ -2,8 +2,7 @@
 import { computed } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from './components/NewTableRow/types/NewTableRowTypes';
-import type { INewTableColumn } from './components/NewTableHeader/types/INewTableHeadTypes';
-import type { INewTableHeaderSetting } from './components/NewTableHeader/types/NewTableHeaderTypes';
+import type { INewTableColumn, INewTableHeaderSetting } from './components/NewTableHeader/types/INewTableHeadTypes';
 import type {
   INewTableChangeFilterValue,
   INewTableChangeColumnsOrderEvent,

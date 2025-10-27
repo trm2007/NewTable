@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { computed, StyleValue, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFolder, faFolderOpen, faFile, } from '@fortawesome/free-solid-svg-icons';
-
-library.add(faFolder, faFolderOpen, faFile);
+import { faFolder, faFolderOpen, faFile } from '@fortawesome/free-solid-svg-icons';
 
 import type {
   INewTableRow,
-  // INewTableRowAction,
   INewTableRowCommonMeta
 } from './types/NewTableRowTypes';
 import type { INewTableColumn, INewTableHeaderSetting } from '../NewTableHeader/types/INewTableHeadTypes';
@@ -23,9 +19,9 @@ import { generateColumnWidths } from '../../helpers/generateColumnWidths';
 import { NEW_TABLE_STANDART_ROW_MODES } from '../../constants/rowModes';
 import { NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME } from '../../constants/defaultComponentName';
 import {
-  // NEW_TABLE_STANDART_CELL_ACTIONS,
   NEW_TABLE_STANDART_ROW_ACTIONS
 } from '../../../NewTableWrapper/constants/standartActions';
+import { NEW_TABLE_DEFAULT_TYPE } from '../../constants/defaultRowType';
 
 const props = defineProps<{
   row: INewTableRow;
@@ -61,9 +57,9 @@ defineOptions({
 
 const iconForExpandCell = computed<string>(() => {
   if (!props.row?.children?.length) {
-    return 'fa-solid fa-file';
+    return faFile;
   }
-  return props.isExpanded ? 'fa-solid fa-folder-open' : 'fa-solid fa-folder';
+  return props.isExpanded ? faFolderOpen : faFolder;
 });
 
 const conputedColumnWidths = computed<Record<string, string>>(
@@ -91,8 +87,8 @@ const enabledActions = computed<INewTableRowActions>(
       return {};
     }
 
-    const rowType = props.row.meta.rowType || 'default';
-    const rowActions = props.actions[rowType] || props.actions['default'];
+    const rowType = props.row.meta.rowType || NEW_TABLE_DEFAULT_TYPE;
+    const rowActions = props.actions[rowType] || props.actions[NEW_TABLE_DEFAULT_TYPE];
 
     if (!rowActions) {
       return {};
@@ -137,7 +133,7 @@ function getComponentName(header: INewTableColumn, rowType?: string | number) {
   }
 
   if (!rowType) {
-    return header.components.default?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
+    return header.components[NEW_TABLE_DEFAULT_TYPE]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
   }
 
   return header.components[rowType]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
@@ -173,7 +169,7 @@ function getComponentProps(header: INewTableColumn, rowType?: string | number) {
   }
 
   if (!rowType) {
-    return header.components.default?.props || {};
+    return header.components[NEW_TABLE_DEFAULT_TYPE]?.props || {};
   }
 
   return header.components[rowType]?.props || {};
