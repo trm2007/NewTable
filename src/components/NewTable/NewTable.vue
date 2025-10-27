@@ -231,9 +231,9 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   height: 100%;
   cursor: col-resize;
   position: absolute;
-  background-color: #333;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-left: 2px solid rgba(255, 255, 255, 0.0);
+  border-right: 2px solid rgba(255, 255, 255, 0.0);
   z-index: 2;
   box-sizing: border-box;
   padding: 0;
