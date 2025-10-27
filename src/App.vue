@@ -329,7 +329,7 @@ function onSubmitDestinationRowIdDialog() {
           <span style="color: red;">id[{{ idSlotProps.value }}]</span>
         </template>
         <template v-slot:cell[name]="nameSlotProps">
-          <span style="color: blue;">id[{{ nameSlotProps.value }}]</span>
+          <span style="color: blue;">{{ nameSlotProps.value }}</span>
         </template>
       </NewTableWrapper>
     </div>
