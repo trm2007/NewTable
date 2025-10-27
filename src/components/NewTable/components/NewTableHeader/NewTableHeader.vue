@@ -29,10 +29,11 @@ const props = defineProps<{
   isCheckboxColumnShown?: boolean;
   isExpandColumnShown?: boolean;
   isActionsColumnShown?: boolean;
+  isExpandedAll: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'toggle:expand-row'): void;
+  (e: 'toggle:expand-all-row'): void;
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
@@ -76,6 +77,10 @@ const computedFilterTeleportNames = computed<Record<string, string>>(
   )
 )
 
+const iconForExpandHead = computed<string>(
+  () => props.isExpandedAll ? 'fa-solid fa-folder-open' : 'fa-solid fa-folder'
+);
+
 function getSortIconNameForField(fieldName: string) {
   if (fieldName === computedSortFieldName.value) {
     return computedIconName.value;
@@ -84,8 +89,8 @@ function getSortIconNameForField(fieldName: string) {
   return 'fa-solid fa-sort';
 }
 
-function onExpandCellClick() {
-  emit('toggle:expand-row');
+function onExpandHeadClick() {
+  emit('toggle:expand-all-row');
 }
 
 function onDragStart(event: DragEvent, key: string) {
@@ -167,8 +172,13 @@ function onClickOnSort(key: string) {
       <div
         v-if="isExpandColumnShown"
         class="new-table__expand-cell"
-        @click="onExpandCellClick"
-      />
+        @click="onExpandHeadClick"
+      >
+        <FontAwesomeIcon
+          :icon="iconForExpandHead"
+          class="icon"
+        />
+      </div>
       <div
         v-for="(header, index) in visibleSortedColumns"
         :key="index"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/types/NewTableRowTypes';
 import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
@@ -29,6 +29,7 @@ import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFil
 import { useNewTableWrapperSortData } from './composables/NewTableWrapperSortData';
 import { useDebounceFn } from '@vueuse/core';
 import { useNewTableCellSlots } from '../NewTable/composables/NewTableCellSlots';
+import { ROW_MODES } from '../NewTable/constants/rowModes';
 
 const props = defineProps<{
   data: INewTableRow[];
@@ -127,6 +128,30 @@ const { onWheelEvent } = useWheelEvent(onNext, onPrevious);
 
 const el = ref<InstanceType<typeof NewTable> | null>(null);
 
+// TODO move to NewTableWrapperModesIds
+const allRowIds = computed<(number | string)[]>(
+  () => computedFlatData.value.map(
+    (row: INewTableRow) => row.data.id,
+  ),
+);
+
+// TODO move to NewTableWrapperModesIds
+const allRowWithChildrenIds = computed<(number | string)[]>(
+  () => computedFlatData.value.filter(
+    (row: INewTableRow) => !!row.children?.length,
+  ).map(
+    (row: INewTableRow) => row.data.id,
+  ),
+);
+
+// TODO move to NewTableWrapperModesIds
+const isExpandedAll = computed<boolean>(() => {
+  return (allRowWithChildrenIds.value || []).every(
+    (currentRowId: string | number) => !!expandedIds?.value?.has(currentRowId),
+  );
+},
+);
+
 const onChangeFilterValueDebounced = useDebounceFn(
   (event: INewTableChangeFilterValue) => onChangeFilterValue(event),
   300
@@ -201,6 +226,15 @@ function onChangeFilterValue(event: INewTableChangeFilterValue) {
 function onChangeColumnSort(event: INewTableSorts) {
   sorts.value = event;
 }
+
+// TODO move to NewTableWrapperModesIds
+function onToggleExpandAllRow() {
+  if (isExpandedAll.value) {
+    modeIds.value[ROW_MODES.EXPANDED] = null;
+  } else {
+    modeIds.value[ROW_MODES.EXPANDED] = new Set<number | string>(allRowWithChildrenIds.value);
+  }
+}
 </script>
 
 <template>
@@ -225,12 +259,14 @@ function onChangeColumnSort(event: INewTableSorts) {
         :isNumberColumnShown="isNumberColumnShown"
         :isCheckboxColumnShown="isCheckboxColumnShown"
         :isExpandColumnShown="isExpandColumnShown"
+        :isExpandedAll="isExpandedAll"
         v-bind="$attrs"
         @row-action="onAction"
         @change:columns-order="onChangeColumnOrders"
         @change:column-width="onChangeColumnWidths"
         @change:filter-value="onChangeFilterValueDebounced"
         @change:column-sort="onChangeColumnSort"
+        @toggle:expand-all-row="onToggleExpandAllRow"
       >
         <template
           v-for="slot in computedHeadSlots"

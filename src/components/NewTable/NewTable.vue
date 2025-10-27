@@ -43,6 +43,7 @@ const props = defineProps<{
   isNumberColumnShown?: boolean;
   isCheckboxColumnShown?: boolean;
   isExpandColumnShown?: boolean;
+  isExpandedAll: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -53,6 +54,7 @@ const emit = defineEmits<{
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
   (e: 'change:column-sort', event: INewTableSorts): void;
+  (e: 'toggle:expand-all-row'): void;
 }>();
 
 defineOptions({
@@ -109,10 +111,12 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       :isCheckboxColumnShown="isCheckboxColumnShown"
       :isExpandColumnShown="isExpandColumnShown"
       :isActionsColumnShown="isActionsColumnShown"
+      :isExpandedAll="isExpandedAll"
       @change:columns-order="$emit('change:columns-order', $event)"
       @change:column-width="$emit('change:column-width', $event)"
       @change:filter-value="emit('change:filter-value', $event)"
       @change:column-sort="emit('change:column-sort', $event)"
+      @toggle:expand-all-row="emit('toggle:expand-all-row')"
     >
       <template
         v-for="slot in computedHeadSlots"
