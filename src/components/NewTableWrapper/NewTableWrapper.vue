@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/components/NewTableRow/types/NewTableRowTypes';
 import type { INewTableColumn, INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/INewTableHeadTypes';
@@ -18,19 +18,15 @@ import { useNewTableWrapperFlatData } from './composables/NewTableWrapperFlatDat
 import { useNewTablePagination } from './composables/NewTableWrapperPagination';
 import { useWheelEvent } from '../../composables/useWheelEvent';
 import { useNewTableWrapperHeader } from './composables/NewTableWrapperHeader';
-
-// import { ROW_MODES } from '../NewTable/constants/rowModes';
-// import { NEW_TABLE_STANDART_ROW_ACTIONS } from './constants/standartActions';
-
-import NewTable from '../NewTable/NewTable.vue';
-import NewScroller from '../NewScroller/NewScroller.vue';
 import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFilteredData';
 import { useNewTableWrapperSortData } from './composables/NewTableWrapperSortData';
 import { useDebounceFn } from '@vueuse/core';
 import { useNewTableSlots } from '../NewTable/composables/NewTableSlots';
-import { NEW_TABLE_STANDART_ROW_MODES } from '../NewTable/constants/rowModes';
 import { useNewTableWrapperExpanded } from './composables/NewTableWrapperExpanded';
 import { useNewTableWrapperChecked } from './composables/NewTableWrapperChecked';
+
+import NewTable from '../NewTable/NewTable.vue';
+import NewScroller from '../NewScroller/NewScroller.vue';
 
 const props = defineProps<{
   data: INewTableRow[];
