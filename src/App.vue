@@ -282,24 +282,22 @@ function onSubmitDestinationRowIdDialog() {
 </script>
 
 <template>
-  <div class="new-table-app">
-    <ColumnSettings
-      v-bind="{
-        columns,
-        columnsSettings,
-      }"
-      @change:column-settings="onChangeColumnSettings"
-    />
-    <div>
-      <div>
-        <button @click="initData">
-          Init Data
-        </button>
-      </div>
+  <div class="app-new-table">
+    <div class="app-new-table__actions">
+      <button @click="initData">
+        Init Data
+      </button>
+    </div>
 
-      <!-- 
-        @change:cell-data="onChangeCellData"
-      -->
+    <div class="app-new-table__data">
+      <ColumnSettings
+        v-bind="{
+          columns,
+          columnsSettings,
+        }"
+        @change:column-settings="onChangeColumnSettings"
+      />
+
       <NewTableWrapper
         ref="newTableWrapperRef"
         :key="timeStamp"
@@ -342,15 +340,34 @@ function onSubmitDestinationRowIdDialog() {
           <span style="color: blue;">{{ nameSlotProps.value }}</span>
         </template>
       </NewTableWrapper>
+
+      <!-- <div>
+        <ul>
+          <li
+            v-for="checkedRowId in checkedIds"
+            :key="checkedRowId"
+          >{{ checkedRowId }}</li>
+        </ul>
+      </div> -->
     </div>
 
-    <div>
-      <ul>
-        <li
-          v-for="checkedRowId in checkedIds"
-          :key="checkedRowId"
-        >{{ checkedRowId }}</li>
-      </ul>
+    <div
+      v-if="!!newTableWrapperRef"
+      class="app-new-table-settings"
+    >
+      <div>
+        <label>
+          Str count:
+          <input
+            :value="newTableWrapperRef.rowCount"
+            @change="newTableWrapperRef.setRowCount(Number(($event.target as HTMLInputElement).value || 5))"
+          >
+        </label>
+      </div>
+      <div class="app-new-table-settings__info">
+        <span>Total</span>
+        <span>{{ newTableWrapperRef.computedFlatData.length }}</span>
+      </div>
     </div>
 
     <dialog
@@ -392,7 +409,22 @@ function onSubmitDestinationRowIdDialog() {
 </template>
 
 <style scoped>
-.new-table-app {
+.app-new-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-new-table__actions {
+  border-radius: 8px;
+  background-color: #eee;
+  width: 100%;
+  text-align: center;
+  padding: 8px;
+}
+
+.app-new-table__data {
   display: flex;
   align-items: flex-start;
   gap: 16px;
@@ -413,6 +445,20 @@ function onSubmitDestinationRowIdDialog() {
 /* так можно переопределять стили */
 :deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
   color: red;
+}
+
+.app-new-table-settings {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.app-new-table-settings__info {
+  margin-left: 16px;
+  display: flex;
+  gap: 8px;
+  display: flex;
+  align-items: center;
 }
 
 dialog {

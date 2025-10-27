@@ -63,19 +63,6 @@ const {
   toggleModeForRowWithChildren,
 } = useNewTableWrapperModesIds();
 
-defineExpose({
-  modeIds,
-  editingIds,
-  expandedIds,
-  checkedIds,
-  switchOnModeForRow,
-  switchOffModeForRow,
-  switchOnModeForRowWithChildren,
-  switchOffModeForRowWithChildren,
-  toggleModeForRow,
-  toggleModeForRowWithChildren,
-})
-
 const {
   filters,
   computedFilteredData,
@@ -224,6 +211,23 @@ function onToggleExpandAllRow() {
 function onToggleCheckAllRow() {
   toggleCheckAllRow();
 }
+
+defineExpose({
+  modeIds,
+  editingIds,
+  expandedIds,
+  checkedIds,
+  switchOnModeForRow,
+  switchOffModeForRow,
+  switchOnModeForRowWithChildren,
+  switchOffModeForRowWithChildren,
+  toggleModeForRow,
+  toggleModeForRowWithChildren,
+
+  rowCount,
+  setRowCount,
+  computedFlatData,
+})
 </script>
 
 <template>
@@ -286,29 +290,12 @@ function onToggleCheckAllRow() {
         @chenge:position="(newPosition: number) => { startIndex = newPosition }"
       />
     </div>
-
-    <div class="new-table-pagination">
-      <div>
-        <label>
-          Str count:
-          <input
-            :value="rowCount"
-            @change="setRowCount(Number(($event.target as HTMLInputElement).value || 5))"
-          >
-        </label>
-      </div>
-      <div class="new-table-pagination__info">
-        <span>Total</span>
-        <span>{{ computedFlatData.length }}</span>
-      </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
 .new-table-wrapper {
   display: flex;
-  padding: 16px;
   height: 50vh;
   width: 50vw;
   align-items: stretch;
@@ -317,19 +304,5 @@ function onToggleCheckAllRow() {
 
 .new-table__scroller {
   flex: 0 0;
-}
-
-.new-table-pagination {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-}
-
-.new-table-pagination__info {
-  margin-left: 16px;
-  display: flex;
-  gap: 8px;
-  display: flex;
-  align-items: center;
 }
 </style>
