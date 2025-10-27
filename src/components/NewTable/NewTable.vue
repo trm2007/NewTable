@@ -194,6 +194,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   height: 100%;
   width: 100%;
   overflow-x: scroll;
+  box-sizing: border-box;
 }
 
 .new-table :deep(.new-table__header) {
@@ -205,6 +206,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   flex: 0 0;
   width: fit-content;
   min-width: 100%;
+  box-sizing: border-box;
 }
 
 .new-table :deep(.new-table__header__row) {
@@ -248,6 +250,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   min-height: 0;
   width: fit-content;
   min-width: 100%;
+  box-sizing: border-box;
 }
 
 .new-table__body__empty {
@@ -256,6 +259,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   justify-content: center;
   font-size: 2rem;
   font-weight: bold;
+  box-sizing: border-box;
 }
 
 .new-table__body :deep(.new-table__body__row) {

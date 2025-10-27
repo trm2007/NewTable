@@ -12,11 +12,9 @@ export function useNewTableWrapperHeader(
   const localColumnsSettings = ref<Record<string, INewTableHeaderSetting>>(
     JSON.parse(JSON.stringify(toValue(columnsSettings))),
   );
-  // const localColumns = ref<INewTableColumn[]>(toValue(columns));
 
   watchEffect(() => {
     localColumnsSettings.value = JSON.parse(JSON.stringify(toValue(columnsSettings)));
-    // localColumns.value = toValue(columns);
   });
 
   const computedColumns = computed<Record<string, INewTableColumn>>(
@@ -94,13 +92,6 @@ export function useNewTableWrapperHeader(
     }
 
     localColumnsSettings.value[columnFrom].order = toOrder;
-    // localColumnsSettings.value = {
-    //   ...localColumnsSettings.value,
-    //   [columnFrom]: {
-    //     ...localColumnsSettings.value[columnFrom],
-    //     order: toOrder
-    //   },
-    // };
   }
 
   function changeColumnWidths(columnName: string, delta: number, currentWidth: number) {
