@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import type { INewTableRow, INewTableRowCommonMeta } from './types/NewTableRowTypes';
-import type { INewTableColumn } from './types/INewTableHeadTypes';
+import type { INewTableRow, INewTableRowCommonMeta } from './components/NewTableRow/types/NewTableRowTypes';
+import type { INewTableColumn } from './components/NewTableHeader/types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './components/NewTableHeader/types/NewTableHeaderTypes';
 import type {
   INewTableChangeFilterValue,

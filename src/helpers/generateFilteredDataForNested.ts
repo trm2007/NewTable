@@ -1,5 +1,5 @@
 import type { INewTableFilter } from "../components/NewTable/types/NewTableFilterTypes";
-import type { INewTableRow } from "../components/NewTable/types/NewTableRowTypes";
+import type { INewTableRow } from "../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 import { compareFilterAsString } from "./compareFilterAsString";
 
 /**

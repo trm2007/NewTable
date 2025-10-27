@@ -1,6 +1,6 @@
 import { computed, ref, Ref, toValue, watch } from "vue";
 
-import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
+import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/NewTableRowTypes";
 import type { INewTableSorts } from "../../NewTable/types/NewTableFilterTypes";
 
 export function useNewTableWrapperSortData(

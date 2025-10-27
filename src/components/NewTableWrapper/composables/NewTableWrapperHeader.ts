@@ -1,6 +1,6 @@
 import { computed, Ref, ref, toValue, watchEffect } from "vue";
 
-import type { INewTableColumn } from "../../NewTable/types/INewTableHeadTypes";
+import type { INewTableColumn } from "../../NewTable/components/NewTableHeader/types/INewTableHeadTypes";
 import type { INewTableHeaderSetting } from "../../NewTable/components/NewTableHeader/types/NewTableHeaderTypes";
 
 const NEW_TABLE_HEAD_MIN_WIDTH: number = 20;

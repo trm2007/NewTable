@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
-import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/types/NewTableRowTypes';
-import type { INewTableColumn } from '../NewTable/types/INewTableHeadTypes';
-import type { INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/NewTableHeaderTypes';
+import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/components/NewTableRow/types/NewTableRowTypes';
+import type { INewTableColumn, INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/INewTableHeadTypes';
 import type {
   INewTableChangeFilterValue,
   INewTableChangeColumnsOrderEvent,

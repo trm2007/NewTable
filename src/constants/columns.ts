@@ -1,4 +1,4 @@
-import type { INewTableColumn } from "../components/NewTable/types/INewTableHeadTypes";
+import type { INewTableColumn } from "../components/NewTable/components/NewTableHeader/types/INewTableHeadTypes";
 
 export const statusOptions = [
   { value: null, name: 'Not set' },

@@ -10,9 +10,8 @@ import type {
   INewTableRow,
   // INewTableRowAction,
   INewTableRowCommonMeta
-} from '../../types/NewTableRowTypes';
-import type { INewTableColumn } from '../../types/INewTableHeadTypes';
-import type { INewTableHeaderSetting } from '../NewTableHeader/types/NewTableHeaderTypes';
+} from './types/NewTableRowTypes';
+import type { INewTableColumn, INewTableHeaderSetting } from '../NewTableHeader/types/INewTableHeadTypes';
 import type {
   INewTableCellActionData,
   INewTableCellNativeEvent,

@@ -13,7 +13,7 @@ library.add(
   faXmark,
 )
 
-import type { INewTableRow, INewTableRowTemplate } from "../components/NewTable/types/NewTableRowTypes";
+import type { INewTableRow, INewTableRowTemplate } from "../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 import { columnsToCalc } from './columns';
 
 type TTestDataType = string | number | [] | object | null | undefined;

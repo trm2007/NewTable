@@ -1,6 +1,6 @@
 import { computed, Ref, ref, toValue, watch } from "vue";
 
-import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
+import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/NewTableRowTypes";
 import type { INewTableFilter, INewTableFilters } from "../../NewTable/types/NewTableFilterTypes";
 
 import { generateFilteredDataForNested } from "../../../helpers/generateFilteredDataForNested";

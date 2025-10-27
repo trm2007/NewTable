@@ -5,7 +5,7 @@ import { faSort, faSortUp, faSortDown, faFilter } from '@fortawesome/free-solid-
 
 library.add(faSort, faSortUp, faSortDown, faFilter);
 
-import type { INewTableColumn } from '../../types/INewTableHeadTypes';
+import type { INewTableColumn } from './types/INewTableHeadTypes';
 import type { INewTableHeaderSetting } from './types/NewTableHeaderTypes';
 import type {
   INewTableChangeFilterValue,

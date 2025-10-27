@@ -1,4 +1,4 @@
-import type { TNewTableRowMode } from "./NewTableRowTypes";
+import type { TNewTableRowMode } from "../components/NewTableRow/types/NewTableRowTypes";
 
 export interface INewTableRowAction {
   actionName: string; // имя действия-action

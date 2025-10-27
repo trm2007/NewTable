@@ -1,4 +1,4 @@
-import type { INewTableRow } from "../components/NewTable/types/NewTableRowTypes";
+import type { INewTableRow } from "../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
 export type TFindParentRowWithChildIndexByChildRowId = { parent: INewTableRow, index: number };
 

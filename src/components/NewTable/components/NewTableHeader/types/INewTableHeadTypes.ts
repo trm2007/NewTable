@@ -20,3 +20,9 @@ export interface INewTableColumn {
   meta?: INewTableColumnMeta;
   components: INewTableColumnComponents;
 }
+
+export interface INewTableHeaderSetting {
+  width: number;
+  order: number;
+  visible: boolean;
+}

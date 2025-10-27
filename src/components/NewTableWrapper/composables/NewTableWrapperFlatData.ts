@@ -1,6 +1,6 @@
 import { computed, Ref, toValue } from "vue";
 
-import type { INewTableRow } from "../../NewTable/types/NewTableRowTypes";
+import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/NewTableRowTypes";
 
 import { ROW_MODES } from "../../NewTable/constants/rowModes";
 
