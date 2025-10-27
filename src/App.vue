@@ -61,7 +61,6 @@ const checkedIds = computed<Set<number | string>>(() => newTableWrapperRef.value
 
 function initData() {
   data.value = generateLargeTestData(20000);
-  // recursiveCalcSumsForAllData(data.value, columnsToCalc);
 
   columns.value = testColumns;
   columnsSettings.value = testColumnsSettings;

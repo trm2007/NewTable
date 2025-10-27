@@ -36,23 +36,3 @@ export function calcParentSums(
     newParentRowWithIndexOfParent = findParentRowWithChildIndexByChildRowId(currentParent.parent.data.id, data);
   }
 }
-
-export function recursiveCalcSumsForAllData(
-  data: INewTableRow[],
-  columnsToCalc: string[],
-  allData?: INewTableRow[]
-) {
-  allData = allData || data
-  data.forEach(
-    (currentRow: INewTableRow) => {
-      if (!currentRow.children?.length) {
-        if (!allData) {
-          return
-        }
-        calcParentSums(currentRow, allData, columnsToCalc);
-      } else {
-        recursiveCalcSumsForAllData(currentRow.children, columnsToCalc, allData);
-      }
-    }
-  );
-}

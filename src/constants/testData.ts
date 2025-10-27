@@ -13,7 +13,8 @@ library.add(
   faXmark,
 )
 
-import type { INewTableRowTemplate } from "../components/NewTable/types/NewTableRowTypes";
+import type { INewTableRow, INewTableRowTemplate } from "../components/NewTable/types/NewTableRowTypes";
+import { columnsToCalc } from './columns';
 
 type TTestDataType = string | number | [] | object | null | undefined;
 
@@ -46,6 +47,29 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
   const MAX_LEVEL = 4;
   const availableStatuses = ['active', 'completed', 'in-progress', 'not-started'];
 
+
+  const summAllChildrenForField = (node: ILocalNewTableRow, fieldName: string): ILocalNewTableRow => {
+    if (node.children?.length) {
+      node.data[fieldName] = node.children.reduce(
+        (acc: number, curr: INewTableRow) => (fieldName in curr.data) ? (acc + Number(curr.data[fieldName])) : acc,
+        0,
+      );
+    }
+
+    return node;
+  }
+
+  const summAllChildrenForFields = (node: ILocalNewTableRow, fieldNames: string[]) => {
+    let resNode = node;
+    fieldNames.forEach(
+      (fieldName: string) => {
+        resNode = summAllChildrenForField(resNode, fieldName);
+      }
+    );
+
+    return resNode;
+  }
+
   const createNode = (level: number = 0): ILocalNewTableRow => {
     currentId++;
     const hasChildren = level === 0 || (level < MAX_LEVEL && Math.random() > 0.3);
@@ -60,27 +84,6 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
         name: `${rowType} ${currentId}`,
         status: availableStatuses[Math.floor(Math.random() * availableStatuses.length)],
       },
-      // actions: {
-      //   edit: {
-      //     eventName: 'edit',
-      //     icon: 'fa-solid fa-pen-to-square',
-      //     modes: ['view'],
-      //   },
-      //   save: {
-      //     eventName: 'save',
-      //     icon: 'fa-solid fa-floppy-disk',
-      //     modes: ['edit'],
-      //   },
-      //   cancel: {
-      //     eventName: 'cancel',
-      //     icon: 'fa-solid fa-xmark',
-      //     modes: ['edit'],
-      //   },
-      //   delete: {
-      //     eventName: 'delete',
-      //     icon: 'fa-solid fa-trash',
-      //   },
-      // },
     };
 
     if (!hasChildren) {
@@ -97,7 +100,11 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
     if (hasChildren) {
       node.children = Array.from(
         { length: Math.floor(Math.random() * MAX_LEVEL) + 1 },
-        () => createNode(level + 1)
+        (): ILocalNewTableRow => {
+          const resNode = createNode(level + 1);
+
+          return summAllChildrenForFields(resNode, columnsToCalc);
+        },
       );
     }
 
@@ -105,7 +112,9 @@ export const generateLargeTestData = (count: number = 10000): ILocalNewTableRow[
   };
 
   while (currentId < count) {
-    result.push(createNode());
+    const resNode = createNode();
+
+    result.push(summAllChildrenForFields(resNode, columnsToCalc));
   }
 
   return result;
