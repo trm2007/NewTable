@@ -136,6 +136,14 @@ const allRowIds = computed<(number | string)[]>(
 );
 
 // TODO move to NewTableWrapperModesIds
+const isCheckedAll = computed<boolean>(() => {
+  return (allRowIds.value || []).every(
+    (currentRowId: string | number) => !!modeIds?.value?.[ROW_MODES.CHECKED]?.has(currentRowId),
+  );
+},
+);
+
+// TODO move to NewTableWrapperModesIds
 const allRowWithChildrenIds = computed<(number | string)[]>(
   () => computedFlatData.value.filter(
     (row: INewTableRow) => !!row.children?.length,
@@ -147,7 +155,7 @@ const allRowWithChildrenIds = computed<(number | string)[]>(
 // TODO move to NewTableWrapperModesIds
 const isExpandedAll = computed<boolean>(() => {
   return (allRowWithChildrenIds.value || []).every(
-    (currentRowId: string | number) => !!expandedIds?.value?.has(currentRowId),
+    (currentRowId: string | number) => !!modeIds?.value?.[ROW_MODES.EXPANDED]?.has(currentRowId),
   );
 },
 );
@@ -235,6 +243,15 @@ function onToggleExpandAllRow() {
     modeIds.value[ROW_MODES.EXPANDED] = new Set<number | string>(allRowWithChildrenIds.value);
   }
 }
+
+// TODO move to NewTableWrapperModesIds
+function onToggleCheckAllRow() {
+  if (isCheckedAll.value) {
+    modeIds.value[ROW_MODES.CHECKED] = null;
+  } else {
+    modeIds.value[ROW_MODES.CHECKED] = new Set<number | string>(allRowIds.value);
+  }
+}
 </script>
 
 <template>
@@ -260,6 +277,7 @@ function onToggleExpandAllRow() {
         :isCheckboxColumnShown="isCheckboxColumnShown"
         :isExpandColumnShown="isExpandColumnShown"
         :isExpandedAll="isExpandedAll"
+        :isCheckedAll="isCheckedAll"
         v-bind="$attrs"
         @row-action="onAction"
         @change:columns-order="onChangeColumnOrders"
@@ -267,6 +285,7 @@ function onToggleExpandAllRow() {
         @change:filter-value="onChangeFilterValueDebounced"
         @change:column-sort="onChangeColumnSort"
         @toggle:expand-all-row="onToggleExpandAllRow"
+        @toggle:check-all-row="onToggleCheckAllRow"
       >
         <template
           v-for="slot in computedHeadSlots"

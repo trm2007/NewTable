@@ -30,10 +30,12 @@ const props = defineProps<{
   isExpandColumnShown?: boolean;
   isActionsColumnShown?: boolean;
   isExpandedAll: boolean;
+  isCheckedAll: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'toggle:expand-all-row'): void;
+  (e: 'toggle:check-all-row', event?: boolean): void;
   (e: 'change:columns-order', event: INewTableChangeColumnsOrderEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
@@ -168,7 +170,14 @@ function onClickOnSort(key: string) {
       <div
         v-if="isCheckboxColumnShown"
         class="new-table__checkbox-cell"
-      />
+      >
+        <input
+          :value="isCheckedAll"
+          :checked="isCheckedAll"
+          type="checkbox"
+          @change="emit('toggle:check-all-row', (($event as InputEvent).target as HTMLInputElement).checked)"
+        >
+      </div>
       <div
         v-if="isExpandColumnShown"
         class="new-table__expand-cell"

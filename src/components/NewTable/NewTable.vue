@@ -44,6 +44,7 @@ const props = defineProps<{
   isCheckboxColumnShown?: boolean;
   isExpandColumnShown?: boolean;
   isExpandedAll: boolean;
+  isCheckedAll: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -55,6 +56,7 @@ const emit = defineEmits<{
   (e: 'change:filter-value', event: INewTableChangeFilterValue): void;
   (e: 'change:column-sort', event: INewTableSorts): void;
   (e: 'toggle:expand-all-row'): void;
+  (e: 'toggle:check-all-row'): void;
 }>();
 
 defineOptions({
@@ -112,11 +114,13 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
       :isExpandColumnShown="isExpandColumnShown"
       :isActionsColumnShown="isActionsColumnShown"
       :isExpandedAll="isExpandedAll"
+      :isCheckedAll="isCheckedAll"
       @change:columns-order="$emit('change:columns-order', $event)"
       @change:column-width="$emit('change:column-width', $event)"
       @change:filter-value="emit('change:filter-value', $event)"
       @change:column-sort="emit('change:column-sort', $event)"
       @toggle:expand-all-row="emit('toggle:expand-all-row')"
+      @toggle:check-all-row="emit('toggle:check-all-row')"
     >
       <template
         v-for="slot in computedHeadSlots"
@@ -266,12 +270,14 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   padding: 8px;
   border-right: 1px solid #eee;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .new-table :deep(.new-table__number-cell),
 .new-table__body :deep(.new-table__number-cell) {
   padding: 8px;
-  border-right: 1px solid #eee;
+  background-color: #f5f5f5;
+  border-right: 1px solid #ccc;
   box-sizing: border-box;
   width: 50px;
   min-width: 50px;
@@ -279,6 +285,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   text-align: center;
   position: sticky;
   left: 0;
+  overflow: hidden;
 }
 
 .new-table :deep(.new-table__checkbox-cell),
