@@ -20,7 +20,7 @@ import type {
 import type { INewTableActions, INewTableRowAction, INewTableRowActions } from '../../types/NewTableActionTypes';
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
-import { ROW_MODES } from '../../constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from '../../constants/rowModes';
 import { NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME } from '../../constants/defaultComponentName';
 import {
   // NEW_TABLE_STANDART_CELL_ACTIONS,
@@ -124,7 +124,7 @@ function onExpandCellClick() {
     return;
   }
 
-  if (props.modes?.includes(ROW_MODES.EXPANDED)) {
+  if (props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EXPANDED)) {
     emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_OFF, row: props.row });
   } else {
     emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_ON, row: props.row });
@@ -235,8 +235,8 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
       class="new-table__checkbox-cell"
     >
       <input
-        :value="props.modes?.includes(ROW_MODES.CHECKED)"
-        :checked="props.modes?.includes(ROW_MODES.CHECKED)"
+        :value="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.CHECKED)"
+        :checked="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.CHECKED)"
         type="checkbox"
         @change="onChangeCheck"
       >
@@ -285,7 +285,7 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
           :value="row.data[header.key]"
           :row="row"
           :column="header"
-          :mode="props.modes?.includes(ROW_MODES.EDIT) ? ROW_MODES.EDIT : ROW_MODES.VIEW || ROW_MODES.VIEW"
+          :mode="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EDIT) ? NEW_TABLE_STANDART_ROW_MODES.EDIT : NEW_TABLE_STANDART_ROW_MODES.VIEW || NEW_TABLE_STANDART_ROW_MODES.VIEW"
           v-bind="getComponentProps(header, row.meta.rowType || props.commonMeta?.rowType)"
           @update:value="onCellUpdateValue({ key: header.key, value: $event })"
           @cell-action="onCellAction({ key: header.key, value: $event.value, name: $event.name })"

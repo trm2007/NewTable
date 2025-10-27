@@ -13,7 +13,7 @@ import type {
 import type { INewTableFilters, INewTableSorts } from './types/NewTableFilterTypes';
 import type { INewTableActions } from './types/NewTableActionTypes';
 
-import { ROW_MODES } from './constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from './constants/rowModes';
 
 import NewTableHeader from './components/NewTableHeader/NewTableHeader.vue';
 import NewTableRow from './components/NewTableRow/NewTableRow.vue';
@@ -70,7 +70,7 @@ const {
 
 const computedModeIds = computed(() => props.modeIds);
 
-const expandedRows = computed<Set<number | string>>(() => props.modeIds?.[ROW_MODES.EXPANDED]);
+const expandedRows = computed<Set<number | string>>(() => props.modeIds?.[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]);
 
 // const rowCount = computed<number>(() => props.data?.length || 1);
 const rowCount = computed<number>(() => props.rowCount || 5);
@@ -94,8 +94,8 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
     (mode) => computedModeIds.value?.[mode]?.has(row.data.id)
   );
 
-  if (!result.includes(ROW_MODES.EDIT) && !result.includes(ROW_MODES.VIEW)) {
-    result.push(ROW_MODES.VIEW);
+  if (!result.includes(NEW_TABLE_STANDART_ROW_MODES.EDIT) && !result.includes(NEW_TABLE_STANDART_ROW_MODES.VIEW)) {
+    result.push(NEW_TABLE_STANDART_ROW_MODES.VIEW);
   }
 
   return result;

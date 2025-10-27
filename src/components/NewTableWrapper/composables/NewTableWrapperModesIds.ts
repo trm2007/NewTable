@@ -2,19 +2,19 @@ import { computed, ref } from "vue";
 
 import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/NewTableRowTypes";
 
-import { ROW_MODES } from "../../NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
 
 export function useNewTableWrapperModesIds() {
   const modeIds = ref<Record<string, Set<number | string>>>({});
 
   const editingIds = computed<Set<number | string> | undefined>(
-    () => modeIds.value[ROW_MODES.EDIT]
+    () => modeIds.value[NEW_TABLE_STANDART_ROW_MODES.EDIT]
   );
   const expandedIds = computed<Set<number | string> | undefined>(
-    () => modeIds.value[ROW_MODES.EXPANDED]
+    () => modeIds.value[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]
   );
   const checkedIds = computed<Set<number | string> | undefined>(
-    () => modeIds.value[ROW_MODES.CHECKED]
+    () => modeIds.value[NEW_TABLE_STANDART_ROW_MODES.CHECKED]
   );
 
   function switchOnModeForRow(mode: string, row: INewTableRow) {

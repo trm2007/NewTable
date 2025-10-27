@@ -2,18 +2,18 @@ import { computed, Ref, toValue } from "vue";
 
 import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/NewTableRowTypes";
 
-import { ROW_MODES } from "../../NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
 
 export function useNewTableWrapperFlatData(
   data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   modeIds: Ref<Record<string, Set<number | string>>> | Record<string, Set<number | string>> | (() => Record<string, Set<number | string>>)
 ) {
-  const computedFlatData = computed(
+  const computedFlatData = computed<INewTableRow[]>(
     () => generateFlatData(toValue(data)),
   );
 
-  const computedOnlyExpandedFlatData = computed(
-    () => generateOnlyExpandedFlatData(toValue(data), toValue(modeIds)[ROW_MODES.EXPANDED]),
+  const computedOnlyExpandedFlatData = computed<INewTableRow[]>(
+    () => generateOnlyExpandedFlatData(toValue(data), toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]),
   );
 
   function generateFlatData(

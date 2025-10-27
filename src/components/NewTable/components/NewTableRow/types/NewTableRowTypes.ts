@@ -1,7 +1,7 @@
 
-import { ROW_MODES } from '../../../constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from '../../../constants/rowModes';
 
-export type TNewTableRowMode = keyof typeof ROW_MODES //'edit' | 'view' | 'delete' | 'custom';
+export type TNewTableRowMode = keyof typeof NEW_TABLE_STANDART_ROW_MODES //'edit' | 'view' | 'delete' | 'custom';
 
 export interface IId {
   id: string | number

@@ -1,7 +1,7 @@
 
 import type { INewTableActions } from '../../NewTable/types/NewTableActionTypes';
 
-import { ROW_MODES } from '../../NewTable/constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from '../../NewTable/constants/rowModes';
 
 export const NEW_TABLE_STANDART_ROW_ACTIONS: Record<string, string> = {
   EDIT: 'edit',
@@ -26,17 +26,17 @@ export const newTableStandartActions: INewTableActions = {
     [NEW_TABLE_STANDART_ROW_ACTIONS.EDIT]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.EDIT,
       icon: 'fa-solid fa-pen-to-square',
-      modes: [ROW_MODES.VIEW],
+      modes: [NEW_TABLE_STANDART_ROW_MODES.VIEW],
     },
     [NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.SAVE,
       icon: 'fa-solid fa-floppy-disk',
-      modes: [ROW_MODES.EDIT],
+      modes: [NEW_TABLE_STANDART_ROW_MODES.EDIT],
     },
     [NEW_TABLE_STANDART_ROW_ACTIONS.CANCEL]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.CANCEL,
       icon: 'fa-solid fa-xmark',
-      modes: [ROW_MODES.EDIT],
+      modes: [NEW_TABLE_STANDART_ROW_MODES.EDIT],
     },
     [NEW_TABLE_STANDART_ROW_ACTIONS.DELETE]: {
       actionName: NEW_TABLE_STANDART_ROW_ACTIONS.DELETE,

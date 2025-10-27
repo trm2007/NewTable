@@ -1,4 +1,4 @@
-import { ROW_MODES } from "../components/NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../components/NewTable/constants/rowModes";
 import type { INewTableFilter } from "../components/NewTable/types/NewTableFilterTypes";
 import type { INewTableRow } from "../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
@@ -26,7 +26,7 @@ function generateEmptyTextFilter(): INewTableFilter {
       name: 'TextComponent',
       changeEventName: 'input',
       props: {
-        mode: ROW_MODES.EDIT,
+        mode: NEW_TABLE_STANDART_ROW_MODES.EDIT,
       },
     },
   }
@@ -52,7 +52,7 @@ export const filters: Record<string, INewTableFilter> = {
       name: 'SimpleSelectComponent',
       props: {
         options: statusOptions,
-        mode: ROW_MODES.EDIT,
+        mode: NEW_TABLE_STANDART_ROW_MODES.EDIT,
       },
       changeEventName: 'update:value',
     },

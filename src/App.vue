@@ -26,7 +26,7 @@ import { newTableStandartActionsChangeModes } from './components/NewTableWrapper
 
 import NewTableWrapper from './components/NewTableWrapper/NewTableWrapper.vue';
 import ColumnSettings from './components/ColumnSettings/ColumnSettings.vue';
-import { ROW_MODES } from './components/NewTable/constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from './components/NewTable/constants/rowModes';
 import NewContextMenu from './components/NewContextMenu/NewContextMenu.vue';
 
 interface INewTableChangeCellData {
@@ -231,7 +231,7 @@ function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
 
   switch (menuItem.actionName) {
     case 'edit-row':
-      newTableWrapperRef.value.switchOnModeForRow(ROW_MODES.EDIT, payload.row);
+      newTableWrapperRef.value.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, payload.row);
       break;
     case 'delete-row':
       onDelete({ name: 'delete', row: payload.row });
@@ -311,7 +311,7 @@ function onSubmitDestinationRowIdDialog() {
           }
         }"
         @row-action="onRowAction"
-        @dblclick.self="(event) => newTableWrapperRef.switchOnModeForRow(ROW_MODES.EDIT, event.row)"
+        @dblclick.self="(event) => newTableWrapperRef.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, event.row)"
         @contextmenu.self="onContextMenu"
       >
         <template v-slot:head[id]sort="idSlotProps">

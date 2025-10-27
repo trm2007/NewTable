@@ -28,7 +28,9 @@ import { useNewTableWrapperFilteredData } from './composables/NewTableWrapperFil
 import { useNewTableWrapperSortData } from './composables/NewTableWrapperSortData';
 import { useDebounceFn } from '@vueuse/core';
 import { useNewTableSlots } from '../NewTable/composables/NewTableSlots';
-import { ROW_MODES } from '../NewTable/constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from '../NewTable/constants/rowModes';
+import { useNewTableWrapperExpanded } from './composables/NewTableWrapperExpanded';
+import { useNewTableWrapperChecked } from './composables/NewTableWrapperChecked';
 
 const props = defineProps<{
   data: INewTableRow[];
@@ -123,41 +125,23 @@ const {
   () => props.columnsSettings
 );
 
+const {
+  isExpandedAll,
+  toggleExpandAllRow,
+} = useNewTableWrapperExpanded(
+  () => modeIds.value,
+  () => computedFlatData.value,
+);
+
+const {
+  isCheckedAll,
+  toggleCheckAllRow,
+} = useNewTableWrapperChecked(
+  () => modeIds.value,
+  () => computedFlatData.value,
+);
+
 const { onWheelEvent } = useWheelEvent(onNext, onPrevious);
-
-const el = ref<InstanceType<typeof NewTable> | null>(null);
-
-// TODO move to NewTableWrapperModesIds
-const allRowIds = computed<(number | string)[]>(
-  () => computedFlatData.value.map(
-    (row: INewTableRow) => row.data.id,
-  ),
-);
-
-// TODO move to NewTableWrapperModesIds
-const isCheckedAll = computed<boolean>(() => {
-  return (allRowIds.value || []).every(
-    (currentRowId: string | number) => !!modeIds?.value?.[ROW_MODES.CHECKED]?.has(currentRowId),
-  );
-},
-);
-
-// TODO move to NewTableWrapperModesIds
-const allRowWithChildrenIds = computed<(number | string)[]>(
-  () => computedFlatData.value.filter(
-    (row: INewTableRow) => !!row.children?.length,
-  ).map(
-    (row: INewTableRow) => row.data.id,
-  ),
-);
-
-// TODO move to NewTableWrapperModesIds
-const isExpandedAll = computed<boolean>(() => {
-  return (allRowWithChildrenIds.value || []).every(
-    (currentRowId: string | number) => !!modeIds?.value?.[ROW_MODES.EXPANDED]?.has(currentRowId),
-  );
-},
-);
 
 const onChangeFilterValueDebounced = useDebounceFn(
   (event: INewTableChangeFilterValue) => onChangeFilterValue(event),
@@ -168,6 +152,8 @@ const {
   computedCellSlots,
   computedHeadSlots,
 } = useNewTableSlots();
+
+const el = ref<InstanceType<typeof NewTable> | null>(null);
 
 onMounted(() => {
   if (!el.value?.$el) return;
@@ -234,32 +220,18 @@ function onChangeColumnSort(event: INewTableSorts) {
   sorts.value = event;
 }
 
-// TODO move to NewTableWrapperModesIds
 function onToggleExpandAllRow() {
-  if (isExpandedAll.value) {
-    modeIds.value[ROW_MODES.EXPANDED] = null;
-  } else {
-    modeIds.value[ROW_MODES.EXPANDED] = new Set<number | string>(allRowWithChildrenIds.value);
-  }
+  toggleExpandAllRow();
 }
 
-// TODO move to NewTableWrapperModesIds
 function onToggleCheckAllRow() {
-  if (isCheckedAll.value) {
-    modeIds.value[ROW_MODES.CHECKED] = null;
-  } else {
-    modeIds.value[ROW_MODES.CHECKED] = new Set<number | string>(allRowIds.value);
-  }
+  toggleCheckAllRow();
 }
 </script>
 
 <template>
   <div>
     <div class="new-table-wrapper">
-      <!-- 
-        @toggle:expand-row="toggleModeForRow(ROW_MODES.EXPANDED, $event)"
-        @change:cell-data="$emit('change:cell-data', $event)"
-      -->
       <NewTable
         ref="el"
         :data="computedOnlyExpandedFlatDataToView"
@@ -327,18 +299,6 @@ function onToggleCheckAllRow() {
           >
         </label>
       </div>
-      <button
-        :disabled="startIndex === 0"
-        @click="onPrevious"
-      >
-        Previous
-      </button>
-      <button
-        :disabled="startIndex + rowCount >= computedOnlyExpandedFlatData.length"
-        @click="onNext"
-      >
-        Next
-      </button>
       <div class="new-table-pagination__info">
         <span>Total</span>
         <span>{{ computedFlatData.length }}</span>
