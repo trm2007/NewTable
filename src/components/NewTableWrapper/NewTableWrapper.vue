@@ -304,5 +304,10 @@ defineExpose({
 
 .new-table__scroller {
   flex: 0 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 0;
+  background-color: var(--nt-scrollbar-background, #f5f5f5);
 }
 </style>

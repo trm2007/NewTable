@@ -58,7 +58,7 @@ function scrollToPositionDebounced(position: number) {
 }
 
 function onScroll() {
-  if (!scroller.value) return;
+  if (!scroller.value || !maxCount.value) return;
 
   const scrollerMaxTop = scroller.value.scrollHeight - scroller.value.clientHeight;
   if (scrollerMaxTop <= 0) {
@@ -74,7 +74,6 @@ function onScroll() {
 
 <template>
   <div
-    v-if="maxCount"
     ref="scroller"
     :style="{
       height: '100%',
@@ -88,6 +87,7 @@ function onScroll() {
     @scroll.prevent.stop="onScroll"
   >
     <div
+      v-if="maxCount"
       class="new-scroll"
       :style="{
         width: `${width || 16}px`,
@@ -100,8 +100,6 @@ function onScroll() {
 <style scoped>
 .new-scroll-wrapper {
   box-sizing: border-box;
-  background-color: var(--nt-scrollbar-background, #f0f0f0);
-  border-radius: 4px;
 }
 
 .new-scroll {

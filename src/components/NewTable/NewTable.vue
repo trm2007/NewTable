@@ -189,7 +189,11 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   display: flex;
   flex-direction: column;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  /* border-radius: 4px; */
+  border-top-left-radius: 4px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 4px;
   overflow: hidden;
   height: 100%;
   width: 100%;
@@ -325,7 +329,6 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
 .new-table :deep(.new-table__actions__cell),
 .new-table__body :deep(.new-table__actions__cell) {
   padding: 8px;
-  border-right: 1px solid #eee;
   box-sizing: border-box;
   width: 100px;
   min-width: 100px;
