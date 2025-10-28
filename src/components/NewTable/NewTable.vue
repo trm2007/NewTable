@@ -253,7 +253,6 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   margin: 0;
 }
 
-
 .new-table__body {
   display: flex;
   flex-direction: column;
@@ -300,6 +299,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   position: sticky;
   left: 0;
   overflow: hidden;
+  z-index: 3;
 }
 
 .new-table :deep(.new-table__checkbox-cell),
@@ -314,7 +314,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   position: sticky;
   left: 50px;
   background-color: aliceblue;
-  z-index: 2;
+  z-index: 3;
 }
 
 .new-table :deep(.new-table__expand-cell),
@@ -344,5 +344,6 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   position: sticky;
   right: 0;
   background-color: aliceblue;
+  z-index: 3;
 }
 </style>
