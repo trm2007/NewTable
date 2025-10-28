@@ -302,6 +302,8 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   text-align: center;
   position: sticky;
   left: 50px;
+  background-color: aliceblue;
+  z-index: 2;
 }
 
 .new-table :deep(.new-table__expand-cell),
@@ -309,13 +311,15 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   padding: 8px;
   border-right: 1px solid #eee;
   box-sizing: border-box;
-  width: 100px;
-  min-width: 100px;
-  max-width: 100px;
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
   text-align: left;
   cursor: pointer;
   position: sticky;
   left: 100px;
+  background-color: aliceblue;
+  z-index: 3;
 }
 
 .new-table :deep(.new-table__actions__cell),
@@ -329,5 +333,6 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   text-align: center;
   position: sticky;
   right: 0;
+  background-color: aliceblue;
 }
 </style>
