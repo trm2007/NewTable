@@ -258,3 +258,30 @@ export const columns: INewTableColumn[] = [
     },
   },
 ];
+
+
+export function generateExtraColumns(
+  columnsToUpdate: INewTableColumn[],
+  extraFieldCount: number = 3
+): INewTableColumn[] {
+  const resultColumns = structuredClone(columnsToUpdate);
+
+  for (let i = 1; i <= extraFieldCount; i++) {
+    const fieldName = `extraField${i}`
+
+    const newColumn: INewTableColumn = {
+      key: fieldName.toLowerCase(),
+      name: fieldName,
+      components: {
+        default: {
+          name: 'TextComponent',
+          props: {},
+        },
+      },
+    };
+
+    resultColumns.push(newColumn);
+  }
+
+  return resultColumns;
+}

@@ -16,8 +16,8 @@ import type { INewContexMenuItem } from './components/NewContextMenu/types';
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from './components/NewTableWrapper/constants/standartActions';
 import { NEW_TABLE_DEFAULT_MODE, NEW_TABLE_STANDART_ROW_MODES } from './components/NewTable/constants/rowModes';
 import { generateLargeTestData, TEST_DATA_ROW_TYPES } from './constants/testData';
-import { columnsToCalc, columns as testColumns } from './constants/columns';
-import { testColumnsSettings } from './constants/testColumnsSettings';
+import { columnsToCalc, generateExtraColumns, columns as testColumns } from './constants/columns';
+import { generateExtraColumnsSettings, testColumnsSettings } from './constants/testColumnsSettings';
 import { filters } from './constants/filters';
 import { sorts } from './constants/sirts';
 import {
@@ -68,10 +68,10 @@ const activeSourceRow = ref<INewTableRow>(null);
 const isDestinationRowIdDialogShown = ref<boolean>(false);
 
 function initData() {
-  data.value = generateLargeTestData(20000);
+  columns.value = generateExtraColumns(testColumns);
 
-  columns.value = testColumns;
-  columnsSettings.value = testColumnsSettings;
+  columnsSettings.value = generateExtraColumnsSettings(testColumnsSettings);
+
   actionsChangeModes.value = {
     ...actionsChangeModes.value,
     [NEW_TABLE_DEFAULT_MODE]: {
@@ -82,6 +82,8 @@ function initData() {
       }
     },
   }
+
+  data.value = generateLargeTestData(20000);
 
   timeStamp.value = Date.now();
 }

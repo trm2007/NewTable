@@ -42,7 +42,8 @@ export const TEST_DATA_ROW_TYPES: Record<string, string> = {
 
 export const generateLargeTestData = (
   count: number = 10000,
-  maxLevel: number = 4
+  maxLevel: number = 4,
+  extraFieldCount: number = 3,
 ): ILocalNewTableRow[] => {
   const result: ILocalNewTableRow[] = [];
   let currentId = 0;
@@ -97,6 +98,21 @@ export const generateLargeTestData = (
       node.data.customPricePNR = Math.round(Math.random() * 1000);
       node.data.customPriceSMR = Math.round(Math.random() * 1000);
       node.data.customPriceTotal = node.data.customPricePIR + node.data.customPricePNR + node.data.customPriceSMR;
+    }
+
+    function randomString(length) {
+      var result = '';
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    }
+
+    for (let i = 1; i <= extraFieldCount; i++) {
+      const fieldName = `extraField${i}`
+      node.data[fieldName.toLowerCase()] = randomString(10);
     }
 
     if (hasChildren) {

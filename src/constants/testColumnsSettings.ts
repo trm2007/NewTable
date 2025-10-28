@@ -57,3 +57,22 @@ export const testColumnsSettings: Record<string, INewTableHeaderSetting> = {
     visible: true,
   },
 };
+
+export function generateExtraColumnsSettings(
+  columnsToUpdate: Record<string, INewTableHeaderSetting>,
+  extraFieldCount: number = 3
+): Record<string, INewTableHeaderSetting> {
+  const resultColumnsSettings = structuredClone(columnsToUpdate);
+
+  for (let i = 1; i <= extraFieldCount; i++) {
+    const fieldName = `extraField${i}`
+
+    resultColumnsSettings[fieldName.toLowerCase()] = {
+      width: 100,
+      order: 11 + i,
+      visible: true,
+    };
+  }
+
+  return resultColumnsSettings;
+}
