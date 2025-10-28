@@ -136,7 +136,9 @@ function getComponentName(header: INewTableColumn, rowType?: string | number) {
     return header.components[NEW_TABLE_DEFAULT_TYPE]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
   }
 
-  return header.components[rowType]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
+  return header.components[rowType]?.name
+    || header.components[NEW_TABLE_DEFAULT_TYPE]?.name
+    || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
 }
 
 function checkIsActionEnabled(action: INewTableRowAction, modes: string[]) {
@@ -285,7 +287,7 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
           v-bind="getComponentProps(header, row.meta.rowType || props.commonMeta?.rowType)"
           @update:value="onCellUpdateValue({ key: header.key, value: $event })"
           @cell-action="onCellAction({ key: header.key, value: $event.value, name: $event.name })"
-        />
+        >{{ row.data[header.key] }}</component>
         <span v-else>{{ row.data[header.key] }}</span>
       </slot>
     </div>

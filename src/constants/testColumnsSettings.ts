@@ -68,7 +68,7 @@ export function generateExtraColumnsSettings(
     const fieldName = `extraField${i}`
 
     resultColumnsSettings[fieldName.toLowerCase()] = {
-      width: 100,
+      width: 130,
       order: 11 + i,
       visible: true,
     };

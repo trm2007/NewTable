@@ -68,9 +68,11 @@ const activeSourceRow = ref<INewTableRow>(null);
 const isDestinationRowIdDialogShown = ref<boolean>(false);
 
 function initData() {
-  columns.value = generateExtraColumns(testColumns);
+  const extraFieldCount = 7;
 
-  columnsSettings.value = generateExtraColumnsSettings(testColumnsSettings);
+  columns.value = generateExtraColumns(testColumns, extraFieldCount);
+
+  columnsSettings.value = generateExtraColumnsSettings(testColumnsSettings, extraFieldCount);
 
   actionsChangeModes.value = {
     ...actionsChangeModes.value,
@@ -83,7 +85,7 @@ function initData() {
     },
   }
 
-  data.value = generateLargeTestData(20000);
+  data.value = generateLargeTestData(20000, 5, extraFieldCount);
 
   timeStamp.value = Date.now();
 }
