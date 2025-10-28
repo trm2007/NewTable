@@ -218,7 +218,7 @@ function onUpdateCellValue(localRow: INewTableRow) {
   changedRows.value[localRow.data.id] = localRow
 }
 
-function deleteChangedRow(idRow: number | string) {
+function deleteChangedRow(idRow: number | string): INewTableRow {
   const {
     [idRow]: deletedRow,
     ...newChangedRows
