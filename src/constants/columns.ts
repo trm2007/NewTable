@@ -20,7 +20,7 @@ export const columnsToCalc: string[] = [
   'customPriceTotal'
 ];
 
-export const columns: INewTableColumn[] = [
+export const testColumns: INewTableColumn[] = [
   {
     name: 'ID',
     key: 'id',
