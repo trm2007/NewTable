@@ -48,6 +48,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'row-action', event: INewTableRowActionEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
+  (e: 'change:position', newPosition: number): void;
 }>();
 
 const {
@@ -228,6 +229,11 @@ function deleteChangedRow(idRow: number | string): INewTableRow {
   return deletedRow;
 }
 
+function onChangePosition(newPosition: number) {
+  startIndex.value = newPosition;
+  emit('change:position', newPosition);
+}
+
 defineExpose({
   modeIds,
   editingIds,
@@ -308,7 +314,7 @@ defineExpose({
         :position="startIndex"
         :rowCount="rowCount"
         class="new-table__scroller"
-        @chenge:position="(newPosition: number) => { startIndex = newPosition }"
+        @change:position="onChangePosition"
       />
     </div>
   </div>

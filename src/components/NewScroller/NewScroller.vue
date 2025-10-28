@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'chenge:position', position: number): void;
+  (e: 'change:position', position: number): void;
 }>()
 
 const scroller = ref<HTMLElement | null>(null)
@@ -62,13 +62,13 @@ function onScroll() {
 
   const scrollerMaxTop = scroller.value.scrollHeight - scroller.value.clientHeight;
   if (scrollerMaxTop <= 0) {
-    emit('chenge:position', 0);
+    emit('change:position', 0);
     return;
   }
   const relativeScrollPosition = scroller.value.scrollTop / scrollerMaxTop;
 
   const absolutePosition = Math.round(relativeScrollPosition * maxCount.value);
-  emit('chenge:position', absolutePosition);
+  emit('change:position', absolutePosition);
 }
 </script>
 

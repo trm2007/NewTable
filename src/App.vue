@@ -252,7 +252,7 @@ function changeRowParent(sourceRow: INewTableRow, destinationRowId: number | str
   }
 }
 
-function onSelectContextMenuIte(menuItem: INewContexMenuItem) {
+function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
   console.log('[onSelectContextMenuIte]', menuItem);
 
   const payload: INewTableCellNativeEvent = menuItem.payload as INewTableCellNativeEvent;
@@ -339,6 +339,7 @@ function onSubmitDestinationRowIdDialog() {
         @row-action="onRowAction"
         @dblclick.self="(event) => newTableWrapperRef.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, event.row)"
         @contextmenu.self="onContextMenu"
+        @change:position="activeContextMenuMouseEvent = null"
       >
         <template v-slot:head[id]sort="idSlotProps">
           <span
@@ -358,15 +359,6 @@ function onSubmitDestinationRowIdDialog() {
           <span style="color: blue;">{{ nameSlotProps.value }}</span>
         </template>
       </NewTableWrapper>
-
-      <!-- <div>
-        <ul>
-          <li
-            v-for="checkedRowId in newTableWrapperRef.checkedIds"
-            :key="checkedRowId"
-          >{{ checkedRowId }}</li>
-        </ul>
-      </div> -->
     </div>
 
     <div
@@ -419,7 +411,7 @@ function onSubmitDestinationRowIdDialog() {
       <NewContextMenu
         :menuItems="activeContextMenuItems"
         :menuMouseEvent="activeContextMenuMouseEvent"
-        @select:item="onSelectContextMenuIte"
+        @select:item="onSelectContextMenuItem"
         @close="activeContextMenuMouseEvent = null"
       />
     </Teleport>
