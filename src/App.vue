@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import type { INewTableRow } from './components/NewTable/components/NewTableRow/types/NewTableRowTypes';
 import type { INewTableColumn, INewTableHeaderSetting } from './components/NewTable/components/NewTableHeader/types/INewTableHeadTypes';
