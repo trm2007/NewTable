@@ -224,6 +224,8 @@ function deleteChangedRow(idRow: number | string) {
     ...newChangedRows
   } = changedRows.value;
   changedRows.value = newChangedRows;
+
+  return deletedRow;
 }
 
 defineExpose({
