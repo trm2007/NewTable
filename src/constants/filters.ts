@@ -1,5 +1,5 @@
 import { NEW_TABLE_STANDART_ROW_MODES } from "../components/NewTable/constants/rowModes";
-import type { INewTableFilter } from "../components/NewTable/types/NewTableFilterTypes";
+import type { INewTableFilter, INewTableFilters } from "../components/NewTable/types/NewTableFilterTypes";
 import type { INewTableRow } from "../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
 import { compareFilterAsString } from "../helpers/compareFilterAsString";
@@ -32,7 +32,7 @@ function generateEmptyTextFilter(): INewTableFilter {
   }
 }
 
-export const filters: Record<string, INewTableFilter> = {
+export const testFilters: INewTableFilters = {
   id: {
     ...generateEmptyTextFilter(),
   },

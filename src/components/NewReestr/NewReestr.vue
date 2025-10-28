@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
-import type { INewTableRow } from '../NewTable/components/NewTableRow/types/NewTableRowTypes';
-import type { INewTableColumn, INewTableHeaderSetting } from '../NewTable/components/NewTableHeader/types/INewTableHeadTypes';
+import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/components/NewTableRow/types/NewTableRowTypes';
+import type { INewTableColumn, INewTableHeaderSetting, INewTableHeaderSettings } from '../NewTable/components/NewTableHeader/types/INewTableHeadTypes';
 import type { INewTableCellActionData, INewTableCellNativeEvent, INewTableRowActionEvent } from '../NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from '../ColumnSettings/types';
 import type { TNewTableActionsChangeModesStandart } from '../NewTable/types/NewTableActionsChangeModesTypes';
 import type { INewContexMenuItem } from '../NewContextMenu/types';
 import type { INewTableActions } from '../NewTable/types/NewTableActionTypes';
+import type { INewReestrContexMenuItems } from './types/newReestrContexMenuItems';
+import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTableFilterTypes';
 
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from '../NewTableWrapper/constants/standartActions';
 import { newTableStandartActionsChangeModes } from '../NewTableWrapper/constants/standartActionsChangeModes';
@@ -18,12 +20,16 @@ import { NEW_TABLE_DEFAULT_MODE, NEW_TABLE_STANDART_ROW_MODES } from '../NewTabl
 import { generateLargeTestData, TEST_DATA_ROW_TYPES } from '../../constants/testData';
 import { findAllParentRowsFor, findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from '../../helpers/finders';
 import { calcOwnSums, calcParentSums } from '../../helpers/calacSums';
-import { filters } from '../../constants/filters';
-import { sorts } from '../../constants/sirts';
+import { testFilters } from '../../constants/filters';
+import { testSorts } from '../../constants/sirts';
 
 import NewTableWrapper from '../NewTableWrapper/NewTableWrapper.vue';
 import NewContextMenu from '../NewContextMenu/NewContextMenu.vue';
 import ColumnSettings from '../ColumnSettings/ColumnSettings.vue';
+import NewReestrChangeRowParentDialog from './components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
+import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
+import { useNewReestrContextMenu } from './composables/NewReestrContextMenu';
+import { useNewReestrChangeRowParent } from './composables/NewReestrChangeRowParent';
 
 interface INewTableChangeCellDataEvent {
   row: INewTableRow, // row
@@ -31,10 +37,38 @@ interface INewTableChangeCellDataEvent {
   value: unknown, // event data from cell component        
 };
 
+const props = defineProps<{
+  initialData: INewTableRow[];
+  initialColumns: INewTableColumn[];
+  initialColumnsSettings: INewTableHeaderSettings;
+  initialFilters: INewTableFilters;
+  initialSorts: INewTableSorts;
+  initialActions: INewTableActions;
+  initialActionsChangeModes: TNewTableActionsChangeModesStandart;
+  initialContextMenuItems: INewReestrContexMenuItems;
+  isNumberColumnShown: boolean;
+  isCheckboxColumnShown: boolean;
+  isExpandColumnShown: boolean;
+  commonMeta?: INewTableRowCommonMeta;
+}>();
+
+const {
+  generateContextMenuItemsWithPayload,
+} = useNewReestrContextMenu();
+
+const {
+  changeRowParent,
+} = useNewReestrChangeRowParent(
+  () => props.initialData,
+);
+
 const timeStamp = ref(Date.now());
 
 const newTableWrapperRef = ref<typeof NewTableWrapper>();
 
+const columnsSettings = ref<INewTableHeaderSettings>(
+  JSON.parse(JSON.stringify(props.initialColumnsSettings))
+);
 
 const activeContextMenuItems = ref<INewContexMenuItem[]>([])
 
@@ -44,7 +78,19 @@ const activeDestinationRowId = ref<number>(null);
 
 const activeSourceRow = ref<INewTableRow>(null);
 
-const isDestinationRowIdDialogShown = ref<boolean>(false);
+const isChangeRowParentDialogShown = ref<boolean>(false);
+
+watch(
+  () => props.initialColumnsSettings,
+  () => { columnsSettings.value = JSON.parse(JSON.stringify(props.initialColumnsSettings)); }
+)
+
+function onChangeColumnSettings(event: IChangeColumnSettingsEvent) {
+  columnsSettings.value = {
+    ...columnsSettings.value,
+    [event.columnName]: event.columnsSettings,
+  }
+}
 
 function onSave(row: INewTableRow) {
   setRow(row);
@@ -59,9 +105,12 @@ function onDelete(event: INewTableRowActionEvent) {
 
   const row: INewTableRow = event.row;
 
-  const parentRowWithChildRowId = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
+  const parentRowWithChildRowId = findParentRowWithChildIndexByChildRowId(
+    event.row.data.id,
+    props.initialData
+  );
 
-  const parenRows = findParentRowsById(row.data.id, data.value);
+  const parenRows = findParentRowsById(row.data.id, props.initialData);
   parenRows?.splice(
     parenRows.findIndex(r => r.data.id === row.data.id),
     1
@@ -72,13 +121,17 @@ function onDelete(event: INewTableRowActionEvent) {
   }
 
   if (parentRowWithChildRowId) {
-    calcOwnSums(parentRowWithChildRowId.parent, data.value, columnsToCalc);
-    calcParentSums(parentRowWithChildRowId.parent, data.value, columnsToCalc);
+    calcOwnSums(parentRowWithChildRowId.parent, props.initialData, columnsToCalc);
+    calcParentSums(parentRowWithChildRowId.parent, props.initialData, columnsToCalc);
   }
 }
 
+/**
+ * МЕНЯЕТ ДАННЫЕ ПРОПСА props.initialData
+ * @param row строка, которую нужно обновить в данных
+ */
 function setRow(row: INewTableRow) {
-  const parenRows = findParentRowsById(row.data.id, data.value);
+  const parenRows = findParentRowsById(row.data.id, props.initialData);
 
   if (!parenRows) {
     return;
@@ -95,15 +148,15 @@ function onRowAction(event: INewTableRowActionEvent) {
   switch (event.name) {
     case NEW_TABLE_STANDART_ROW_ACTIONS.SAVE:
       onSave(event.row);
-      calcParentSums(event.row, data.value, columnsToCalc);
+      calcParentSums(event.row, props.initialData, columnsToCalc);
       newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
       break;
     case NEW_TABLE_STANDART_ROW_ACTIONS.DELETE:
-      const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
+      const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, props.initialData);
       onDelete(event);
       if (parentRow) {
-        calcOwnSums(parentRow.parent, data.value, columnsToCalc);
-        calcParentSums(parentRow.parent, data.value, columnsToCalc);
+        calcOwnSums(parentRow.parent, props.initialData, columnsToCalc);
+        calcParentSums(parentRow.parent, props.initialData, columnsToCalc);
       }
       newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
       break;
@@ -132,85 +185,30 @@ function onCellAction(event: INewTableRowActionEvent) {
   }
 }
 
-function onChangeColumnSettings(event: IChangeColumnSettingsEvent) {
-  columnsSettings.value = {
-    ...columnsSettings.value,
-    [event.columnName]: event.columnsSettings,
-  }
-}
-
 function onChangeCellData(event: INewTableChangeCellDataEvent) {
-  const row = findRowById(event.row.data.id, data.value);
+  const row = findRowById(event.row.data.id, props.initialData);
   if (row) {
     row.data[event.key] = event.value;
   }
 }
 
 function onContextMenu(event: INewTableCellNativeEvent) {
-  console.log('[onContextMenu]', event);
+  const rowType = event.row?.meta?.rowType || NEW_TABLE_DEFAULT_TYPE;
 
-  activeContextMenuItems.value = [
-    {
-      label: 'Row operations',
-      children: [
-        {
-          label: 'Edit Row',
-          actionName: 'edit-row',
-          payload: event,
-        },
-        {
-          label: 'Delete Row',
-          actionName: 'delete-row',
-          payload: event,
-        },
-      ],
-    },
-    {
-      label: 'Cell operations',
-      children: [
-        {
-          label: 'Show Cell Info',
-          actionName: 'cell-info',
-          payload: event,
-        },
+  activeContextMenuItems.value = props.initialContextMenuItems[rowType]
+    || props.initialContextMenuItems[NEW_TABLE_DEFAULT_TYPE];
 
-      ],
-    },
-    {
-      label: 'Change row parent',
-      actionName: 'change-row-parent',
-      payload: event,
-    },
-  ];
+  if (!activeContextMenuItems.value) {
+    return;
+  }
+
+  activeContextMenuItems.value =
+    generateContextMenuItemsWithPayload(activeContextMenuItems.value, event);
 
   activeContextMenuMouseEvent.value = event.event;
 }
 
-function changeRowParent(sourceRow: INewTableRow, destinationRowId: number | string) {
-  const destinationRow = findRowById(destinationRowId, data.value);
-
-  if (!destinationRow) {
-    alert('Warning! Wrong destinationRowId!');
-    console.warn('[changeRowParent] Wrong destinationRowId', destinationRowId);
-    return;
-  }
-
-  const sourceParentRow = findParentRowWithChildIndexByChildRowId(sourceRow.data.id, data.value);
-
-  sourceParentRow.parent.children.splice(sourceParentRow.index, 1);
-
-  if (!destinationRow.children) {
-    destinationRow.children = [];
-  }
-  destinationRow.children.push(sourceRow);
-  if (destinationRow.meta.rowType === TEST_DATA_ROW_TYPES.TASK) {
-    destinationRow.meta.rowType = TEST_DATA_ROW_TYPES.SUB_STAGE;
-  }
-}
-
 function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
-  console.log('[onSelectContextMenuIte]', menuItem);
-
   const payload: INewTableCellNativeEvent = menuItem.payload as INewTableCellNativeEvent;
 
   switch (menuItem.actionName) {
@@ -227,15 +225,17 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
     case 'change-row-parent':
       activeSourceRow.value = payload.row;
       activeDestinationRowId.value = null;
-      isDestinationRowIdDialogShown.value = true;
+      isChangeRowParentDialogShown.value = true;
       break;
   }
 
   activeContextMenuMouseEvent.value = null;
 }
 
-function onSubmitDestinationRowIdDialog() {
-  isDestinationRowIdDialogShown.value = false;
+function onSubmitChangeRowParentId(newRowParentId: number) {
+  isChangeRowParentDialogShown.value = false;
+  activeDestinationRowId.value = newRowParentId;
+
   if (
     !activeDestinationRowId.value
     || !activeSourceRow.value?.data?.id
@@ -243,9 +243,9 @@ function onSubmitDestinationRowIdDialog() {
     return;
   }
 
-  const sllParentIds = findAllParentRowsFor(activeDestinationRowId.value, data.value);
+  const allParentIds = findAllParentRowsFor(activeDestinationRowId.value, props.initialData);
 
-  if (sllParentIds?.includes(String(activeSourceRow.value.data.id))) {
+  if (allParentIds?.includes(String(activeSourceRow.value.data.id))) {
     console.warn('[onSubmitDestinationRowIdDialog] Loop parent!!!')
     alert('Warninh! Loop parent!')
     return;
@@ -253,20 +253,18 @@ function onSubmitDestinationRowIdDialog() {
 
   changeRowParent(activeSourceRow.value, activeDestinationRowId.value);
 }
+
+function onDblClick(event) {
+  newTableWrapperRef.value.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, event.row);
+}
 </script>
 
 <template>
-  <div class="app-new-table">
-    <div class="app-new-table__actions">
-      <button @click="initData">
-        Init Data
-      </button>
-    </div>
-
-    <div class="app-new-table__data">
+  <div class="new-reestr">
+    <div class="new-reestr__data">
       <ColumnSettings
         v-bind="{
-          columns,
+          columns: props.initialColumns,
           columnsSettings,
         }"
         @change:column-settings="onChangeColumnSettings"
@@ -275,25 +273,19 @@ function onSubmitDestinationRowIdDialog() {
       <NewTableWrapper
         ref="newTableWrapperRef"
         :key="timeStamp"
-        :data="data"
-        :columns="columns"
+        :data="props.initialData"
+        :columns="props.initialColumns"
         :columns-settings="columnsSettings"
-        :initial-filters="filters"
-        :initial-sorts="sorts"
-        :actions-change-modes="actionsChangeModes"
-        :actions="actions"
-        :isNumberColumnShown="true"
-        :isCheckboxColumnShown="true"
-        :isExpandColumnShown="true"
-        :common-meta="{
-          class: {
-            stage: '--stage',
-            subStage: '--sub-stage',
-            task: '--task',
-          }
-        }"
+        :initial-filters="props.initialFilters"
+        :initial-sorts="props.initialSorts"
+        :actions-change-modes="props.initialActionsChangeModes"
+        :actions="props.initialActions"
+        :isNumberColumnShown="props.isNumberColumnShown"
+        :isCheckboxColumnShown="props.isCheckboxColumnShown"
+        :isExpandColumnShown="props.isExpandColumnShown"
+        :common-meta="props.commonMeta"
         @row-action="onRowAction"
-        @dblclick.self="(event) => newTableWrapperRef.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, event.row)"
+        @dblclick.self="onDblClick"
         @contextmenu.self="onContextMenu"
         @change:position="activeContextMenuMouseEvent = null"
       >
@@ -319,7 +311,7 @@ function onSubmitDestinationRowIdDialog() {
 
     <div
       v-if="!!newTableWrapperRef"
-      class="app-new-table-settings"
+      class="new-reestr-settings"
     >
       <div>
         <label>
@@ -330,35 +322,18 @@ function onSubmitDestinationRowIdDialog() {
           >
         </label>
       </div>
-      <div class="app-new-table-settings__info">
+      <div class="new-reestr-columns-settings__info">
         <span>Total</span>
         <span>{{ newTableWrapperRef.computedFlatData.length }}</span>
       </div>
     </div>
 
-    <dialog
-      v-if="isDestinationRowIdDialogShown"
-      open
-      style="z-index: 100;"
-    >
-      <p>Try to change parent for [{{ activeSourceRow.data.id }}]</p>
-      <form
-        method="dialog"
-        @submit="onSubmitDestinationRowIdDialog"
-      >
-        <label>
-          activeDestinationRowId:
-          <input v-model="activeDestinationRowId">
-        </label>
-        <div class="dialog-buttons">
-          <button
-            type="button"
-            @click="isDestinationRowIdDialogShown = false"
-          >Cancel</button>
-          <button type="submit">OK</button>
-        </div>
-      </form>
-    </dialog>
+    <NewReestrChangeRowParentDialog
+      v-if="isChangeRowParentDialogShown"
+      :activeSourceRow="activeSourceRow"
+      @close="isChangeRowParentDialogShown = false"
+      @changr:destination-row-id="onSubmitChangeRowParentId"
+    />
 
     <Teleport
       v-if="activeContextMenuMouseEvent"
@@ -375,51 +350,27 @@ function onSubmitDestinationRowIdDialog() {
 </template>
 
 <style scoped>
-.app-new-table {
+.new-reestr {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
 }
 
-.app-new-table__actions {
-  border-radius: 8px;
-  background-color: #eee;
-  width: 100%;
-  text-align: center;
-  padding: 8px;
-}
 
-.app-new-table__data {
+.new-reestr__data {
   display: flex;
   align-items: flex-start;
   gap: 16px;
 }
 
-:deep() .--stage {
-  background-color: #dfefff;
-}
-
-:deep() .--sub-stage {
-  background-color: #f5faff;
-}
-
-:deep() .--task {
-  background-color: #ffffff;
-}
-
-/* так можно переопределять стили */
-:deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
-  color: red;
-}
-
-.app-new-table-settings {
+.new-reestr-settings {
   margin-top: 16px;
   display: flex;
   justify-content: center;
 }
 
-.app-new-table-settings__info {
+.new-reestr-columns-settings__info {
   margin-left: 16px;
   display: flex;
   gap: 8px;
