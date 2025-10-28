@@ -3,7 +3,7 @@ import type { TFindParentRowWithChildIndexByChildRowId } from "./finders";
 
 import { findParentRowWithChildIndexByChildRowId } from "./finders";
 
-export function calcChildSums(row: INewTableRow, data: INewTableRow[], columnsToCalc: string[]) {
+export function calcOwnSums(row: INewTableRow, data: INewTableRow[], columnsToCalc: string[]) {
   columnsToCalc.forEach(
     (columnName: string) => {
       row.data[columnName] = row.children.reduce(
@@ -31,7 +31,7 @@ export function calcParentSums(
     = findParentRowWithChildIndexByChildRowId(row.data.id, data);
 
   while (currentParent !== newParentRowWithIndexOfParent && !!newParentRowWithIndexOfParent) {
-    calcChildSums(newParentRowWithIndexOfParent.parent, data, columnsToCalc);
+    calcOwnSums(newParentRowWithIndexOfParent.parent, data, columnsToCalc);
     currentParent = newParentRowWithIndexOfParent;
     newParentRowWithIndexOfParent = findParentRowWithChildIndexByChildRowId(currentParent.parent.data.id, data);
   }

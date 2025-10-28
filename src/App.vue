@@ -26,7 +26,7 @@ import {
   findParentRowWithChildIndexByChildRowId,
   findRowById
 } from './helpers/finders';
-import { calcChildSums, calcParentSums } from './helpers/calacSums';
+import { calcOwnSums, calcParentSums } from './helpers/calacSums';
 import { newTableStandartActionsChangeModes } from './components/NewTableWrapper/constants/standartActionsChangeModes';
 import { testActionsChangeModes } from './constants/actionsChangeModes';
 
@@ -116,7 +116,7 @@ function onDelete(event: INewTableRowActionEvent) {
   }
 
   if (parentRowWithChildRowId) {
-    calcChildSums(parentRowWithChildRowId.parent, data.value, columnsToCalc);
+    calcOwnSums(parentRowWithChildRowId.parent, data.value, columnsToCalc);
     calcParentSums(parentRowWithChildRowId.parent, data.value, columnsToCalc);
   }
 }
@@ -146,7 +146,7 @@ function onRowAction(event: INewTableRowActionEvent) {
       const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
       onDelete(event);
       if (parentRow) {
-        calcChildSums(parentRow.parent, data.value, columnsToCalc);
+        calcOwnSums(parentRow.parent, data.value, columnsToCalc);
         calcParentSums(parentRow.parent, data.value, columnsToCalc);
       }
       newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
