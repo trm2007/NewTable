@@ -68,7 +68,7 @@ const activeSourceRow = ref<INewTableRow>(null);
 const isDestinationRowIdDialogShown = ref<boolean>(false);
 
 function initData() {
-  const extraFieldCount = 7;
+  const extraFieldCount = 20;
 
   columns.value = generateExtraColumns(testColumns, extraFieldCount);
 
@@ -85,7 +85,7 @@ function initData() {
     },
   }
 
-  data.value = generateLargeTestData(20000, 5, extraFieldCount);
+  data.value = generateLargeTestData(20, 5, extraFieldCount);
 
   timeStamp.value = Date.now();
 }

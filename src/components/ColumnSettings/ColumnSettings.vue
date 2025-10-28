@@ -56,7 +56,7 @@ function onChangeVisible(columnName: string, event: Event) {
 </script>
 
 <template>
-  <div>
+  <div class="change-settings">
     <div
       v-for="(columnSetting, columnName) in omputedListOfColumnSettings"
       :key="columnName"
@@ -72,3 +72,10 @@ function onChangeVisible(columnName: string, event: Event) {
     </div>
   </div>
 </template>
+
+<style lang="css" scoped>
+.change-settings {
+  max-height: 500px;
+  overflow: scroll;
+}
+</style>

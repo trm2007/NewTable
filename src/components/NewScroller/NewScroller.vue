@@ -22,6 +22,10 @@ const maxCount = computed<number>(
   () => Math.max(props.count - props.rowCount, 0)
 );
 
+const bodyHeihjtInPercent = computed<number>(
+  () => Math.ceil((props.count / props.rowCount) * 100),
+);
+
 let ticky = false;
 
 watch(
@@ -91,7 +95,7 @@ function onScroll() {
       class="new-scroll"
       :style="{
         width: `${width || 16}px`,
-        height: `${maxCount * 100}%`,
+        height: `${bodyHeihjtInPercent}%`,
       }"
     />
   </div>
