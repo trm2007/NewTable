@@ -4,7 +4,8 @@
       <input
         v-model.number="localValue"
         type="number"
-        @blur="commit"
+        @change="commit"
+        @input="$emit('input', localValue)"
       >
     </template>
     <template v-else>
@@ -27,7 +28,10 @@ const props = defineProps<{
   mode?: 'view' | 'edit'
 }>();
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits<{
+  (e: 'update:value', value: number),
+  (e: 'input', value: number),
+}>();
 
 const localValue = ref<number>(props.value || 0);
 

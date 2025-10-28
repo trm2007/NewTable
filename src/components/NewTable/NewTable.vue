@@ -21,6 +21,10 @@ import { useNewTableSlots } from './composables/NewTableSlots';
 const props = defineProps<{
   // подготовленные данные, которые полностьб будут отображаться
   data: INewTableRow[];
+  // измененные строки, которые редактируются в данный момент
+  // эти данные нужны, чтобы не терялись изменения при скроле,
+  // когда компоненты строки полностьб демонтирубтся и локальное состояние теряется
+  changedRows?: Record<string, INewTableRow>;
   // подгттовленные колокни - отсортированные и отображаемые
   columns: INewTableColumn[];
   // фильтры для полей-колонок данных
@@ -56,6 +60,7 @@ const emit = defineEmits<{
   (e: 'change:column-sort', event: INewTableSorts): void;
   (e: 'toggle:expand-all-row'): void;
   (e: 'toggle:check-all-row'): void;
+  (e: 'update:cell-value', localRow: INewTableRow): void;
 }>();
 
 defineOptions({
@@ -145,6 +150,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         v-for="(row, rowIndex) in data"
         :key="`${startIndex + rowIndex + 1}-${row.data.id}`"
         :row="row"
+        :changedRow="changedRows[row.data.id]"
         :localColumnsSettings="columnsSettings"
         :isNumberColumnShown="true"
         :rowNumber="startIndex + rowIndex + 1"
@@ -159,6 +165,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         :style="computedRowStyle"
         v-bind="$attrs"
         @row-action="$emit('row-action', $event)"
+        @update:cell-value="$emit('update:cell-value', $event)"
       >
         <template
           v-for="slot in computedCellSlots"

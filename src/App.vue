@@ -140,6 +140,7 @@ function onRowAction(event: INewTableRowActionEvent) {
     case NEW_TABLE_STANDART_ROW_ACTIONS.SAVE:
       onSave(event.row);
       calcParentSums(event.row, data.value, columnsToCalc);
+      newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
       break;
     case NEW_TABLE_STANDART_ROW_ACTIONS.DELETE:
       const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, data.value);
@@ -148,6 +149,10 @@ function onRowAction(event: INewTableRowActionEvent) {
         calcChildSums(parentRow.parent, data.value, columnsToCalc);
         calcParentSums(parentRow.parent, data.value, columnsToCalc);
       }
+      newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
+      break;
+    case NEW_TABLE_STANDART_ROW_ACTIONS.CANCEL:
+      newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
       break;
     case NEW_TABLE_STANDART_ROW_ACTIONS.CELL_ACTION:
       onCellAction(event);

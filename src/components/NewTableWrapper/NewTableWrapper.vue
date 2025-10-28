@@ -139,6 +139,8 @@ const {
 
 const el = ref<InstanceType<typeof NewTable> | null>(null);
 
+const changedRows = ref<Record<string, INewTableRow>>({});
+
 onMounted(() => {
   if (!el.value?.$el) return;
   const element = el.value.$el as HTMLElement;
@@ -212,6 +214,18 @@ function onToggleCheckAllRow() {
   toggleCheckAllRow();
 }
 
+function onUpdateCellValue(localRow: INewTableRow) {
+  changedRows.value[localRow.data.id] = localRow
+}
+
+function deleteChangedRow(idRow: number | string) {
+  const {
+    [idRow]: deletedRow,
+    ...newChangedRows
+  } = changedRows.value;
+  changedRows.value = newChangedRows;
+}
+
 defineExpose({
   modeIds,
   editingIds,
@@ -227,6 +241,9 @@ defineExpose({
   rowCount,
   setRowCount,
   computedFlatData,
+
+  changedRows,
+  deleteChangedRow,
 })
 </script>
 
@@ -236,6 +253,7 @@ defineExpose({
       <NewTable
         ref="el"
         :data="computedOnlyExpandedFlatDataToView"
+        :changedRows="changedRows"
         :columns="computedColumnsSortByOrderVisible"
         :columnsSettings="localColumnsSettings"
         :filters="filters"
@@ -258,6 +276,7 @@ defineExpose({
         @change:column-sort="onChangeColumnSort"
         @toggle:expand-all-row="onToggleExpandAllRow"
         @toggle:check-all-row="onToggleCheckAllRow"
+        @update:cell-value="onUpdateCellValue"
       >
         <template
           v-for="slot in computedHeadSlots"

@@ -25,6 +25,7 @@ import { NEW_TABLE_DEFAULT_TYPE } from '../../constants/defaultRowType';
 
 const props = defineProps<{
   row: INewTableRow;
+  changedRow?: INewTableRow;
   localColumnsSettings: Record<string, INewTableHeaderSetting>;
   visibleSortedColumns: INewTableColumn[];
   isNumberColumnShown?: boolean;
@@ -45,6 +46,7 @@ const emit = defineEmits<{
   // (e: 'cell-action', event: INewTableCellActionEvent): void;
   (e: 'dblclick', event: INewTableCellNativeEvent): void;
   (e: 'contextmenu', event: INewTableCellNativeEvent): void;
+  (e: 'update:cell-value', localRow: INewTableRow): void;
 }>();
 
 // эта опция отключит передачу таких атрибутов как style и class
@@ -106,12 +108,25 @@ const enabledActions = computed<INewTableRowActions>(
   },
 );
 
-let localRow: INewTableRow = JSON.parse(JSON.stringify(props.row));
+const computedActiveRow = computed<INewTableRow>(
+  () => props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EDIT)
+    ? props.changedRow || props.row
+    : props.row,
+);
+
+let localRow: INewTableRow = !!(props.changedRow || props.row) ? JSON.parse(JSON.stringify(props.changedRow || props.row)) : null;
 
 watch(
   () => props.row,
   (newRow) => {
-    localRow = JSON.parse(JSON.stringify(newRow));
+    localRow = !!(props.changedRow || newRow) ? JSON.parse(JSON.stringify(props.changedRow || newRow)) : null;
+  },
+);
+
+watch(
+  () => props.changedRow,
+  (newRow) => {
+    localRow = !!(newRow || props.row) ? JSON.parse(JSON.stringify(newRow || props.row)) : null;
   },
 );
 
@@ -200,6 +215,7 @@ function onCellUpdateValue({ key, value }: { key: string, value: unknown }) {
   // эти данные отправляются родителю только при срабатывании action (действия нажатии иконки)
   localRow.data[key] = value;
   // onCellAction({ key, value, name: NEW_TABLE_STANDART_CELL_ACTIONS.CHANGE_CELL });
+  emit('update:cell-value', localRow);
 }
 
 function onCellAction({ key, value, name }: INewTableCellActionData) {
@@ -278,17 +294,22 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
         }"
       >
         <component
-          :is="getComponentName(header, row.meta.rowType || props.commonMeta?.rowType)"
+          :is="getComponentName(header, computedActiveRow.meta.rowType || props.commonMeta?.rowType)"
           v-if="header?.components"
-          :value="row.data[header.key]"
-          :row="row"
+          :value="computedActiveRow.data[header.key]"
+          :row="computedActiveRow"
           :column="header"
-          :mode="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EDIT) ? NEW_TABLE_STANDART_ROW_MODES.EDIT : NEW_TABLE_STANDART_ROW_MODES.VIEW || NEW_TABLE_STANDART_ROW_MODES.VIEW"
-          v-bind="getComponentProps(header, row.meta.rowType || props.commonMeta?.rowType)"
+          :mode="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EDIT)
+            ? NEW_TABLE_STANDART_ROW_MODES.EDIT
+            : NEW_TABLE_STANDART_ROW_MODES.VIEW || NEW_TABLE_STANDART_ROW_MODES.VIEW
+            "
+          v-bind="getComponentProps(header, computedActiveRow.meta.rowType || props.commonMeta?.rowType)"
           @update:value="onCellUpdateValue({ key: header.key, value: $event })"
+          @input="onCellUpdateValue({ key: header.key, value: $event })"
+          @change="onCellUpdateValue({ key: header.key, value: $event })"
           @cell-action="onCellAction({ key: header.key, value: $event.value, name: $event.name })"
-        >{{ row.data[header.key] }}</component>
-        <span v-else>{{ row.data[header.key] }}</span>
+        >{{ computedActiveRow.data[header.key] }}</component>
+        <span v-else>{{ computedActiveRow.data[header.key] }}</span>
       </slot>
     </div>
 
@@ -305,7 +326,7 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
             :icon="action.icon || 'fa-solid fa-circle-info'"
             class="icon new-table__action-icon"
             :title="action.label || action.actionName"
-            @click="$emit('row-action', { name: action.actionName, row: localRow })"
+            @click="$emit('row-action', { name: action.actionName, row: computedActiveRow })"
           />
           <span v-if="!!action.label">{{ action.label }}</span>
         </div>
