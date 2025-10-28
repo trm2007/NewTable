@@ -32,6 +32,10 @@ useOutsideClickHandler(
   onClose,
 )
 
+const activeSubMenu = ref<number>(null);
+
+const activeMouseEvent = ref<MouseEvent>(null);
+
 function onClose() {
   emit('close');
 }
@@ -43,17 +47,34 @@ function onClose() {
     :style="{
       top: `${xy.y}px`,
       left: `${xy.x}px`,
-      position: 'fixed',
+      position: 'absolute',
     }"
     class="new-context-menu"
   >
     <div
-      v-for="menuItem in menuItems"
+      v-for="(menuItem, idx) in menuItems"
       :key="menuItem.actionName"
       class="new-menu-item"
-      @click="emit('select:item', menuItem)"
+      style="position: relative;"
+      @click="() => { menuItem.actionName ? emit('select:item', menuItem) : null; }"
+      @mouseenter="(event) => { activeMouseEvent = event; activeSubMenu = idx; }"
+      @mouseleave="() => { activeMouseEvent = null; activeSubMenu = null; }"
     >
-      {{ menuItem.label }}
+      <div class="new-menu-item__block">
+        <span class="new-menu-item__lanel">{{ menuItem.label }}</span>
+        <span v-if="!!menuItem.children?.length">&gt;</span>
+      </div>
+
+      <NewContextMenu
+        v-if="!!menuItem.children?.length && activeSubMenu === idx"
+        :menu-items="menuItem.children"
+        :menu-mouse-event="activeMouseEvent"
+        :style="{
+          left: '100%',
+          top: '0',
+        }"
+        @select:item="emit('select:item', $event)"
+      />
     </div>
   </div>
 </template>
@@ -85,5 +106,15 @@ function onClose() {
   .new-context-menu {
     width: 100%;
   }
+}
+
+.new-menu-item__block {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.new-menu-item__lanel {
+  text-wrap: nowrap;
 }
 </style>

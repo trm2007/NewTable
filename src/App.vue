@@ -195,19 +195,30 @@ function onContextMenu(event: INewTableCellNativeEvent) {
 
   activeContextMenuItems.value = [
     {
-      label: 'Edit Row',
-      actionName: 'edit-row',
-      payload: event,
+      label: 'Row operations',
+      children: [
+        {
+          label: 'Edit Row',
+          actionName: 'edit-row',
+          payload: event,
+        },
+        {
+          label: 'Delete Row',
+          actionName: 'delete-row',
+          payload: event,
+        },
+      ],
     },
     {
-      label: 'Delete Row',
-      actionName: 'delete-row',
-      payload: event,
-    },
-    {
-      label: 'Show Cell Info',
-      actionName: 'cell-info',
-      payload: event,
+      label: 'Cell operations',
+      children: [
+        {
+          label: 'Show Cell Info',
+          actionName: 'cell-info',
+          payload: event,
+        },
+
+      ],
     },
     {
       label: 'Change row parent',

@@ -1,8 +1,9 @@
 export interface INewContexMenuItem {
   label: string;
   icon?: string;
-  actionName: string;
+  actionName?: string;
   payload?: unknown;
+  children?: INewContexMenuItem[];
 };
 
 export interface INewContextMenuXY {
