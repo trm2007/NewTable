@@ -119,7 +119,7 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
       @row-action="onRowAction"
       @select:item="onSelectContextMenuItem"
     >
-      <template v-slot:head[id]sort="idSlotProps">
+      <!-- <template v-slot:head[id]sort="idSlotProps">
         <span
           v-if="idSlotProps.sorts[idSlotProps.cellName]"
           style="color: green;"
@@ -128,7 +128,7 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
           v-else
           style="color: gray;"
         >{{ idSlotProps.cellName }} - unsorted</span>
-      </template>
+      </template> -->
 
       <template v-slot:cell[id]="idSlotProps">
         <span style="color: red;">id[{{ idSlotProps.value }}]</span>
