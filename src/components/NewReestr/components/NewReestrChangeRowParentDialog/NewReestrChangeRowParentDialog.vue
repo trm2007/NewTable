@@ -9,13 +9,13 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'close'): void;
-  (e: 'changr:destination-row-id', newRowParentId: number): void;
+  (e: 'change:destination-row-id', newRowParentId: number): void;
 }>();
 
 const newRowParentId = ref<number>(null)
 
 function onSubmitChangeRowParentId() {
-  emit('changr:destination-row-id', newRowParentId.value)
+  emit('change:destination-row-id', newRowParentId.value)
 }
 </script>
 

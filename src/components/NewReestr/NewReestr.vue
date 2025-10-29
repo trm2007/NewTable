@@ -29,13 +29,6 @@ import ColumnSettings from '../ColumnSettings/ColumnSettings.vue';
 import NewReestrChangeRowParentDialog from './components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
 import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
 import { useNewReestrContextMenu } from './composables/NewReestrContextMenu';
-import { useNewReestrChangeRowParent } from './composables/NewReestrChangeRowParent';
-
-interface INewTableChangeCellDataEvent {
-  row: INewTableRow, // row
-  key: string, // cell name
-  value: unknown, // event data from cell component        
-};
 
 const props = defineProps<{
   initialData: INewTableRow[];
@@ -52,15 +45,15 @@ const props = defineProps<{
   commonMeta?: INewTableRowCommonMeta;
 }>();
 
+const emit = defineEmits<{
+  (e: 'change:column-settings', event: IChangeColumnSettingsEvent): void;
+  (e: 'row-action', event: INewTableRowActionEvent): void;
+  (e: 'select:item', menuIrem: INewContexMenuItem): void
+}>();
+
 const {
   generateContextMenuItemsWithPayload,
 } = useNewReestrContextMenu();
-
-const {
-  changeRowParent,
-} = useNewReestrChangeRowParent(
-  () => props.initialData,
-);
 
 const timeStamp = ref(Date.now());
 
@@ -74,11 +67,6 @@ const activeContextMenuItems = ref<INewContexMenuItem[]>([])
 
 const activeContextMenuMouseEvent = ref<MouseEvent>(null)
 
-const activeDestinationRowId = ref<number>(null);
-
-const activeSourceRow = ref<INewTableRow>(null);
-
-const isChangeRowParentDialogShown = ref<boolean>(false);
 
 watch(
   () => props.initialColumnsSettings,
@@ -90,106 +78,8 @@ function onChangeColumnSettings(event: IChangeColumnSettingsEvent) {
     ...columnsSettings.value,
     [event.columnName]: event.columnsSettings,
   }
-}
 
-function onSave(row: INewTableRow) {
-  setRow(row);
-}
-
-function onDelete(event: INewTableRowActionEvent) {
-  const confirmRes = confirm('Are you sure&');
-
-  if (!confirmRes) {
-    return;
-  }
-
-  const row: INewTableRow = event.row;
-
-  const parentRowWithChildRowId = findParentRowWithChildIndexByChildRowId(
-    event.row.data.id,
-    props.initialData
-  );
-
-  const parenRows = findParentRowsById(row.data.id, props.initialData);
-  parenRows?.splice(
-    parenRows.findIndex(r => r.data.id === row.data.id),
-    1
-  );
-
-  if (!row.children) {
-    row.meta.rowType = TEST_DATA_ROW_TYPES.TASK;
-  }
-
-  if (parentRowWithChildRowId) {
-    calcOwnSums(parentRowWithChildRowId.parent, props.initialData, columnsToCalc);
-    calcParentSums(parentRowWithChildRowId.parent, props.initialData, columnsToCalc);
-  }
-}
-
-/**
- * МЕНЯЕТ ДАННЫЕ ПРОПСА props.initialData
- * @param row строка, которую нужно обновить в данных
- */
-function setRow(row: INewTableRow) {
-  const parenRows = findParentRowsById(row.data.id, props.initialData);
-
-  if (!parenRows) {
-    return;
-  }
-
-  parenRows?.forEach((r, index) => {
-    if (r.data.id === row.data.id) {
-      parenRows[index] = row;
-    }
-  });
-}
-
-function onRowAction(event: INewTableRowActionEvent) {
-  switch (event.name) {
-    case NEW_TABLE_STANDART_ROW_ACTIONS.SAVE:
-      onSave(event.row);
-      calcParentSums(event.row, props.initialData, columnsToCalc);
-      newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
-      break;
-    case NEW_TABLE_STANDART_ROW_ACTIONS.DELETE:
-      const parentRow = findParentRowWithChildIndexByChildRowId(event.row.data.id, props.initialData);
-      onDelete(event);
-      if (parentRow) {
-        calcOwnSums(parentRow.parent, props.initialData, columnsToCalc);
-        calcParentSums(parentRow.parent, props.initialData, columnsToCalc);
-      }
-      newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
-      break;
-    case NEW_TABLE_STANDART_ROW_ACTIONS.CANCEL:
-      newTableWrapperRef.value.deleteChangedRow(event.row.data.id);
-      break;
-    case NEW_TABLE_STANDART_ROW_ACTIONS.CELL_ACTION:
-      onCellAction(event);
-      break;
-    default:
-      console.warn('Unknown action:', event.name, 'for row:', event.row);
-  }
-}
-
-function onCellAction(event: INewTableRowActionEvent) {
-  const cellActionValue: INewTableCellActionData = event.value as INewTableCellActionData;
-
-  switch (cellActionValue.name) {
-    case NEW_TABLE_STANDART_CELL_ACTIONS.CHANGE_CELL:
-      onChangeCellData({
-        row: event.row, // row
-        key: cellActionValue?.key, // cell name
-        value: cellActionValue?.value, // event data from cell component        
-      });
-      break;
-  }
-}
-
-function onChangeCellData(event: INewTableChangeCellDataEvent) {
-  const row = findRowById(event.row.data.id, props.initialData);
-  if (row) {
-    row.data[event.key] = event.value;
-  }
+  emit('change:column-settings', event);
 }
 
 function onContextMenu(event: INewTableCellNativeEvent) {
@@ -208,55 +98,20 @@ function onContextMenu(event: INewTableCellNativeEvent) {
   activeContextMenuMouseEvent.value = event.event;
 }
 
+
 function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
-  const payload: INewTableCellNativeEvent = menuItem.payload as INewTableCellNativeEvent;
-
-  switch (menuItem.actionName) {
-    case 'edit-row':
-      newTableWrapperRef.value.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, payload.row);
-      break;
-    case 'delete-row':
-      onDelete({ name: 'delete', row: payload.row });
-      break;
-    case 'cell-info':
-      const strData = payload.row.data[payload.header.key] as string;
-      alert(`${payload.row.data.id} - ${payload.header.key} => ${String(strData)}`)
-      break;
-    case 'change-row-parent':
-      activeSourceRow.value = payload.row;
-      activeDestinationRowId.value = null;
-      isChangeRowParentDialogShown.value = true;
-      break;
-  }
-
   activeContextMenuMouseEvent.value = null;
+  emit('select:item', menuItem);
 }
 
-function onSubmitChangeRowParentId(newRowParentId: number) {
-  isChangeRowParentDialogShown.value = false;
-  activeDestinationRowId.value = newRowParentId;
-
-  if (
-    !activeDestinationRowId.value
-    || !activeSourceRow.value?.data?.id
-  ) {
-    return;
-  }
-
-  const allParentIds = findAllParentRowsFor(activeDestinationRowId.value, props.initialData);
-
-  if (allParentIds?.includes(String(activeSourceRow.value.data.id))) {
-    console.warn('[onSubmitDestinationRowIdDialog] Loop parent!!!')
-    alert('Warninh! Loop parent!')
-    return;
-  }
-
-  changeRowParent(activeSourceRow.value, activeDestinationRowId.value);
-}
 
 function onDblClick(event) {
   newTableWrapperRef.value.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, event.row);
 }
+
+defineExpose({
+  deleteChangedRow: (idRow: number | string) => newTableWrapperRef.value?.deleteChangedRow(idRow),
+});
 </script>
 
 <template>
@@ -284,7 +139,7 @@ function onDblClick(event) {
         :isCheckboxColumnShown="props.isCheckboxColumnShown"
         :isExpandColumnShown="props.isExpandColumnShown"
         :common-meta="props.commonMeta"
-        @row-action="onRowAction"
+        @row-action="$emit('row-action', $event)"
         @dblclick.self="onDblClick"
         @contextmenu.self="onContextMenu"
         @change:position="activeContextMenuMouseEvent = null"
@@ -327,13 +182,6 @@ function onDblClick(event) {
         <span>{{ newTableWrapperRef.computedFlatData.length }}</span>
       </div>
     </div>
-
-    <NewReestrChangeRowParentDialog
-      v-if="isChangeRowParentDialogShown"
-      :activeSourceRow="activeSourceRow"
-      @close="isChangeRowParentDialogShown = false"
-      @changr:destination-row-id="onSubmitChangeRowParentId"
-    />
 
     <Teleport
       v-if="activeContextMenuMouseEvent"
