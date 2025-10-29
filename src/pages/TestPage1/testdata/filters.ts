@@ -1,8 +1,8 @@
-import { NEW_TABLE_STANDART_ROW_MODES } from "../components/NewTable/constants/rowModes";
-import type { INewTableFilter, INewTableFilters } from "../components/NewTable/types/NewTableFilterTypes";
-import type { INewTableRow } from "../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
+import type { INewTableFilter, INewTableFilters } from "../../../components/NewTable/types/NewTableFilterTypes";
+import type { INewTableRow } from "../../../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
-import { compareFilterAsString } from "../helpers/compareFilterAsString";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../../../components/NewTable/constants/rowModes";
+import { compareFilterAsString } from "../../../helpers/compareFilterAsString";
 import { statusOptions } from "./columns";
 
 function generateEmptyTextFilter(): INewTableFilter {

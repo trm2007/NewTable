@@ -1,5 +1,6 @@
-import type { INewTableColumn } from "../components/NewTable/components/NewTableHeader/types/INewTableHeadTypes";
-import { NEW_TABLE_DEFAULT_TYPE } from "../components/NewTable/constants/defaultRowType";
+import type { INewTableColumn } from "../../../components/NewTable/components/NewTableHeader/types/INewTableHeadTypes";
+
+import { NEW_TABLE_DEFAULT_TYPE } from "../../../components/NewTable/constants/defaultRowType";
 
 export const statusOptions = [
   { value: null, name: 'Not set' },

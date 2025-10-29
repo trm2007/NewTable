@@ -2,7 +2,7 @@ import { Ref, ref, toValue } from "vue";
 
 import type { INewTableRow } from "../../../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
-import { TEST_DATA_ROW_TYPES } from "../../../constants/testData";
+import { TEST_DATA_ROW_TYPES } from "../testdata/testData";
 import {
   findAllParentRowsFor,
   findParentRowWithChildIndexByChildRowId,

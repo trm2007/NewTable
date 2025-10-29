@@ -7,16 +7,19 @@ import type { TNewTableActionsChangeModesStandart } from "../../../components/Ne
 import type { INewReestrContexMenuItems } from "../../../components/NewReestr/types/newReestrContexMenuItems";
 import type { INewTableFilters, INewTableSorts } from "../../../components/NewTable/types/NewTableFilterTypes";
 
-import { NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from "../../../components/NewTableWrapper/constants/standartActions";
+import { NEW_TABLE_STANDART_ROW_ACTIONS } from "../../../components/NewTableWrapper/constants/standartActions";
 import { NEW_TABLE_DEFAULT_MODE } from "../../../components/NewTable/constants/rowModes";
 import { newTableStandartActionsChangeModes } from "../../../components/NewTableWrapper/constants/standartActionsChangeModes";
-import { testActionsChangeModes } from "../../../constants/actionsChangeModes";
-import { generateExtraColumns, testColumns } from "../../../constants/columns";
-import { generateExtraColumnsSettings, testColumnsSettings } from "../../../constants/testColumnsSettings";
-import { generateLargeTestData } from "../../../constants/testData";
-import { testContextMenuItems } from "../../../constants/contextMenuItems";
-import { testFilters } from "../../../constants/filters";
-import { testSorts } from "../../../constants/sirts";
+import {
+  fetchActions,
+  fetchActionsChangeModes,
+  fetchColumns,
+  fetchColumnsSettings,
+  fetchContextMenuItems,
+  fetchData,
+  fetchFilters,
+  fetchSorts,
+} from "../api/TestPage1Api";
 
 export function useTestPage1NewReestrInitData(
   count: (number | Ref<number> | (() => number)) = 10000,
@@ -29,48 +32,50 @@ export function useTestPage1NewReestrInitData(
 
   const columnsSettings = ref<INewTableHeaderSettings>({});
 
-  const actions = ref<INewTableActions>(newTableStandartActions)
+  const actions = ref<INewTableActions>({})
 
-  const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>(
-    {
+  const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>({});
+
+  const contextMenuItems = ref<INewReestrContexMenuItems>({});
+
+  const filters = ref<INewTableFilters>({});
+
+  const sorts = ref<INewTableSorts>({});
+
+  async function initData() {
+    actions.value = await fetchActions();
+
+    const localActionsChangeModes = {
       ...newTableStandartActionsChangeModes,
-      ...testActionsChangeModes,
-    }
-  );
-
-  const contextMenuItems = ref<INewReestrContexMenuItems>(testContextMenuItems);
-
-  const filters = ref<INewTableFilters>(testFilters);
-
-  const sorts = ref<INewTableSorts>(testSorts);
-
-  function initData() {
-    columns.value = generateExtraColumns(
-      testColumns,
-      toValue(extraFieldCount)
-    );
-
-    columnsSettings.value = generateExtraColumnsSettings(
-      testColumnsSettings,
-      toValue(extraFieldCount)
-    );
+      ...(await fetchActionsChangeModes()),
+    };
 
     actionsChangeModes.value = {
-      ...actionsChangeModes.value,
+      ...localActionsChangeModes,
       [NEW_TABLE_DEFAULT_MODE]: {
-        ...(actionsChangeModes.value[NEW_TABLE_DEFAULT_MODE] || {}),
+        ...(localActionsChangeModes[NEW_TABLE_DEFAULT_MODE] || {}),
         [NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]: {
-          on: [...(actionsChangeModes.value[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.on || []), 'changed'],
-          off: actionsChangeModes.value[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.off || [],
+          on: [...(localActionsChangeModes[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.on || []), 'changed'],
+          off: localActionsChangeModes[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.off || [],
         }
       },
-    }
+    };
 
-    data.value = generateLargeTestData(
-      toValue(count),
-      toValue(maxLevel),
-      toValue(extraFieldCount),
-    );
+    columns.value = await fetchColumns({ extraFieldCount: toValue(extraFieldCount) });
+
+    columnsSettings.value = await fetchColumnsSettings({ extraFieldCount: toValue(extraFieldCount) });
+
+    contextMenuItems.value = await fetchContextMenuItems();
+
+    filters.value = await fetchFilters();
+
+    sorts.value = await fetchSorts();
+
+    data.value = await fetchData({
+      count: toValue(count),
+      maxLevel: toValue(maxLevel),
+      extraFieldCount: toValue(extraFieldCount),
+    });
   }
 
   return {
