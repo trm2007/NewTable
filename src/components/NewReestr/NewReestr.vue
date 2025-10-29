@@ -2,8 +2,8 @@
 import { ref, watch } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/components/NewTableRow/types/NewTableRowTypes';
-import type { INewTableColumn, INewTableHeaderSetting, INewTableHeaderSettings } from '../NewTable/components/NewTableHeader/types/INewTableHeadTypes';
-import type { INewTableCellActionData, INewTableCellNativeEvent, INewTableRowActionEvent } from '../NewTable/types/NewTableEventTypes';
+import type { INewTableColumn, INewTableHeaderSettings } from '../NewTable/components/NewTableHeader/types/INewTableHeadTypes';
+import type { INewTableCellNativeEvent, INewTableRowActionEvent } from '../NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from '../ColumnSettings/types';
 import type { TNewTableActionsChangeModesStandart } from '../NewTable/types/NewTableActionsChangeModesTypes';
 import type { INewContexMenuItem } from '../NewContextMenu/types';
@@ -11,24 +11,14 @@ import type { INewTableActions } from '../NewTable/types/NewTableActionTypes';
 import type { INewReestrContexMenuItems } from './types/newReestrContexMenuItems';
 import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTableFilterTypes';
 
-import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS, newTableStandartActions } from '../NewTableWrapper/constants/standartActions';
-import { newTableStandartActionsChangeModes } from '../NewTableWrapper/constants/standartActionsChangeModes';
-import { testActionsChangeModes } from '../../constants/actionsChangeModes';
-import { columnsToCalc, generateExtraColumns, testColumns } from '../../constants/columns';
-import { generateExtraColumnsSettings, testColumnsSettings } from '../../constants/testColumnsSettings';
-import { NEW_TABLE_DEFAULT_MODE, NEW_TABLE_STANDART_ROW_MODES } from '../NewTable/constants/rowModes';
-import { generateLargeTestData, TEST_DATA_ROW_TYPES } from '../../constants/testData';
-import { findAllParentRowsFor, findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from '../../helpers/finders';
-import { calcOwnSums, calcParentSums } from '../../helpers/calacSums';
-import { testFilters } from '../../constants/filters';
-import { testSorts } from '../../constants/sirts';
+import { useNewReestrContextMenu } from './composables/NewReestrContextMenu';
+
+import { NEW_TABLE_STANDART_ROW_MODES } from '../NewTable/constants/rowModes';
+import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
 
 import NewTableWrapper from '../NewTableWrapper/NewTableWrapper.vue';
 import NewContextMenu from '../NewContextMenu/NewContextMenu.vue';
 import ColumnSettings from '../ColumnSettings/ColumnSettings.vue';
-import NewReestrChangeRowParentDialog from './components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
-import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
-import { useNewReestrContextMenu } from './composables/NewReestrContextMenu';
 
 const props = defineProps<{
   initialData: INewTableRow[];
@@ -67,7 +57,6 @@ const activeContextMenuItems = ref<INewContexMenuItem[]>([])
 
 const activeContextMenuMouseEvent = ref<MouseEvent>(null)
 
-
 watch(
   () => props.initialColumnsSettings,
   () => { columnsSettings.value = JSON.parse(JSON.stringify(props.initialColumnsSettings)); }
@@ -98,12 +87,10 @@ function onContextMenu(event: INewTableCellNativeEvent) {
   activeContextMenuMouseEvent.value = event.event;
 }
 
-
 function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
   activeContextMenuMouseEvent.value = null;
   emit('select:item', menuItem);
 }
-
 
 function onDblClick(event) {
   newTableWrapperRef.value.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, event.row);

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import type { INewTableRow } from '../../../NewTable/components/NewTableRow/types/NewTableRowTypes';
 
-const props = defineProps<{
+defineProps<{
   activeSourceRow: INewTableRow;
 }>();
 

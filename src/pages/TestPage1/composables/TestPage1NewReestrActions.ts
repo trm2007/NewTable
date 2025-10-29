@@ -9,6 +9,7 @@ import { TEST_DATA_ROW_TYPES } from "../../../constants/testData";
 import { calcOwnSums, calcParentSums } from "../../../helpers/calacSums";
 import { columnsToCalc } from "../../../constants/columns";
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS } from "../../../components/NewTableWrapper/constants/standartActions";
+
 import NewReestr from "../../../components/NewReestr/NewReestr.vue";
 
 export function useTestPage1NewReestrActions(

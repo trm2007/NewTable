@@ -2,17 +2,18 @@
 import { ref } from 'vue';
 
 import type { INewTableRow } from '../../components/NewTable/components/NewTableRow/types/NewTableRowTypes';
+import type { INewContexMenuItem } from '../../components/NewContextMenu/types';
+import type { INewTableCellNativeEvent } from '../../components/NewTable/types/NewTableEventTypes';
 
 import { useTestPage1NewReestrInitData } from './composables/TestPage1NewReestrInitData';
 import { useTestPage1NewReestrChangeRowParentId } from './composables/TestPage1NewReestrChangeRowParentId';
 
-import NewReestr from '../../components/NewReestr/NewReestr.vue';
-import NewReestrChangeRowParentDialog from '../../components/NewReestr/components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
 import { findParentRowsById } from '../../helpers/finders';
 import { useTestPage1NewReestrActions } from './composables/TestPage1NewReestrActions';
-import { INewContexMenuItem } from '../../components/NewContextMenu/types';
-import { INewTableCellNativeEvent } from '../../components/NewTable/types/NewTableEventTypes';
 import { NEW_TABLE_STANDART_ROW_MODES } from '../../components/NewTable/constants/rowModes';
+
+import NewReestr from '../../components/NewReestr/NewReestr.vue';
+import NewReestrChangeRowParentDialog from '../../components/NewReestr/components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
 
 const newReestrRef = ref<typeof NewReestr>();
 

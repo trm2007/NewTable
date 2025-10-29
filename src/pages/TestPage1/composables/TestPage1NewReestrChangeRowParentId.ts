@@ -2,12 +2,12 @@ import { Ref, ref, toValue } from "vue";
 
 import type { INewTableRow } from "../../../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
+import { TEST_DATA_ROW_TYPES } from "../../../constants/testData";
 import {
   findAllParentRowsFor,
   findParentRowWithChildIndexByChildRowId,
   findRowById
 } from "../../../helpers/finders";
-import { TEST_DATA_ROW_TYPES } from "../../../constants/testData";
 
 export function useTestPage1NewReestrChangeRowParentId(
   initialData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
