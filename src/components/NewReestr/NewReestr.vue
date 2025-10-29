@@ -12,6 +12,7 @@ import type { INewReestrContexMenuItems } from './types/newReestrContexMenuItems
 import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTableFilterTypes';
 
 import { useNewReestrContextMenu } from './composables/NewReestrContextMenu';
+import { useNewTableSlots } from '../NewTable/composables/NewTableSlots';
 
 import { NEW_TABLE_STANDART_ROW_MODES } from '../NewTable/constants/rowModes';
 import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
@@ -44,6 +45,11 @@ const emit = defineEmits<{
 const {
   generateContextMenuItemsWithPayload,
 } = useNewReestrContextMenu();
+
+const {
+  computedCellSlots,
+  computedHeadSlots,
+} = useNewTableSlots();
 
 const timeStamp = ref(Date.now());
 
@@ -131,22 +137,26 @@ defineExpose({
         @contextmenu.self="onContextMenu"
         @change:position="activeContextMenuMouseEvent = null"
       >
-        <template v-slot:head[id]sort="idSlotProps">
-          <span
-            v-if="idSlotProps.sorts[idSlotProps.cellName]"
-            style="color: green;"
-          >{{ idSlotProps.cellName }} - sorted</span>
-          <span
-            v-else
-            style="color: gray;"
-          >{{ idSlotProps.cellName }} - unsorted</span>
+        <template
+          v-for="slot in computedHeadSlots"
+          :key="slot"
+          #[slot]="slotProps"
+        >
+          <slot
+            :name="slot"
+            v-bind="slotProps"
+          ></slot>
         </template>
 
-        <template v-slot:cell[id]="idSlotProps">
-          <span style="color: red;">id[{{ idSlotProps.value }}]</span>
-        </template>
-        <template v-slot:cell[name]="nameSlotProps">
-          <span style="color: blue;">{{ nameSlotProps.value }}</span>
+        <template
+          v-for="slot in computedCellSlots"
+          :key="slot"
+          #[slot]="slotProps"
+        >
+          <slot
+            :name="slot"
+            v-bind="slotProps"
+          ></slot>
         </template>
       </NewTableWrapper>
     </div>
@@ -211,33 +221,5 @@ defineExpose({
   gap: 8px;
   display: flex;
   align-items: center;
-}
-
-dialog {
-  z-index: 100;
-  background-color: #eee;
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 0 5px 1px #777;
-  color: #333;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-dialog p {
-  padding: 0;
-  margin: 0;
-}
-
-dialog form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-dialog form .dialog-buttons {
-  display: flex;
-  gap: 8px;
 }
 </style>

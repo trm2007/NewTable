@@ -118,7 +118,25 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
       }"
       @row-action="onRowAction"
       @select:item="onSelectContextMenuItem"
-    />
+    >
+      <template v-slot:head[id]sort="idSlotProps">
+        <span
+          v-if="idSlotProps.sorts[idSlotProps.cellName]"
+          style="color: green;"
+        >{{ idSlotProps.cellName }} - sorted</span>
+        <span
+          v-else
+          style="color: gray;"
+        >{{ idSlotProps.cellName }} - unsorted</span>
+      </template>
+
+      <template v-slot:cell[id]="idSlotProps">
+        <span style="color: red;">id[{{ idSlotProps.value }}]</span>
+      </template>
+      <template v-slot:cell[name]="nameSlotProps">
+        <span style="color: blue;">{{ nameSlotProps.value }}</span>
+      </template>
+    </NewReestr>
 
     <NewReestrChangeRowParentDialog
       v-if="isChangeRowParentDialogShown"
@@ -132,6 +150,9 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
 <style scoped>
 .test-page1 {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .test-page1__actions {
@@ -157,5 +178,34 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
 /* так можно переопределять стили */
 :deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
   color: red;
+}
+
+dialog {
+  top: 50%;
+  z-index: 100;
+  background-color: #eee;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 5px 1px #777;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:deep(dialog p) {
+  padding: 0;
+  margin: 0;
+}
+
+:deep(dialog form) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+:deep(dialog form .dialog-buttons) {
+  display: flex;
+  gap: 8px;
 }
 </style>
