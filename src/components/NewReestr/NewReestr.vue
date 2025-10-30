@@ -176,7 +176,7 @@ defineExpose({
       </div>
       <div class="new-reestr-columns-settings__info">
         <span>Total</span>
-        <span>{{ newTableWrapperRef.computedFlatData.length }}</span>
+        <span>{{ newTableWrapperRef.flatData.length }}</span>
       </div>
     </div>
 

@@ -4,10 +4,10 @@ import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes"
 
 export function useNewTableWrapperChecked(
   modeIds: Ref<Record<string, Set<number | string>>> | Record<string, Set<number | string>> | (() => Record<string, Set<number | string>>),
-  computedFlatData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
+  initialFlatData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
 ) {
   const allRowIds = computed<(number | string)[]>(
-    () => toValue(computedFlatData).map(
+    () => toValue(initialFlatData).map(
       (row: INewTableRow) => row.data.id,
     ),
   );
