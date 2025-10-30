@@ -14,6 +14,7 @@ import { NEW_TABLE_STANDART_ROW_MODES } from '../../components/NewTable/constant
 
 import NewReestr from '../../components/NewReestr/NewReestr.vue';
 import NewReestrChangeRowParentDialog from '../../components/NewReestr/components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
+import NewSplitter from '../../components/NewSplitter/NewSplitter.vue';
 
 const newReestrRef = ref<typeof NewReestr>();
 
@@ -95,31 +96,32 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
         Init Data
       </button>
     </div>
-
-    <NewReestr
-      ref="newReestrRef"
-      :initial-data="data"
-      :initial-columns="columns"
-      :initial-columns-settings="columnsSettings"
-      :initial-filters="filters"
-      :initial-sorts="sorts"
-      :initial-actions-change-modes="actionsChangeModes"
-      :initial-actions="actions"
-      :initial-context-menu-items="contextMenuItems"
-      :isNumberColumnShown="true"
-      :isCheckboxColumnShown="true"
-      :isExpandColumnShown="true"
-      :common-meta="{
-        class: {
-          stage: '--stage',
-          subStage: '--sub-stage',
-          task: '--task',
-        }
-      }"
-      @row-action="onRowAction"
-      @select:item="onSelectContextMenuItem"
-    >
-      <!-- <template v-slot:head[id]sort="idSlotProps">
+    <NewSplitter>
+      <template #div1>
+        <NewReestr
+          ref="newReestrRef"
+          :initial-data="data"
+          :initial-columns="columns"
+          :initial-columns-settings="columnsSettings"
+          :initial-filters="filters"
+          :initial-sorts="sorts"
+          :initial-actions-change-modes="actionsChangeModes"
+          :initial-actions="actions"
+          :initial-context-menu-items="contextMenuItems"
+          :isNumberColumnShown="true"
+          :isCheckboxColumnShown="true"
+          :isExpandColumnShown="true"
+          :common-meta="{
+            class: {
+              stage: '--stage',
+              subStage: '--sub-stage',
+              task: '--task',
+            }
+          }"
+          @row-action="onRowAction"
+          @select:item="onSelectContextMenuItem"
+        >
+          <!-- <template v-slot:head[id]sort="idSlotProps">
         <span
           v-if="idSlotProps.sorts[idSlotProps.cellName]"
           style="color: green;"
@@ -130,13 +132,26 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
         >{{ idSlotProps.cellName }} - unsorted</span>
       </template> -->
 
-      <template v-slot:cell[id]="idSlotProps">
-        <span style="color: red;">id[{{ idSlotProps.value }}]</span>
+          <template v-slot:cell[id]="idSlotProps">
+            <span style="color: red;">id[{{ idSlotProps.value }}]</span>
+          </template>
+          <template v-slot:cell[name]="nameSlotProps">
+            <span style="color: blue;">{{ nameSlotProps.value }}</span>
+          </template>
+        </NewReestr>
       </template>
-      <template v-slot:cell[name]="nameSlotProps">
-        <span style="color: blue;">{{ nameSlotProps.value }}</span>
+      <template #div2>
+        <div>
+          SADFGSADRGSADREGAERGASGASDFA
+          SADFGSADRGSADREGAERGASGASDFA
+          SADFGSADRGSADREGAERGASGASDFA
+          SADFGSADRGSADREGAERGASGASDFA
+          SADFGSADRGSADREGAERGASGASDFA
+          SADFGSADRGSADREGAERGASGASDFA
+          SADFGSADRGSADREGAERGASGASDFA
+        </div>
       </template>
-    </NewReestr>
+    </NewSplitter>
 
     <NewReestrChangeRowParentDialog
       v-if="isChangeRowParentDialogShown"

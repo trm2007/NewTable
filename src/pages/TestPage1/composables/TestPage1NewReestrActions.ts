@@ -7,7 +7,7 @@ import type { INewTableChangeCellDataEvent } from "../types/TestPage1Types";
 import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from "../../../helpers/finders";
 import { TEST_DATA_ROW_TYPES } from "../testdata/testData";
 import { calcOwnSums, calcParentSums } from "../../../helpers/calacSums";
-import { columnsToCalc } from "../testdata/columns";
+import { columnsToCalc } from "../testdata/testColumns";
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS } from "../../../components/NewTableWrapper/constants/standartActions";
 
 import NewReestr from "../../../components/NewReestr/NewReestr.vue";

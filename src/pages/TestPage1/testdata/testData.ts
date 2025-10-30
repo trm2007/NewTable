@@ -1,6 +1,6 @@
 import type { INewTableRow, INewTableRowTemplate } from "../../../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
-import { columnsToCalc } from './columns';
+import { columnsToCalc } from './testColumns';
 
 type TTestDataType = string | number | [] | object | null | undefined;
 

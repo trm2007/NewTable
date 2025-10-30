@@ -3,7 +3,7 @@ import type { INewTableRow } from "../../../components/NewTable/components/NewTa
 
 import { NEW_TABLE_STANDART_ROW_MODES } from "../../../components/NewTable/constants/rowModes";
 import { compareFilterAsString } from "../../../helpers/compareFilterAsString";
-import { statusOptions } from "./columns";
+import { statusOptions } from "./testColumns";
 
 function generateEmptyTextFilter(): INewTableFilter {
   return {

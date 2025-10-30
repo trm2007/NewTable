@@ -5,14 +5,14 @@ import type { TNewTableActionsChangeModesStandart } from "../../../components/Ne
 import type { INewReestrContexMenuItems } from "../../../components/NewReestr/types/newReestrContexMenuItems";
 import type { INewTableFilters, INewTableSorts } from "../../../components/NewTable/types/NewTableFilterTypes";
 
-import { generateExtraColumns, testColumns } from "../testdata/columns";
+import { generateExtraColumns, testColumns } from "../testdata/testColumns";
 import { generateLargeTestData } from "../testdata/testData";
 import { newTableStandartActions } from "../../../components/NewTableWrapper/constants/standartActions";
 import { generateExtraColumnsSettings, testColumnsSettings } from "../testdata/testColumnsSettings";
-import { testActionsChangeModes } from "../testdata/actionsChangeModes";
-import { testContextMenuItems } from "../testdata/contextMenuItems";
-import { testFilters } from "../testdata/filters";
-import { testSorts } from "../testdata/sirts";
+import { testActionsChangeModes } from "../testdata/testActionsChangeModes";
+import { testContextMenuItems } from "../testdata/testContextMenuItems";
+import { testFilters } from "../testdata/testFilters";
+import { testSorts } from "../testdata/testSorts";
 
 export function fetchActions(): Promise<INewTableActions> {
   return new Promise((resolve) => {
