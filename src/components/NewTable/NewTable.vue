@@ -8,6 +8,7 @@ import type {
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent,
   INewTableRowActionEvent,
+  INewTableChangeCellValueEvent,
 } from './types/NewTableEventTypes';
 import type { INewTableFilters, INewTableSorts } from './types/NewTableFilterTypes';
 import type { INewTableActions } from './types/NewTableActionTypes';
@@ -60,7 +61,7 @@ const emit = defineEmits<{
   (e: 'change:column-sort', event: INewTableSorts): void;
   (e: 'toggle:expand-all-row'): void;
   (e: 'toggle:check-all-row'): void;
-  (e: 'update:cell-value', localRow: INewTableRow): void;
+  (e: 'change:cell-value', event: INewTableChangeCellValueEvent): void;
 }>();
 
 defineOptions({
@@ -165,7 +166,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         :style="computedRowStyle"
         v-bind="$attrs"
         @row-action="$emit('row-action', $event)"
-        @update:cell-value="$emit('update:cell-value', $event)"
+        @change:cell-value="$emit('change:cell-value', $event)"
       >
         <template
           v-for="slot in computedCellSlots"

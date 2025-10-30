@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 
 import type { INewTableRow, INewTableRowCommonMeta } from '../NewTable/components/NewTableRow/types/NewTableRowTypes';
 import type { INewTableColumn, INewTableHeaderSettings } from '../NewTable/components/NewTableHeader/types/INewTableHeadTypes';
-import type { INewTableCellNativeEvent, INewTableRowActionEvent } from '../NewTable/types/NewTableEventTypes';
+import type { INewTableCellNativeEvent, INewTableRowActionEvent, INewTableChangeCellValueEvent } from '../NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from '../ColumnSettings/types';
 import type { TNewTableActionsChangeModesStandart } from '../NewTable/types/NewTableActionsChangeModesTypes';
 import type { INewMenuItem } from '../NewContextMenu/types';
@@ -40,7 +40,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'change:column-settings', event: IChangeColumnSettingsEvent): void;
   (e: 'row-action', event: INewTableRowActionEvent): void;
-  (e: 'select:item', menuIrem: INewMenuItem): void
+  (e: 'select:item', menuIrem: INewMenuItem): void;
+  (e: 'change:cell-value', event: INewTableChangeCellValueEvent): void;
 }>();
 
 const {
@@ -142,6 +143,7 @@ defineExpose({
         :isExpandColumnShown="props.isExpandColumnShown"
         :common-meta="props.commonMeta"
         @row-action="$emit('row-action', $event)"
+        @change:cell-value="$emit('change:cell-value', $event)"
         @dblclick.self="onDblClick"
         @contextmenu.self="onContextMenu"
         @change:position="activeContextMenuMouseEvent = null"

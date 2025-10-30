@@ -1,13 +1,12 @@
 import { Ref, toValue } from "vue";
 
 import type { INewTableRow } from "../../../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
-import type { INewTableCellActionData, INewTableRowActionEvent } from "../../../components/NewTable/types/NewTableEventTypes";
-import type { INewTableChangeCellDataEvent } from "../types/TestPage1Types";
+import type { INewTableCellActionData, INewTableChangeCellValueEvent, INewTableRowActionEvent } from "../../../components/NewTable/types/NewTableEventTypes";
 
 import { findParentRowsById, findParentRowWithChildIndexByChildRowId, findRowById } from "../../../helpers/finders";
-import { TEST_DATA_ROW_TYPES } from "../testdata/testData";
-import { calcOwnSums, calcParentSums } from "../../../helpers/calacSums";
-import { columnsToCalc } from "../testdata/testColumns";
+import { ILocalNewTableRow, TEST_DATA_ROW_TYPES } from "../testdata/testData";
+import { calcOwnSums, calcParentSums, calcTotalOwnSums } from "../../../helpers/calacSums";
+import { columnsToCalc, totalColumnsToCalc } from "../testdata/testColumns";
 import { NEW_TABLE_STANDART_CELL_ACTIONS, NEW_TABLE_STANDART_ROW_ACTIONS } from "../../../components/NewTableWrapper/constants/standartActions";
 
 import NewReestr from "../../../components/NewReestr/NewReestr.vue";
@@ -54,6 +53,7 @@ export function useTestPage1NewReestrActions(
   function onRowAction(event: INewTableRowActionEvent) {
     switch (event.name) {
       case NEW_TABLE_STANDART_ROW_ACTIONS.SAVE:
+        calcTotalOwnSums(event.row as ILocalNewTableRow);
         onSave(event.row);
         calcParentSums(event.row, toValue(initialData), columnsToCalc);
         toValue(newReestrRef).deleteChangedRow(event.row.data.id);
@@ -83,7 +83,7 @@ export function useTestPage1NewReestrActions(
 
     switch (cellActionValue.name) {
       case NEW_TABLE_STANDART_CELL_ACTIONS.CHANGE_CELL:
-        onChangeCellData({
+        onChangeCellValue({
           row: event.row, // row
           key: cellActionValue?.key, // cell name
           value: cellActionValue?.value, // event data from cell component        
@@ -92,16 +92,23 @@ export function useTestPage1NewReestrActions(
     }
   }
 
-  function onChangeCellData(event: INewTableChangeCellDataEvent) {
+  function onChangeCellValue(event: INewTableChangeCellValueEvent) {
     const row = findRowById(event.row.data.id, toValue(initialData));
     if (row) {
-      row.data[event.key] = event.value;
+      // row.data[event.key] = event.value;
+      event.row[event.key] = event.value;
+
+      if (Object.keys(totalColumnsToCalc).some(
+        (totalColumnName: string) => totalColumnsToCalc[totalColumnName].includes(event.key),
+      )) {
+        calcTotalOwnSums(event.row as ILocalNewTableRow);
+      }
     }
   }
 
   return {
     onCellAction,
-    onChangeCellData,
+    onChangeCellValue,
     onDelete,
     onRowAction,
     onSave,

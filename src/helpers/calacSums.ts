@@ -1,9 +1,24 @@
 import type { INewTableRow } from "../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
+import { totalColumnsToCalc } from "../pages/TestPage1/testdata/testColumns";
+import { ILocalNewTableRow } from "../pages/TestPage1/testdata/testData";
 import type { TFindParentRowWithChildIndexByChildRowId } from "./finders";
 
 import { findParentRowWithChildIndexByChildRowId } from "./finders";
 
+export function calcTotalOwnSums(row: ILocalNewTableRow) {
+  Object.keys(totalColumnsToCalc).forEach(
+    (columnName: string) => {
+      row.data[columnName] = totalColumnsToCalc[columnName].reduce(
+        (acc: number, columnToAdd: string) => acc + (row.data[columnToAdd] as number),
+        0
+      );
+    }
+  );
+}
+
 export function calcOwnSums(row: INewTableRow, data: INewTableRow[], columnsToCalc: string[]) {
+  calcTotalOwnSums(row as ILocalNewTableRow);
+
   columnsToCalc.forEach(
     (columnName: string) => {
       row.data[columnName] = row.children.reduce(

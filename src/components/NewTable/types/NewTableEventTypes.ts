@@ -34,3 +34,9 @@ export interface INewTableCellNativeEvent {
   header?: INewTableColumn,
   event?: MouseEvent
 }
+
+export interface INewTableChangeCellValueEvent {
+  key: string;
+  value: unknown;
+  row: INewTableRow;
+}

@@ -48,6 +48,7 @@ const {
 const {
   onDelete,
   onRowAction,
+  onChangeCellValue,
 } = useTestPage1NewReestrActions(
   () => data.value,
   setRow,
@@ -154,6 +155,7 @@ function onNewReestrSideMenuSummsSubmit(
             }
           }"
           @row-action="onRowAction"
+          @change:cell-value="onChangeCellValue"
           @select:item="onSelectContextMenuItem"
         >
           <!-- <template v-slot:head[id]sort="idSlotProps">

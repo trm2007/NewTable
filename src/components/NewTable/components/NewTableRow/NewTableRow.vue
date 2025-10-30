@@ -12,6 +12,7 @@ import type {
   INewTableCellActionData,
   INewTableCellNativeEvent,
   INewTableRowActionEvent,
+  INewTableChangeCellValueEvent,
 } from '../../types/NewTableEventTypes';
 import type { INewTableActions, INewTableRowAction, INewTableRowActions } from '../../types/NewTableActionTypes';
 
@@ -46,7 +47,7 @@ const emit = defineEmits<{
   // (e: 'cell-action', event: INewTableCellActionEvent): void;
   (e: 'dblclick', event: INewTableCellNativeEvent): void;
   (e: 'contextmenu', event: INewTableCellNativeEvent): void;
-  (e: 'update:cell-value', localRow: INewTableRow): void;
+  (e: 'change:cell-value', event: INewTableChangeCellValueEvent): void;
 }>();
 
 // эта опция отключит передачу таких атрибутов как style и class
@@ -208,20 +209,20 @@ function onChangeCheck($event: InputEvent) {
   })
 }
 
-function onCellUpdateValue({ key, value }: { key: string, value: unknown }) {
+function onChangeCellValue({ key, value }: { key: string, value: unknown }) {
   // при изменениях значений ячеек отрабатывает специфическое поведение
   // родителю никакие события не отправляются
   // меняются локальные данны
   // эти данные отправляются родителю только при срабатывании action (действия нажатии иконки)
   localRow.data[key] = value;
   // onCellAction({ key, value, name: NEW_TABLE_STANDART_CELL_ACTIONS.CHANGE_CELL });
-  emit('update:cell-value', localRow);
+  emit('change:cell-value', { key, value, row: localRow });
 }
 
 function onCellAction({ key, value, name }: INewTableCellActionData) {
   emit('row-action', {
     name: NEW_TABLE_STANDART_ROW_ACTIONS.CELL_ACTION,
-    row: props.row,
+    row: localRow,
     value: {
       name,
       key,
@@ -304,9 +305,9 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
             : NEW_TABLE_STANDART_ROW_MODES.VIEW
           ) || NEW_TABLE_STANDART_ROW_MODES.VIEW"
           v-bind="getComponentProps(header, computedActiveRow.meta.rowType || props.commonMeta?.rowType)"
-          @update:value="onCellUpdateValue({ key: header.key, value: $event })"
-          @input="onCellUpdateValue({ key: header.key, value: $event })"
-          @change="onCellUpdateValue({ key: header.key, value: $event })"
+          @update:value="onChangeCellValue({ key: header.key, value: $event })"
+          @input="onChangeCellValue({ key: header.key, value: $event })"
+          @change="onChangeCellValue({ key: header.key, value: $event })"
           @cell-action="onCellAction({ key: header.key, value: $event.value, name: $event.name })"
         >{{ computedActiveRow.data[header.key] }}</component>
         <span v-else>{{ computedActiveRow.data[header.key] }}</span>

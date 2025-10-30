@@ -8,6 +8,7 @@ import type {
   INewTableChangeColumnsOrderEvent,
   INewTableChangeColumnWidthEvent,
   INewTableRowActionEvent,
+  INewTableChangeCellValueEvent,
 } from '../NewTable/types/NewTableEventTypes';
 import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTableFilterTypes';
 import type { INewTableActions } from '../NewTable/types/NewTableActionTypes';
@@ -49,6 +50,7 @@ const emit = defineEmits<{
   (e: 'row-action', event: INewTableRowActionEvent): void;
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:position', newPosition: number): void;
+  (e: 'change:cell-value', event: INewTableChangeCellValueEvent): void;
 }>();
 
 const {
@@ -217,8 +219,9 @@ function onToggleCheckAllRow() {
   toggleCheckAllRow();
 }
 
-function onUpdateCellValue(localRow: INewTableRow) {
-  changedRows.value[localRow.data.id] = localRow
+function onChangeCellValue(event: INewTableChangeCellValueEvent) {
+  changedRows.value[event.row.data.id] = event.row;
+  emit('change:cell-value', event);
 }
 
 function deleteChangedRow(idRow: number | string): INewTableRow {
@@ -287,7 +290,7 @@ defineExpose({
         @change:column-sort="onChangeColumnSort"
         @toggle:expand-all-row="onToggleExpandAllRow"
         @toggle:check-all-row="onToggleCheckAllRow"
-        @update:cell-value="onUpdateCellValue"
+        @change:cell-value="onChangeCellValue"
       >
         <template
           v-for="slot in computedHeadSlots"

@@ -10,6 +10,7 @@ export const statusOptions = [
   { value: 'active', name: 'Active' },
 ];
 
+// колонки, при изменнии которых, нужно посчитать суммы у родительских строк
 export const columnsToCalc: string[] = [
   'pricePIR',
   'pricePNR',
@@ -20,6 +21,12 @@ export const columnsToCalc: string[] = [
   'customPriceSMR',
   'customPriceTotal'
 ];
+
+// колонки, который вычисляются путкм суммирования других
+export const totalColumnsToCalc: Record<string, string[]> = {
+  'priceTotal': ['pricePNR', 'pricePIR', 'priceSMR'],
+  'customPriceTotal': ['customPricePNR', 'customPricePIR', 'customPriceSMR'],
+};
 
 export const testColumns: INewTableColumn[] = [
   {
