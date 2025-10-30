@@ -248,7 +248,7 @@ defineExpose({
 
   rowCount,
   setRowCount,
-  computedFlatData: flatData,
+  flatData,
 
   changedRows,
   deleteChangedRow,
