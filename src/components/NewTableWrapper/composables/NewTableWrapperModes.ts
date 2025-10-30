@@ -2,7 +2,7 @@ import { computed, ref } from "vue";
 
 import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/NewTableRowTypes";
 
-import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/standartRowModes";
 
 export function useNewTableWrapperModes() {
   const modeIds = ref<Record<string, Set<number | string>>>({});

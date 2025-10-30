@@ -1,7 +1,7 @@
 import type { INewTableFilter, INewTableFilters } from "../../../components/NewTable/types/NewTableFilterTypes";
 import type { INewTableRow } from "../../../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
 
-import { NEW_TABLE_STANDART_ROW_MODES } from "../../../components/NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../../../components/NewTable/constants/standartRowModes";
 import { compareFilterAsString } from "../../../helpers/compareFilterAsString";
 import { statusOptions } from "./testColumns";
 

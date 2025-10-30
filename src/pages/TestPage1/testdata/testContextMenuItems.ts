@@ -1,9 +1,9 @@
 import type { INewReestrContexMenuItems } from "../../../components/NewReestr/types/newReestrContexMenuItems";
 
-import { NEW_TABLE_DEFAULT_TYPE } from "../../../components/NewTable/constants/defaultRowType";
+import { NEW_TABLE_DEFAULT_ROW_TYPE } from "../../../components/NewTable/constants/defaultRowType";
 
 export const testContextMenuItems: INewReestrContexMenuItems = {
-  [NEW_TABLE_DEFAULT_TYPE]: [
+  [NEW_TABLE_DEFAULT_ROW_TYPE]: [
     {
       label: 'Row operations',
       children: [

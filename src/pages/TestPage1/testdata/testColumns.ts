@@ -1,6 +1,6 @@
 import type { INewTableColumn } from "../../../components/NewTable/components/NewTableHeader/types/INewTableHeadTypes";
 
-import { NEW_TABLE_DEFAULT_TYPE } from "../../../components/NewTable/constants/defaultRowType";
+import { NEW_TABLE_DEFAULT_ROW_TYPE } from "../../../components/NewTable/constants/defaultRowType";
 
 export const statusOptions = [
   { value: null, name: 'Not set' },
@@ -275,7 +275,7 @@ export function generateExtraColumns(
       key: fieldName.toLowerCase(),
       name: fieldName,
       components: {
-        [NEW_TABLE_DEFAULT_TYPE]: {
+        [NEW_TABLE_DEFAULT_ROW_TYPE]: {
           name: 'TextComponent',
           props: {},
         },

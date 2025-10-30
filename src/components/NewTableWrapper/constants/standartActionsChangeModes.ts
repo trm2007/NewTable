@@ -1,15 +1,15 @@
 import type { TNewTableActionsChangeModesStandart } from "../../NewTable/types/NewTableActionsChangeModesTypes";
 
-import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/standartRowModes";
 import { NEW_TABLE_STANDART_ROW_ACTIONS } from "./standartActions";
-import { NEW_TABLE_DEFAULT_TYPE } from "../../NewTable/constants/defaultRowType";
+import { NEW_TABLE_DEFAULT_ROW_TYPE } from "../../NewTable/constants/defaultRowType";
 
 /**
- * @constant {TTActionsChangeModesStandart} standartActionsChangeModes для каждого типа строк заданы акции,
+ * @constant {TTActionsChangeModesStandart} standartActionsChangeModes для каждого типа строк указаны дкйствия,
  * которые включают или отключают несколько режимов
  */
 export const newTableStandartActionsChangeModes: TNewTableActionsChangeModesStandart = {
-  [NEW_TABLE_DEFAULT_TYPE]: {
+  [NEW_TABLE_DEFAULT_ROW_TYPE]: {
     [NEW_TABLE_STANDART_ROW_ACTIONS.EDIT]: {
       on: [NEW_TABLE_STANDART_ROW_MODES.EDIT],
       off: [],

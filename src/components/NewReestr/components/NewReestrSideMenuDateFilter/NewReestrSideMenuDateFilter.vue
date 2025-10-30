@@ -18,7 +18,7 @@ const value = ref<Date>()
       'submit',
       {
         value: value, // ($event.target as HTMLInputElement).value,
-        payload: props.payload
+        payload: props.payload,
       }
     )">
       <input

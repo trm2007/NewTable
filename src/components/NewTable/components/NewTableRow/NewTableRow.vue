@@ -16,12 +16,12 @@ import type {
 import type { INewTableActions, INewTableRowAction, INewTableRowActions } from '../../types/NewTableActionTypes';
 
 import { generateColumnWidths } from '../../helpers/generateColumnWidths';
-import { NEW_TABLE_STANDART_ROW_MODES } from '../../constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from '../../constants/standartRowModes';
 import { NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME } from '../../constants/defaultComponentName';
 import {
   NEW_TABLE_STANDART_ROW_ACTIONS
 } from '../../../NewTableWrapper/constants/standartActions';
-import { NEW_TABLE_DEFAULT_TYPE } from '../../constants/defaultRowType';
+import { NEW_TABLE_DEFAULT_ROW_TYPE } from '../../constants/defaultRowType';
 
 const props = defineProps<{
   row: INewTableRow;
@@ -89,8 +89,8 @@ const enabledActions = computed<INewTableRowActions>(
       return {};
     }
 
-    const rowType = props.row.meta.rowType || NEW_TABLE_DEFAULT_TYPE;
-    const rowActions = props.actions[rowType] || props.actions[NEW_TABLE_DEFAULT_TYPE];
+    const rowType = props.row.meta.rowType || NEW_TABLE_DEFAULT_ROW_TYPE;
+    const rowActions = props.actions[rowType] || props.actions[NEW_TABLE_DEFAULT_ROW_TYPE];
 
     if (!rowActions) {
       return {};
@@ -148,11 +148,11 @@ function getComponentName(header: INewTableColumn, rowType?: string | number) {
   }
 
   if (!rowType) {
-    return header.components[NEW_TABLE_DEFAULT_TYPE]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
+    return header.components[NEW_TABLE_DEFAULT_ROW_TYPE]?.name || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
   }
 
   return header.components[rowType]?.name
-    || header.components[NEW_TABLE_DEFAULT_TYPE]?.name
+    || header.components[NEW_TABLE_DEFAULT_ROW_TYPE]?.name
     || NEW_TABLE_DEFAULT_CELL_COMPONENT_NAME;
 }
 
@@ -186,7 +186,7 @@ function getComponentProps(header: INewTableColumn, rowType?: string | number) {
   }
 
   if (!rowType) {
-    return header.components[NEW_TABLE_DEFAULT_TYPE]?.props || {};
+    return header.components[NEW_TABLE_DEFAULT_ROW_TYPE]?.props || {};
   }
 
   return header.components[rowType]?.props || {};

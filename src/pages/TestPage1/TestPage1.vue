@@ -10,7 +10,7 @@ import { useTestPage1NewReestrChangeRowParentId } from './composables/TestPage1N
 
 import { findParentRowsById } from '../../helpers/finders';
 import { useTestPage1NewReestrActions } from './composables/TestPage1NewReestrActions';
-import { NEW_TABLE_STANDART_ROW_MODES } from '../../components/NewTable/constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from '../../components/NewTable/constants/standartRowModes';
 
 import NewReestr from '../../components/NewReestr/NewReestr.vue';
 import NewReestrChangeRowParentDialog from '../../components/NewReestr/components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
@@ -187,6 +187,7 @@ function onNewReestrSideMenuSummsSubmit(
             <NewReestrSideMenuSumms
               v-if="!!sideMenuComponents['summs']?.isShown"
               :data="data as ILocalNewTableRow[]"
+              :payload="sideMenuComponents['summs'].payload"
               @submit="onNewReestrSideMenuSummsSubmit({
                 ...$event,
                 name: 'summs',

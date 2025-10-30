@@ -9,7 +9,6 @@ import type { INewTableFilters, INewTableSorts } from "../../../components/NewTa
 import type { INewMenuItem } from "../../../components/NewContextMenu/types";
 
 import { NEW_TABLE_STANDART_ROW_ACTIONS } from "../../../components/NewTableWrapper/constants/standartActions";
-import { NEW_TABLE_DEFAULT_MODE } from "../../../components/NewTable/constants/rowModes";
 import { newTableStandartActionsChangeModes } from "../../../components/NewTableWrapper/constants/standartActionsChangeModes";
 import {
   fetchActions,
@@ -22,6 +21,7 @@ import {
   fetchSideMenuItems,
   fetchSorts,
 } from "../api/TestPage1Api";
+import { NEW_TABLE_DEFAULT_ROW_TYPE } from "../../../components/NewTable/constants/defaultRowType";
 
 export function useTestPage1NewReestrInitData(
   count: (number | Ref<number> | (() => number)) = 10000,
@@ -56,11 +56,11 @@ export function useTestPage1NewReestrInitData(
 
     actionsChangeModes.value = {
       ...localActionsChangeModes,
-      [NEW_TABLE_DEFAULT_MODE]: {
-        ...(localActionsChangeModes[NEW_TABLE_DEFAULT_MODE] || {}),
+      [NEW_TABLE_DEFAULT_ROW_TYPE]: {
+        ...(localActionsChangeModes[NEW_TABLE_DEFAULT_ROW_TYPE] || {}),
         [NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]: {
-          on: [...(localActionsChangeModes[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.on || []), 'changed'],
-          off: localActionsChangeModes[NEW_TABLE_DEFAULT_MODE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.off || [],
+          on: [...(localActionsChangeModes[NEW_TABLE_DEFAULT_ROW_TYPE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.on || []), 'changed'],
+          off: localActionsChangeModes[NEW_TABLE_DEFAULT_ROW_TYPE]?.[NEW_TABLE_STANDART_ROW_ACTIONS.SAVE]?.off || [],
         }
       },
     };

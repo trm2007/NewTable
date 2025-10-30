@@ -5,10 +5,11 @@ import type { ILocalNewTableRow } from '../../../../pages/TestPage1/testdata/tes
 
 const props = defineProps<{
   data: ILocalNewTableRow[];
+  payload?: any,
 }>();
 
 const emit = defineEmits<{
-  (e: 'submit', event: { value: { priceSumms: number, customPriceSumms: number } }): void;
+  (e: 'submit', event: { value: { priceSumms: number, customPriceSumms: number }, payload: any }): void;
 }>();
 
 const priceSumms = computed<number>(
@@ -29,7 +30,13 @@ const customPriceSumms = computed<number>(
 
 <template>
   <div class="new-reestr-side-menu-summs">
-    <form @submit="emit('submit', { value: { priceSumms, customPriceSumms } })">
+    <form @submit="emit(
+      'submit',
+      {
+        value: { priceSumms, customPriceSumms },
+        payload: props.payload,
+      }
+    )">
       <div class="new-reestr-side-menu-summs__item">
         <span>price</span>: <span>{{ priceSumms }}</span>
       </div>

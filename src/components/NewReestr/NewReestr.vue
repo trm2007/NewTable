@@ -14,8 +14,8 @@ import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTabl
 import { useNewReestrContextMenu } from './composables/NewReestrContextMenu';
 import { useNewTableSlots } from '../NewTable/composables/NewTableSlots';
 
-import { NEW_TABLE_STANDART_ROW_MODES } from '../NewTable/constants/rowModes';
-import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
+import { NEW_TABLE_STANDART_ROW_MODES } from '../NewTable/constants/standartRowModes';
+import { NEW_TABLE_DEFAULT_ROW_TYPE } from '../NewTable/constants/defaultRowType';
 
 import NewTableWrapper from '../NewTableWrapper/NewTableWrapper.vue';
 import NewContextMenu from '../NewContextMenu/NewContextMenu.vue';
@@ -79,10 +79,10 @@ function onChangeColumnSettings(event: IChangeColumnSettingsEvent) {
 }
 
 function onContextMenu(event: INewTableCellNativeEvent) {
-  const rowType = event.row?.meta?.rowType || NEW_TABLE_DEFAULT_TYPE;
+  const rowType = event.row?.meta?.rowType || NEW_TABLE_DEFAULT_ROW_TYPE;
 
   activeContextMenuItems.value = props.initialContextMenuItems[rowType]
-    || props.initialContextMenuItems[NEW_TABLE_DEFAULT_TYPE];
+    || props.initialContextMenuItems[NEW_TABLE_DEFAULT_ROW_TYPE];
 
   if (!activeContextMenuItems.value) {
     return;

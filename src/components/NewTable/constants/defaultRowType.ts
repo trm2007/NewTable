@@ -1,1 +1,1 @@
-export const NEW_TABLE_DEFAULT_TYPE = 'default';
+export const NEW_TABLE_DEFAULT_ROW_TYPE = 'default';

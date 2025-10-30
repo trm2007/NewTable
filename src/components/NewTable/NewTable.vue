@@ -12,7 +12,7 @@ import type {
 import type { INewTableFilters, INewTableSorts } from './types/NewTableFilterTypes';
 import type { INewTableActions } from './types/NewTableActionTypes';
 
-import { NEW_TABLE_STANDART_ROW_MODES } from './constants/rowModes';
+import { NEW_TABLE_STANDART_ROW_MODES } from './constants/standartRowModes';
 
 import NewTableHeader from './components/NewTableHeader/NewTableHeader.vue';
 import NewTableRow from './components/NewTableRow/NewTableRow.vue';

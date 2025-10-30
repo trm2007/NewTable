@@ -1,6 +1,6 @@
 import { computed, Ref, toValue } from "vue";
 import { INewTableRow } from "../../NewTable/components/NewTableRow/types/NewTableRowTypes";
-import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
+import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/standartRowModes";
 
 export function useNewTableWrapperChecked(
   modeIds: Ref<Record<string, Set<number | string>>> | Record<string, Set<number | string>> | (() => Record<string, Set<number | string>>),

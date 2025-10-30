@@ -25,7 +25,7 @@ import { useNewTableSlots } from '../NewTable/composables/NewTableSlots';
 import { useNewTableWrapperExpanded } from './composables/NewTableWrapperExpanded';
 import { useNewTableWrapperChecked } from './composables/NewTableWrapperChecked';
 
-import { NEW_TABLE_DEFAULT_TYPE } from '../NewTable/constants/defaultRowType';
+import { NEW_TABLE_DEFAULT_ROW_TYPE } from '../NewTable/constants/defaultRowType';
 
 import NewTable from '../NewTable/NewTable.vue';
 import NewScroller from '../NewScroller/NewScroller.vue';
@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
 function onAction(event: INewTableRowActionEvent) {
   const rowType = event.row.meta.rowType && event.row.meta.rowType in props.actionsChangeModes
     ? event.row.meta.rowType
-    : NEW_TABLE_DEFAULT_TYPE;
+    : NEW_TABLE_DEFAULT_ROW_TYPE;
 
   if (!!props.actionsChangeModes?.[rowType]?.[event.name]) {
     // если вызвано какое-то действие - action == event.name

@@ -5,4 +5,4 @@ export const NEW_TABLE_STANDART_ROW_MODES: Record<string, string> = {
   EXPANDED: 'expanded',
 };
 
-export const NEW_TABLE_DEFAULT_MODE = 'default';
+export const NEW_TABLE_DEFAULT_ROW_MODE = 'default';
