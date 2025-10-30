@@ -5,15 +5,15 @@ import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/N
 import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
 
 export function useNewTableWrapperFlatData(
-  data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
+  initialData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   modeIds: Ref<Record<string, Set<number | string>>> | Record<string, Set<number | string>> | (() => Record<string, Set<number | string>>)
 ) {
-  const computedFlatData = computed<INewTableRow[]>(
-    () => generateFlatData(toValue(data)),
+  const flatData = computed<INewTableRow[]>(
+    () => generateFlatData(toValue(initialData)),
   );
 
-  const computedOnlyExpandedFlatData = computed<INewTableRow[]>(
-    () => generateOnlyExpandedFlatData(toValue(data), toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]),
+  const onlyExpandedFlatData = computed<INewTableRow[]>(
+    () => generateOnlyExpandedFlatData(toValue(initialData), toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]),
   );
 
   function generateFlatData(
@@ -58,7 +58,7 @@ export function useNewTableWrapperFlatData(
   }
 
   return {
-    computedFlatData,
-    computedOnlyExpandedFlatData,
+    flatData,
+    onlyExpandedFlatData,
   };
 };

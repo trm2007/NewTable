@@ -6,41 +6,41 @@ const NEW_TABLE_HEAD_MIN_WIDTH: number = 20;
 const NEW_TABLE_HEAD_MAX_WIDTH: number = 500;
 
 export function useNewTableWrapperHeader(
-  columns: Ref<INewTableColumn[]> | INewTableColumn[] | (() => INewTableColumn[]),
-  columnsSettings: Ref<Record<string, INewTableHeaderSetting>> | Record<string, INewTableHeaderSetting> | (() => Record<string, INewTableHeaderSetting>),
+  initialColumns: Ref<INewTableColumn[]> | INewTableColumn[] | (() => INewTableColumn[]),
+  initialColumnsSettings: Ref<Record<string, INewTableHeaderSetting>> | Record<string, INewTableHeaderSetting> | (() => Record<string, INewTableHeaderSetting>),
 ) {
   const localColumnsSettings = ref<Record<string, INewTableHeaderSetting>>(
-    JSON.parse(JSON.stringify(toValue(columnsSettings))),
+    JSON.parse(JSON.stringify(toValue(initialColumnsSettings))),
   );
 
   watchEffect(() => {
-    localColumnsSettings.value = JSON.parse(JSON.stringify(toValue(columnsSettings)));
+    localColumnsSettings.value = JSON.parse(JSON.stringify(toValue(initialColumnsSettings)));
   });
 
-  const computedColumns = computed<Record<string, INewTableColumn>>(
+  const localColumns = computed<Record<string, INewTableColumn>>(
     () => {
-      return toValue(columns).reduce((acc, col) => {
+      return toValue(initialColumns).reduce((acc, col) => {
         acc[col.key] = col;
         return acc;
       }, {} as Record<string, INewTableColumn>);
     }
   );
 
-  const computedColumnsSortByOrder = computed<INewTableColumn[]>(
+  const columnsSortByOrder = computed<INewTableColumn[]>(
     () => {
       return Object.keys(localColumnsSettings.value)
         .sort((keyA, keyB) => {
           return localColumnsSettings.value[keyA].order - localColumnsSettings.value[keyB].order;
         })
         .map(
-          (key) => computedColumns.value[key]
+          (key) => localColumns.value[key]
         );
     }
   );
 
-  const computedColumnsSortByOrderVisible = computed<INewTableColumn[]>(
+  const columnsSortByOrderVisible = computed<INewTableColumn[]>(
     () => {
-      return computedColumnsSortByOrder.value.filter(
+      return columnsSortByOrder.value.filter(
         (col) => localColumnsSettings.value[col.key]?.visible !== false
       );
     }
@@ -114,8 +114,8 @@ export function useNewTableWrapperHeader(
 
   return {
     localColumnsSettings,
-    computedColumnsSortByOrder,
-    computedColumnsSortByOrderVisible,
+    columnsSortByOrder,
+    columnsSortByOrderVisible,
     changeColumnOrders,
     changeColumnWidths,
   };

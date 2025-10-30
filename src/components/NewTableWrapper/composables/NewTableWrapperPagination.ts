@@ -5,33 +5,33 @@ import type { INewTableRow } from '../../NewTable/components/NewTableRow/types/N
 const NEW_TABLE_STEP = 3;
 
 export function useNewTablePagination(
-  computedFlatData: INewTableRow[] | Ref<INewTableRow[]> | (() => INewTableRow[]),
-  computedOnlyExpandedFlatData: INewTableRow[] | Ref<INewTableRow[]> | (() => INewTableRow[]),
+  initialFlatData: INewTableRow[] | Ref<INewTableRow[]> | (() => INewTableRow[]),
+  initialOnlyExpandedFlatData: INewTableRow[] | Ref<INewTableRow[]> | (() => INewTableRow[]),
 ) {
   const startIndex = ref(0);
 
   const rowCount = ref(10);
 
-  const computedOnlyExpandedFlatDataLength = computed<number>(
-    () => toValue(computedOnlyExpandedFlatData).length
+  const onlyExpandedFlatDataLength = computed<number>(
+    () => toValue(initialOnlyExpandedFlatData).length
   );
 
-  const computedFlatDataToVew = computed(
+  const flatDataToVew = computed(
     () => {
-      return toValue(computedFlatData)
+      return toValue(initialFlatData)
         .slice(toValue(startIndex), toValue(startIndex) + toValue(rowCount));
     }
   );
 
-  const computedOnlyExpandedFlatDataToView = computed(
+  const onlyExpandedFlatDataToView = computed(
     () => {
-      return toValue(computedOnlyExpandedFlatData)
+      return toValue(initialOnlyExpandedFlatData)
         .slice(toValue(startIndex), toValue(startIndex) + toValue(rowCount));
     }
   );
 
   watch(
-    () => computedOnlyExpandedFlatDataLength.value,
+    () => onlyExpandedFlatDataLength.value,
     () => {
       correctStartValue();
     },
@@ -46,20 +46,20 @@ export function useNewTablePagination(
   }
 
   function onNext() {
-    if (computedOnlyExpandedFlatDataLength.value <= rowCount.value) {
+    if (onlyExpandedFlatDataLength.value <= rowCount.value) {
       startIndex.value = 0;
       return;
     }
 
     startIndex.value = Math.min(
-      computedOnlyExpandedFlatDataLength.value - rowCount.value,
+      onlyExpandedFlatDataLength.value - rowCount.value,
       startIndex.value + NEW_TABLE_STEP,
     );
   }
 
   function correctStartValue() {
     startIndex.value = Math.min(
-      computedOnlyExpandedFlatDataLength.value - rowCount.value,
+      onlyExpandedFlatDataLength.value - rowCount.value,
       startIndex.value,
     );
 
@@ -69,8 +69,8 @@ export function useNewTablePagination(
   return {
     startIndex,
     rowCount,
-    computedFlatDataToVew,
-    computedOnlyExpandedFlatDataToView,
+    flatDataToVew: flatDataToVew,
+    onlyExpandedFlatDataToView: onlyExpandedFlatDataToView,
     setRowCount,
     onPrevious,
     onNext,
