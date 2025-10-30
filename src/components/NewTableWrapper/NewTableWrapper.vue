@@ -13,7 +13,7 @@ import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTabl
 import type { INewTableActions } from '../NewTable/types/NewTableActionTypes';
 import type { TNewTableActionsChangeModesStandart } from '../NewTable/types/NewTableActionsChangeModesTypes';
 
-import { useNewTableWrapperModesIds } from './composables/NewTableWrapperModesIds';
+import { useNewTableWrapperModes } from './composables/NewTableWrapperModes';
 import { useNewTableWrapperFlatData } from './composables/NewTableWrapperFlatData';
 import { useNewTablePagination } from './composables/NewTableWrapperPagination';
 import { useWheelEvent } from '../../composables/useWheelEvent';
@@ -35,8 +35,8 @@ const props = defineProps<{
   columns: INewTableColumn[];
   columnsSettings: Record<string, INewTableHeaderSetting>;
   commonMeta?: INewTableRowCommonMeta;
-  initialFilters: INewTableFilters;
-  initialSorts: INewTableSorts;
+  filters: INewTableFilters;
+  sorts: INewTableSorts;
   actionsChangeModes: TNewTableActionsChangeModesStandart;
   // действия, доступные для каждой строки в зависимости от режима
   actions?: INewTableActions;
@@ -62,27 +62,27 @@ const {
   switchOffModeForRowWithChildren,
   toggleModeForRow,
   toggleModeForRowWithChildren,
-} = useNewTableWrapperModesIds();
+} = useNewTableWrapperModes();
 
 const {
   filters,
-  computedFilteredData,
+  filteredData,
 } = useNewTableWrapperFilteredData(
   () => props.data,
-  () => props.initialFilters,
+  () => props.filters,
 );
 
 const {
   sorts,
   sortedData,
 } = useNewTableWrapperSortData(
-  () => computedFilteredData.value,
-  () => props.initialSorts,
+  () => filteredData.value,
+  () => props.sorts,
 );
 
 const {
-  computedFlatData,
-  computedOnlyExpandedFlatData,
+  flatData,
+  onlyExpandedFlatData,
 } = useNewTableWrapperFlatData(
   () => sortedData.value,
   () => modeIds.value
@@ -91,18 +91,18 @@ const {
 const {
   startIndex,
   rowCount,
-  computedOnlyExpandedFlatDataToView,
+  onlyExpandedFlatDataToView,
   setRowCount,
   onPrevious,
   onNext
 } = useNewTablePagination(
-  () => computedFlatData.value,
-  () => computedOnlyExpandedFlatData.value,
+  () => flatData.value,
+  () => onlyExpandedFlatData.value,
 );
 
 const {
   localColumnsSettings,
-  computedColumnsSortByOrderVisible,
+  columnsSortByOrderVisible,
   changeColumnOrders,
   changeColumnWidths,
 } = useNewTableWrapperHeader(
@@ -115,7 +115,7 @@ const {
   toggleExpandAllRow,
 } = useNewTableWrapperExpanded(
   () => modeIds.value,
-  () => computedFlatData.value,
+  () => flatData.value,
 );
 
 const {
@@ -123,7 +123,7 @@ const {
   toggleCheckAllRow,
 } = useNewTableWrapperChecked(
   () => modeIds.value,
-  () => computedFlatData.value,
+  () => flatData.value,
 );
 
 const { onWheelEvent } = useWheelEvent(onNext, onPrevious);
@@ -248,7 +248,7 @@ defineExpose({
 
   rowCount,
   setRowCount,
-  computedFlatData,
+  flatData,
 
   changedRows,
   deleteChangedRow,
@@ -260,9 +260,9 @@ defineExpose({
     <div class="new-table-wrapper">
       <NewTable
         ref="el"
-        :data="computedOnlyExpandedFlatDataToView"
+        :data="onlyExpandedFlatDataToView"
         :changedRows="changedRows"
-        :columns="computedColumnsSortByOrderVisible"
+        :columns="columnsSortByOrderVisible"
         :columnsSettings="localColumnsSettings"
         :filters="filters"
         :sorts="sorts"
@@ -310,7 +310,7 @@ defineExpose({
       </NewTable>
 
       <NewScroller
-        :count="computedOnlyExpandedFlatData.length"
+        :count="onlyExpandedFlatData.length"
         :position="startIndex"
         :rowCount="rowCount"
         class="new-table__scroller"

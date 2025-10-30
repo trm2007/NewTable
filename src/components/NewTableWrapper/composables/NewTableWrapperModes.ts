@@ -4,7 +4,7 @@ import type { INewTableRow } from "../../NewTable/components/NewTableRow/types/N
 
 import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes";
 
-export function useNewTableWrapperModesIds() {
+export function useNewTableWrapperModes() {
   const modeIds = ref<Record<string, Set<number | string>>>({});
 
   const editingIds = computed<Set<number | string> | undefined>(

@@ -26,3 +26,5 @@ export interface INewTableHeaderSetting {
   order: number;
   visible: boolean;
 }
+
+export type INewTableHeaderSettings = Record<string, INewTableHeaderSetting>;

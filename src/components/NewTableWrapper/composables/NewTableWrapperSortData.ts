@@ -21,7 +21,7 @@ export function useNewTableWrapperSortData(
   );
 
   watch(
-    () => initialSorts,
+    () => toValue(initialSorts),
     () => {
       sorts.value = JSON.parse(JSON.stringify(toValue(initialSorts)));
     }

@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (el: 'select:item', menuIrem: INewContexMenuItem): void
+  (e: 'select:item', menuIrem: INewContexMenuItem): void
   (e: 'close'): void;
 }>()
 

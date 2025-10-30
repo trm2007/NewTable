@@ -6,16 +6,16 @@ import type { INewTableFilter, INewTableFilters } from "../../NewTable/types/New
 import { generateFilteredDataForNested } from "../../../helpers/generateFilteredDataForNested";
 
 export function useNewTableWrapperFilteredData(
-  data: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
+  initialData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   initialFilters: Ref<INewTableFilters> | INewTableFilters | (() => INewTableFilters) | undefined,
 ) {
-  const localData = computed<INewTableRow[]>(() => toValue(data || []));
+  const localData = computed<INewTableRow[]>(() => toValue(initialData || []));
 
   const filters = ref<INewTableFilters>(
     generateFilters(toValue(initialFilters || {}), null)
   );
 
-  const computedFilteredData = computed<INewTableRow[]>(
+  const filteredData = computed<INewTableRow[]>(
     () => generateFilteredData(localData.value, filters.value),
   );
 
@@ -108,7 +108,7 @@ export function useNewTableWrapperFilteredData(
 
   return {
     filters,
-    computedFilteredData,
+    filteredData,
     clearFilters,
     reset,
     resetFiltersToDefaultValues,
