@@ -25,7 +25,7 @@ function onResizerMouseDown(event: MouseEvent) {
 function onMouseMove(event: MouseEvent) {
   // console.log('[onMouseMove]', event);
 
-  if (!splitDiv1 || !splitDiv2) {
+  if (!splitDiv1.value || !splitDiv2.value) {
     return;
   }
 
@@ -63,7 +63,7 @@ function onMouseMove(event: MouseEvent) {
 }
 
 
-function onMouseUp(event: MouseEvent) {
+function onMouseUp() {
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseup', onMouseUp);
 }
