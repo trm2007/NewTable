@@ -81,9 +81,11 @@ const {
 );
 
 const {
-  flatData,
+  fullFlatData,
+  filteredFlatData,
   onlyExpandedFlatData,
 } = useNewTableWrapperFlatData(
+  () => props.data,
   () => sortedData.value,
   () => modeIds.value
 );
@@ -96,7 +98,7 @@ const {
   onPrevious,
   onNext
 } = useNewTablePagination(
-  () => flatData.value,
+  () => filteredFlatData.value,
   () => onlyExpandedFlatData.value,
 );
 
@@ -115,7 +117,7 @@ const {
   toggleExpandAllRow,
 } = useNewTableWrapperExpanded(
   () => modeIds.value,
-  () => flatData.value,
+  () => filteredFlatData.value,
 );
 
 const {
@@ -123,7 +125,7 @@ const {
   toggleCheckAllRow,
 } = useNewTableWrapperChecked(
   () => modeIds.value,
-  () => flatData.value,
+  () => filteredFlatData.value,
 );
 
 const { onWheelEvent } = useWheelEvent(onNext, onPrevious);
@@ -248,7 +250,8 @@ defineExpose({
 
   rowCount,
   setRowCount,
-  flatData,
+  fullFlatData,
+  filteredFlatData,
 
   changedRows,
   deleteChangedRow,
@@ -323,8 +326,8 @@ defineExpose({
 <style scoped>
 .new-table-wrapper {
   display: flex;
-  height: 50vh;
-  width: 50vw;
+  height: 100%;
+  width: 100%;
   align-items: stretch;
   justify-content: flex-start;
 }

@@ -60,6 +60,7 @@ function onChangeVisible(columnName: string, event: Event) {
     <div
       v-for="(columnSetting, columnName) in omputedListOfColumnSettings"
       :key="columnName"
+      class="change-settings__item"
     >
       <label>
         <input
@@ -75,7 +76,14 @@ function onChangeVisible(columnName: string, event: Event) {
 
 <style lang="css" scoped>
 .change-settings {
-  max-height: 500px;
-  overflow: scroll;
+  height: 100%;
+  overflow-y: scroll;
+  width: fit-content;
+
+  flex: 0 0;
+}
+
+.change-settings__item {
+  text-wrap: nowrap;
 }
 </style>

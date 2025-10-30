@@ -9,14 +9,12 @@ export function useNewTableWrapperFilteredData(
   initialData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   initialFilters: Ref<INewTableFilters> | INewTableFilters | (() => INewTableFilters) | undefined,
 ) {
-  const localData = computed<INewTableRow[]>(() => toValue(initialData || []));
-
   const filters = ref<INewTableFilters>(
     generateFilters(toValue(initialFilters || {}), null)
   );
 
   const filteredData = computed<INewTableRow[]>(
-    () => generateFilteredData(localData.value, filters.value),
+    () => generateFilteredData(toValue(initialData || []), filters.value),
   );
 
   watch(
@@ -55,7 +53,7 @@ export function useNewTableWrapperFilteredData(
     const currentFilters: Record<string, INewTableFilter> = filters.value;
 
     if (!Object.keys(currentFilters)) {
-      return localData;
+      return;
     }
     Object.keys(currentFilters).forEach(
       (filterName: string) => {
@@ -71,7 +69,7 @@ export function useNewTableWrapperFilteredData(
     const currentFilters: Record<string, INewTableFilter> = filters.value;
 
     if (!Object.keys(currentFilters)) {
-      return localData;
+      return;
     }
     Object.keys(currentFilters).forEach(
       (filterName: string) => {
@@ -91,7 +89,7 @@ export function useNewTableWrapperFilteredData(
       return currentData;
     }
 
-    let resultData = currentData;
+    let resultData = currentData.map((row: INewTableRow) => row);
 
     Object.keys(currentFilters).forEach(
       (filterName: string) => {

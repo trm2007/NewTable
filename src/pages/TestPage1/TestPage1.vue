@@ -96,10 +96,11 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
         Init Data
       </button>
     </div>
-    <NewSplitter>
+    <NewSplitter class="test-page1__splitter-wrapper">
       <template #div1>
         <NewReestr
           ref="newReestrRef"
+          class="test-page1__new-reestr"
           :initial-data="data"
           :initial-columns="columns"
           :initial-columns-settings="columnsSettings"
@@ -165,9 +166,14 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
 <style scoped>
 .test-page1 {
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  flex-wrap: nowrap;
   gap: 16px;
+
+  align-items: stretch;
+  justify-content: space-between;
 }
 
 .test-page1__actions {
@@ -176,6 +182,19 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
   width: 100%;
   text-align: center;
   padding: 8px;
+  box-sizing: border-box;
+
+  flex: 0 0;
+}
+
+.test-page1__splitter-wrapper {
+  width: 100%;
+
+  flex: 1 1;
+}
+
+.test-page1__new-reestr {
+  width: 100%;
 }
 
 :deep() .--stage {

@@ -299,10 +299,10 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
           :value="computedActiveRow.data[header.key]"
           :row="computedActiveRow"
           :column="header"
-          :mode="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EDIT)
+          :mode="(props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EDIT)
             ? NEW_TABLE_STANDART_ROW_MODES.EDIT
-            : NEW_TABLE_STANDART_ROW_MODES.VIEW || NEW_TABLE_STANDART_ROW_MODES.VIEW
-            "
+            : NEW_TABLE_STANDART_ROW_MODES.VIEW
+          ) || NEW_TABLE_STANDART_ROW_MODES.VIEW"
           v-bind="getComponentProps(header, computedActiveRow.meta.rowType || props.commonMeta?.rowType)"
           @update:value="onCellUpdateValue({ key: header.key, value: $event })"
           @input="onCellUpdateValue({ key: header.key, value: $event })"

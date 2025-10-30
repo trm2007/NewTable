@@ -110,16 +110,19 @@ defineExpose({
 <template>
   <div class="new-reestr">
     <div class="new-reestr__data">
-      <ColumnSettings
-        v-bind="{
-          columns: props.initialColumns,
-          columnsSettings,
-        }"
-        @change:column-settings="onChangeColumnSettings"
-      />
+      <div class="new-reestr__column-settings__wrapper">
+        <ColumnSettings
+          v-bind="{
+            columns: props.initialColumns,
+            columnsSettings,
+          }"
+          @change:column-settings="onChangeColumnSettings"
+        />
+      </div>
 
       <NewTableWrapper
         ref="newTableWrapperRef"
+        class="new-reestr__new-table-wrapper"
         :key="timeStamp"
         :data="props.initialData"
         :columns="props.initialColumns"
@@ -174,9 +177,15 @@ defineExpose({
           >
         </label>
       </div>
+
       <div class="new-reestr-columns-settings__info">
         <span>Total</span>
-        <span>{{ newTableWrapperRef.flatData.length }}</span>
+        <span>{{ newTableWrapperRef.fullFlatData.length }}</span>
+      </div>
+
+      <div class="new-reestr-columns-settings__info">
+        <span>Total</span>
+        <span>{{ newTableWrapperRef.filteredFlatData.length }}</span>
       </div>
     </div>
 
@@ -200,19 +209,47 @@ defineExpose({
   flex-direction: column;
   align-items: center;
   gap: 16px;
-}
 
+  flex: 1 1;
+  max-height: 100%;
+
+  box-sizing: border-box;
+}
 
 .new-reestr__data {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-wrap: nowrap;
   gap: 16px;
+
+  flex: 1 1;
+  min-height: 0;
+  width: 100%;
+}
+
+.new-reestr__column-settings__wrapper {
+  flex: 0 0;
+  width: fit-content;
+}
+
+.new-reestr__new-table-wrapper {
+  flex: 1 1;
+  min-width: 0;
 }
 
 .new-reestr-settings {
-  margin-top: 16px;
   display: flex;
   justify-content: center;
+  border-radius: 8px;
+  background-color: #eee;
+  width: 100%;
+  text-align: center;
+  padding: 8px;
+  box-sizing: border-box;
+  flex: 0 0;
+
+  color: #333;
 }
 
 .new-reestr-columns-settings__info {

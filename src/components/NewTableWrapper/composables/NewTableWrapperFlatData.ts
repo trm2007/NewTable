@@ -6,14 +6,22 @@ import { NEW_TABLE_STANDART_ROW_MODES } from "../../NewTable/constants/rowModes"
 
 export function useNewTableWrapperFlatData(
   initialData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
+  filteredData: Ref<INewTableRow[]> | INewTableRow[] | (() => INewTableRow[]),
   modeIds: Ref<Record<string, Set<number | string>>> | Record<string, Set<number | string>> | (() => Record<string, Set<number | string>>)
 ) {
-  const flatData = computed<INewTableRow[]>(
+  const fullFlatData = computed<INewTableRow[]>(
     () => generateFlatData(toValue(initialData)),
   );
 
+  const filteredFlatData = computed<INewTableRow[]>(
+    () => generateFlatData(toValue(filteredData)),
+  );
+
   const onlyExpandedFlatData = computed<INewTableRow[]>(
-    () => generateOnlyExpandedFlatData(toValue(initialData), toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]),
+    () => generateOnlyExpandedFlatData(
+      toValue(filteredData),
+      toValue(modeIds)[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]
+    ),
   );
 
   function generateFlatData(
@@ -58,7 +66,8 @@ export function useNewTableWrapperFlatData(
   }
 
   return {
-    flatData,
+    fullFlatData,
+    filteredFlatData,
     onlyExpandedFlatData,
   };
 };
