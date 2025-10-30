@@ -170,9 +170,10 @@ defineExpose({
     >
       <div>
         <label>
-          Str count:
+          Row count:
           <input
             :value="newTableWrapperRef.rowCount"
+            type="number"
             @change="newTableWrapperRef.setRowCount(Number(($event.target as HTMLInputElement).value || 5))"
           >
         </label>
@@ -184,7 +185,7 @@ defineExpose({
       </div>
 
       <div class="new-reestr-columns-settings__info">
-        <span>Total</span>
+        <span>Filtered</span>
         <span>{{ newTableWrapperRef.filteredFlatData.length }}</span>
       </div>
     </div>

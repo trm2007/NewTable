@@ -96,7 +96,10 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
         Init Data
       </button>
     </div>
-    <NewSplitter class="test-page1__splitter-wrapper">
+    <NewSplitter
+      variant="red"
+      class="test-page1__splitter-wrapper"
+    >
       <template #div1>
         <NewReestr
           ref="newReestrRef"
@@ -142,15 +145,25 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
         </NewReestr>
       </template>
       <template #div2>
-        <div>
-          SADFGSADRGSADREGAERGASGASDFA
-          SADFGSADRGSADREGAERGASGASDFA
-          SADFGSADRGSADREGAERGASGASDFA
-          SADFGSADRGSADREGAERGASGASDFA
-          SADFGSADRGSADREGAERGASGASDFA
-          SADFGSADRGSADREGAERGASGASDFA
-          SADFGSADRGSADREGAERGASGASDFA
-        </div>
+        <NewSplitter
+          variant="blue"
+          class="test-page1__splitter-wrapper"
+        >
+          <template #div1>
+            <div>
+              SADFGSADRGSADREGAERGASGASDFA
+              SADFGSADRGSADREGAERGASGASDFA
+              SADFGSADRGSADREGAERGASGASDFA
+              SADFGSADRGSADREGAERGASGASDFA
+              SADFGSADRGSADREGAERGASGASDFA
+              SADFGSADRGSADREGAERGASGASDFA
+              SADFGSADRGSADREGAERGASGASDFA
+            </div>
+          </template>
+          <template #div2>
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          </template>
+        </NewSplitter>
       </template>
     </NewSplitter>
 
@@ -189,12 +202,14 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
 
 .test-page1__splitter-wrapper {
   width: 100%;
-
   flex: 1 1;
+  min-height: 0;
+  height: 100%;
 }
 
 .test-page1__new-reestr {
   width: 100%;
+  height: 100%;
 }
 
 :deep() .--stage {
