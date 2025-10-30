@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 import type { INewTableRow } from '../../components/NewTable/components/NewTableRow/types/NewTableRowTypes';
-import type { INewContexMenuItem } from '../../components/NewContextMenu/types';
+import type { INewMenuItem } from '../../components/NewContextMenu/types';
 import type { INewTableCellNativeEvent } from '../../components/NewTable/types/NewTableEventTypes';
 
 import { useTestPage1NewReestrInitData } from './composables/TestPage1NewReestrInitData';
@@ -15,8 +15,13 @@ import { NEW_TABLE_STANDART_ROW_MODES } from '../../components/NewTable/constant
 import NewReestr from '../../components/NewReestr/NewReestr.vue';
 import NewReestrChangeRowParentDialog from '../../components/NewReestr/components/NewReestrChangeRowParentDialog/NewReestrChangeRowParentDialog.vue';
 import NewSplitter from '../../components/NewSplitter/NewSplitter.vue';
+import NewReestrSideMenuDateFilter from '../../components/NewReestr/components/NewReestrSideMenuDateFilter/NewReestrSideMenuDateFilter.vue';
+import NewReestrSideMenuSumms from '../../components/NewReestr/components/NewReestrSideMenuSumms/NewReestrSideMenuSumms.vue';
+import { ILocalNewTableRow } from './testdata/testData';
 
 const newReestrRef = ref<typeof NewReestr>();
+
+const sideMenuComponents = ref<Record<string, { isShown: boolean, payload: any }>>({});
 
 const {
   actions,
@@ -25,6 +30,7 @@ const {
   columnsSettings,
   data,
   contextMenuItems,
+  sideMenuItems,
   filters,
   sorts,
   initData,
@@ -66,7 +72,7 @@ function setRow(row: INewTableRow) {
   });
 }
 
-function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
+function onSelectContextMenuItem(menuItem: INewMenuItem) {
   const payload: INewTableCellNativeEvent = menuItem.payload as INewTableCellNativeEvent;
 
   switch (menuItem.actionName) {
@@ -85,7 +91,31 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
       activeDestinationRowId.value = null;
       isChangeRowParentDialogShown.value = true;
       break;
+    case 'date-filter':
+    case 'summs':
+      sideMenuComponents.value = {
+        ...sideMenuComponents.value,
+        [menuItem.actionName]: {
+          isShown: true,
+          payload: menuItem.payload,
+        },
+      };
   }
+}
+
+function onNewReestrSideMenuDateFilterSubmit(
+  { name, value, payload }: { name: string, value?: any, payload?: any }
+) {
+  sideMenuComponents.value[name].isShown = false
+  alert(value);
+}
+
+function onNewReestrSideMenuSummsSubmit(
+  { name, value, payload }: { name: string, value?: any, payload?: any }
+) {
+  sideMenuComponents.value[name].isShown = false
+  console.log('[onNewReestrSideMenuSummsSubmit]', value);
+
 }
 </script>
 
@@ -112,6 +142,7 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
           :initial-actions-change-modes="actionsChangeModes"
           :initial-actions="actions"
           :initial-context-menu-items="contextMenuItems"
+          :side-menu-items="sideMenuItems"
           :isNumberColumnShown="true"
           :isCheckboxColumnShown="true"
           :isExpandColumnShown="true"
@@ -141,6 +172,26 @@ function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
           </template>
           <template v-slot:cell[name]="nameSlotProps">
             <span style="color: blue;">{{ nameSlotProps.value }}</span>
+          </template>
+
+          <template #before-side-menu>
+            <NewReestrSideMenuDateFilter
+              v-if="!!sideMenuComponents['date-filter']?.isShown"
+              :payload="sideMenuComponents['date-filter'].payload"
+              @submit="onNewReestrSideMenuDateFilterSubmit({
+                ...$event,
+                name: 'date-filter',
+              })"
+            />
+
+            <NewReestrSideMenuSumms
+              v-if="!!sideMenuComponents['summs']?.isShown"
+              :data="data as ILocalNewTableRow[]"
+              @submit="onNewReestrSideMenuSummsSubmit({
+                ...$event,
+                name: 'summs',
+              })"
+            />
           </template>
         </NewReestr>
       </template>

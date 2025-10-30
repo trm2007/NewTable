@@ -2,19 +2,19 @@
 import { computed, ref } from 'vue';
 
 import type {
-  INewContexMenuItem,
+  INewMenuItem,
   INewContextMenuXY,
 } from './types';
 import { useOutsideClickHandler } from '../../composables/useOutsideClickHandler';
 
 const props = defineProps<{
-  menuItems: INewContexMenuItem[];
+  menuItems: INewMenuItem[];
   // объект события (нажатие правой кнопки мыши), которое вызвало меню
   menuMouseEvent: MouseEvent;
 }>()
 
 const emit = defineEmits<{
-  (e: 'select:item', menuIrem: INewContexMenuItem): void
+  (e: 'select:item', menuIrem: INewMenuItem): void
   (e: 'close'): void;
 }>()
 

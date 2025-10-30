@@ -1,15 +1,15 @@
-import type { INewContexMenuItem } from "../../NewContextMenu/types";
+import type { INewMenuItem } from "../../NewContextMenu/types";
 import type { INewTableCellNativeEvent } from "../../NewTable/types/NewTableEventTypes";
 
 export function useNewReestrContextMenu(
   // activeContextMenuItems: Ref<INewContexMenuItem[]> | INewContexMenuItem[] | (() => INewContexMenuItem[]),
 ) {
   function generateContextMenuItemsWithPayload(
-    activeContextMenuItems: INewContexMenuItem[],
+    activeContextMenuItems: INewMenuItem[],
     payload: INewTableCellNativeEvent,
-  ): INewContexMenuItem[] {
+  ): INewMenuItem[] {
     return activeContextMenuItems.map(
-      (activeContextMenuItem: INewContexMenuItem) => {
+      (activeContextMenuItem: INewMenuItem) => {
         const newActiveContextMenuItems = {
           ...activeContextMenuItem,
           payload: payload,

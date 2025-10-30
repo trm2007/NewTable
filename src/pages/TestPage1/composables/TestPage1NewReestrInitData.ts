@@ -6,6 +6,7 @@ import type { INewTableActions } from "../../../components/NewTable/types/NewTab
 import type { TNewTableActionsChangeModesStandart } from "../../../components/NewTable/types/NewTableActionsChangeModesTypes";
 import type { INewReestrContexMenuItems } from "../../../components/NewReestr/types/newReestrContexMenuItems";
 import type { INewTableFilters, INewTableSorts } from "../../../components/NewTable/types/NewTableFilterTypes";
+import type { INewMenuItem } from "../../../components/NewContextMenu/types";
 
 import { NEW_TABLE_STANDART_ROW_ACTIONS } from "../../../components/NewTableWrapper/constants/standartActions";
 import { NEW_TABLE_DEFAULT_MODE } from "../../../components/NewTable/constants/rowModes";
@@ -18,6 +19,7 @@ import {
   fetchContextMenuItems,
   fetchData,
   fetchFilters,
+  fetchSideMenuItems,
   fetchSorts,
 } from "../api/TestPage1Api";
 
@@ -37,6 +39,8 @@ export function useTestPage1NewReestrInitData(
   const actionsChangeModes = ref<TNewTableActionsChangeModesStandart>({});
 
   const contextMenuItems = ref<INewReestrContexMenuItems>({});
+
+  const sideMenuItems = ref<INewMenuItem[]>();
 
   const filters = ref<INewTableFilters>({});
 
@@ -67,6 +71,8 @@ export function useTestPage1NewReestrInitData(
 
     contextMenuItems.value = await fetchContextMenuItems();
 
+    sideMenuItems.value = await fetchSideMenuItems();
+
     filters.value = await fetchFilters();
 
     sorts.value = await fetchSorts();
@@ -85,6 +91,7 @@ export function useTestPage1NewReestrInitData(
     columnsSettings,
     data,
     contextMenuItems,
+    sideMenuItems,
     filters,
     sorts,
     initData,

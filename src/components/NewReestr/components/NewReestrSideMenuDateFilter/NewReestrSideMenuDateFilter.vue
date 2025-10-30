@@ -1,0 +1,49 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const props = defineProps<{
+  payload?: any,
+}>();
+
+const emit = defineEmits<{
+  (e: 'submit', event: { value: any, payload?: any, }): void;
+}>();
+
+const value = ref<Date>()
+</script>
+
+<template>
+  <div class="new-reestr-side-menu-date-filter">
+    <form @submit="emit(
+      'submit',
+      {
+        value: value, // ($event.target as HTMLInputElement).value,
+        payload: props.payload
+      }
+    )">
+      <input
+        v-model="value"
+        type="date"
+      />
+
+      <button
+        :disabled="!value"
+        type="submit"
+      >Submit</button>
+    </form>
+  </div>
+</template>
+
+<style lang="css" scoped>
+.new-reestr-side-menu-date-filter {
+  position: absolute;
+  background-color: antiquewhite;
+  z-index: 1001;
+  right: 100%;
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  box-shadow: 0 0 5px 1px #777;
+}
+</style>

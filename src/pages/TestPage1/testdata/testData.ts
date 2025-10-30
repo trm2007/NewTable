@@ -18,7 +18,7 @@ export interface ILocalNewTableRowData extends Record<string, TTestDataType> {
   customPriceTotal?: number;
 }
 
-type ILocalNewTableRow = INewTableRowTemplate<ILocalNewTableRowData>
+export type ILocalNewTableRow = INewTableRowTemplate<ILocalNewTableRowData>
 
 export const TEST_DATA_ROW_TYPES: Record<string, string> = {
   STAGE: 'stage',

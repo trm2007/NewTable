@@ -1,3 +1,3 @@
-import { INewContexMenuItem } from "../../NewContextMenu/types";
+import { INewMenuItem } from "../../NewContextMenu/types";
 
-export type INewReestrContexMenuItems = Record<string, INewContexMenuItem[]>
+export type INewReestrContexMenuItems = Record<string, INewMenuItem[]>

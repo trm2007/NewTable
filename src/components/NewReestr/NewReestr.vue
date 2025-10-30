@@ -6,7 +6,7 @@ import type { INewTableColumn, INewTableHeaderSettings } from '../NewTable/compo
 import type { INewTableCellNativeEvent, INewTableRowActionEvent } from '../NewTable/types/NewTableEventTypes';
 import type { IChangeColumnSettingsEvent } from '../ColumnSettings/types';
 import type { TNewTableActionsChangeModesStandart } from '../NewTable/types/NewTableActionsChangeModesTypes';
-import type { INewContexMenuItem } from '../NewContextMenu/types';
+import type { INewMenuItem } from '../NewContextMenu/types';
 import type { INewTableActions } from '../NewTable/types/NewTableActionTypes';
 import type { INewReestrContexMenuItems } from './types/newReestrContexMenuItems';
 import type { INewTableFilters, INewTableSorts } from '../NewTable/types/NewTableFilterTypes';
@@ -30,16 +30,17 @@ const props = defineProps<{
   initialActions: INewTableActions;
   initialActionsChangeModes: TNewTableActionsChangeModesStandart;
   initialContextMenuItems: INewReestrContexMenuItems;
-  isNumberColumnShown: boolean;
-  isCheckboxColumnShown: boolean;
-  isExpandColumnShown: boolean;
+  sideMenuItems?: INewMenuItem[];
+  isNumberColumnShown?: boolean;
+  isCheckboxColumnShown?: boolean;
+  isExpandColumnShown?: boolean;
   commonMeta?: INewTableRowCommonMeta;
 }>();
 
 const emit = defineEmits<{
   (e: 'change:column-settings', event: IChangeColumnSettingsEvent): void;
   (e: 'row-action', event: INewTableRowActionEvent): void;
-  (e: 'select:item', menuIrem: INewContexMenuItem): void
+  (e: 'select:item', menuIrem: INewMenuItem): void
 }>();
 
 const {
@@ -59,7 +60,7 @@ const columnsSettings = ref<INewTableHeaderSettings>(
   JSON.parse(JSON.stringify(props.initialColumnsSettings))
 );
 
-const activeContextMenuItems = ref<INewContexMenuItem[]>([])
+const activeContextMenuItems = ref<INewMenuItem[]>([])
 
 const activeContextMenuMouseEvent = ref<MouseEvent>(null)
 
@@ -93,7 +94,7 @@ function onContextMenu(event: INewTableCellNativeEvent) {
   activeContextMenuMouseEvent.value = event.event;
 }
 
-function onSelectContextMenuItem(menuItem: INewContexMenuItem) {
+function onSelectContextMenuItem(menuItem: INewMenuItem) {
   activeContextMenuMouseEvent.value = null;
   emit('select:item', menuItem);
 }
@@ -102,8 +103,13 @@ function onDblClick(event) {
   newTableWrapperRef.value.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, event.row);
 }
 
+function onSideMenuItemClick(menuItem: INewMenuItem) {
+  emit('select:item', menuItem);
+}
+
 defineExpose({
   deleteChangedRow: (idRow: number | string) => newTableWrapperRef.value?.deleteChangedRow(idRow),
+  switchOnModeForRow: (mode: string, row: INewTableRow) => newTableWrapperRef.value?.switchOnModeForRow(mode, row),
 });
 </script>
 
@@ -162,6 +168,24 @@ defineExpose({
           ></slot>
         </template>
       </NewTableWrapper>
+
+      <div
+        v-if="!!sideMenuItems?.length"
+        class="new-reestr__side-menu"
+      >
+        <slot name="before-side-menu" />
+        <div class="new-reestr__side-menu__items">
+          <div
+            v-for="(menuItem) in sideMenuItems"
+            :key="menuItem.actionName"
+            class="new-reestr__side-menu__item"
+            @click="onSideMenuItemClick(menuItem)"
+          >
+            {{ menuItem.label }}
+          </div>
+        </div>
+        <slot name="after-side-menu" />
+      </div>
     </div>
 
     <div
@@ -237,6 +261,31 @@ defineExpose({
 .new-reestr__new-table-wrapper {
   flex: 1 1;
   min-width: 0;
+}
+
+.new-reestr__side-menu {
+  display: flex;
+  align-items: stretch;
+  padding: 8px;
+  box-sizing: border-box;
+
+  flex: 0 0;
+  width: fit-content;
+  height: 100%;
+
+  position: relative;
+}
+
+.new-reestr__side-menu__item {
+  text-wrap: nowrap;
+  cursor: pointer;
+  width: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.new-reestr__side-menu__item:hover {
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .new-reestr-settings {
