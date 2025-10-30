@@ -53,7 +53,6 @@ function onMouseUp() {
 }
 </script>
 
-
 <template>
   <div class="new-splitter__wrapper">
     <div
@@ -75,7 +74,6 @@ function onMouseUp() {
       <slot name="div2" />
     </div>
   </div>
-
 </template>
 
 <style lang="css" scoped>
