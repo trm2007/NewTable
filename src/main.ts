@@ -5,11 +5,15 @@ import App from './App.vue'
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Import cell components with type checking
-import * as Cells from './components/CellComponents'
+import * as CellComponents from './components/CellComponents'
+import * as FilterComponents from './components/FilterComponents'
 
 const app = createApp(App)
 
-Object.entries(Cells).forEach(([key, component]) => {
+Object.entries(CellComponents).forEach(([key, component]) => {
+  app.component(key, component);
+});
+Object.entries(FilterComponents).forEach(([key, component]) => {
   app.component(key, component);
 });
 

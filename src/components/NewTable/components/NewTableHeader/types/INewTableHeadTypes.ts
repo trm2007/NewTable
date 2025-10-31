@@ -28,3 +28,5 @@ export interface INewTableHeaderSetting {
 }
 
 export type INewTableHeaderSettings = Record<string, INewTableHeaderSetting>;
+
+export type INewTableFilterComponent = INewTableColumnComponent;

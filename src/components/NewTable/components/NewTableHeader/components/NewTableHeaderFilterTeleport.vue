@@ -41,11 +41,13 @@ function onClose() {
       <component
         :is="props.filters[activeHeaderFilterName]?.component.name || 'input'"
         :value="props.filters[activeHeaderFilterName]?.currentValue"
+        :default-value="props.filters[activeHeaderFilterName]?.defaultValue"
+        :initial-value="props.filters[activeHeaderFilterName]?.initialValue"
         :filter="props.filters[activeHeaderFilterName]"
         v-bind="props.filters[activeHeaderFilterName]?.component.props || {}"
         v-on="{
           [props.filters[activeHeaderFilterName]?.component.changeEventName || 'change']:
-            ($event) => emit('change:filter-value', { key: activeHeaderFilterName, value: $event })
+            ($event) => emit('change:filter-value', { key: activeHeaderFilterName, value: $event }),
         }"
       />
     </div>

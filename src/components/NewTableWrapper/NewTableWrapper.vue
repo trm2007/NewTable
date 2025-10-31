@@ -204,7 +204,7 @@ function onChangeColumnWidths(event: INewTableChangeColumnWidthEvent) {
 
 function onChangeFilterValue(event: INewTableChangeFilterValue) {
   filters.value = {
-    ...filters.value,
+    ...(filters.value || {}),
     [event.key]: {
       ...(filters.value[event.key] || {}),
       currentValue: event.value

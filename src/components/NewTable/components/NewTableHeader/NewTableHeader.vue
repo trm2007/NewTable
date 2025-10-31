@@ -231,9 +231,15 @@ function onClickOnSort(key: string) {
             class="icon new-table__header__cell__filter__icon"
             :class="{
               '--active': props.filters[header.key]?.currentValue !== undefined
-                && props.filters[header.key].currentValue !== props.filters[header.key]?.defaultValue,
+                && props.filters[header.key]?.currentValue !== null
+                && (
+                  'isDefault' in props.filters[header.key]
+                    ? props.filters[header.key].isDefault(
+                      props.filters[header.key].currentValue, props.filters[header.key].defaultValue
+                    ) === false
+                    : props.filters[header.key].currentValue !== props.filters[header.key]?.defaultValue
+                ),
             }"
-            style="cursor: pointer;"
             @click.stop.prevent="onClickOnFilter(header.key)"
           />
         </slot>
@@ -250,8 +256,7 @@ function onClickOnSort(key: string) {
         >
           <FontAwesomeIcon
             :icon="getSortIconNameForField(header.key)"
-            class="icon"
-            style="cursor: pointer;"
+            class="icon new-table__header__cell__sort__icon"
             @click="onClickOnSort(header.key)"
           />
         </slot>

@@ -1,4 +1,4 @@
-import type { INewTableColumnComponent } from "../components/NewTableHeader/types/INewTableHeadTypes";
+import type { INewTableColumnComponent, INewTableFilterComponent } from "../components/NewTableHeader/types/INewTableHeadTypes";
 import type { INewTableRow } from "../components/NewTableRow/types/NewTableRowTypes";
 
 export interface INewTableFilter {
@@ -12,7 +12,14 @@ export interface INewTableFilter {
   availableValue?: unknown;
   // функция для проверки - соответствует ли значение в строке row в ячейке cellName значению фильтра filterValue
   compare?: (filterValue: unknown, cellName: string, row: INewTableRow, data?: INewTableRow[]) => boolean;
-  component?: INewTableColumnComponent;
+  // принимает текущее и вефолтное значение и сравнивает их
+  // просто сравнить currentValue === defaultValue нельзя
+  // например, в случае диапазона тут будут разные обеъкты с одинаковым содерижимым
+  isDefault?: (currentValue: any, defaultValue: any) => boolean,
+  // тоже самое для initial
+  isInitial?: (currentValue: any, initialValue: any) => boolean,
+  // имя и настройки компонента для фильтрации значений в колонке
+  component?: INewTableFilterComponent;
 }
 
 export type INewTableFilters = Record<string, INewTableFilter>

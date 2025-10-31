@@ -1,5 +1,6 @@
 import type { INewTableFilter, INewTableFilters } from "../../../components/NewTable/types/NewTableFilterTypes";
 import type { INewTableRow } from "../../../components/NewTable/components/NewTableRow/types/NewTableRowTypes";
+import type { ITestRangeDate } from "../../../components/FilterComponents/components/types";
 
 import { NEW_TABLE_STANDART_ROW_MODES } from "../../../components/NewTable/constants/standartRowModes";
 import { compareFilterAsString } from "../../../helpers/compareFilterAsString";
@@ -23,7 +24,7 @@ function generateEmptyTextFilter(): INewTableFilter {
       // data: INewTableRow[], // как пример, может передаваться перелаваться в другие функции сравнения
     ) => compareFilterAsString(filterValue, row.data[cellName] as string),
     component: {
-      name: 'TextComponent',
+      name: 'FilterTextComponent',
       changeEventName: 'input',
       props: {
         mode: NEW_TABLE_STANDART_ROW_MODES.EDIT,
@@ -41,16 +42,31 @@ export const testFilters: INewTableFilters = {
   },
 
   date: {
-    currentValue: null,
-    defaultValue: null,
+    currentValue: { date1: null, date2: null },
+    defaultValue: { date1: null, date2: null },
     compare: (
       filterValue: { date1: string, date2: string },
       cellName: string,
       row: INewTableRow,
-      // data: INewTableRow[], // как пример, может передаваться перелаваться в другие функции сравнения
-    ) => filterValue.date1 <= row.data[cellName] && row.data[cellName] <= filterValue.date2,
+      // data: INewTableRow[], // как пример, может передаваться в функции сравнения других фильтров
+    ) => (!filterValue?.date1 || filterValue.date1 <= row.data[cellName])
+      && (!filterValue?.date2 || row.data[cellName] <= filterValue.date2),
+
+    isDefault: (currentValue: ITestRangeDate, defaultValue: ITestRangeDate) =>
+      currentValue === defaultValue
+      || (
+        currentValue.date1 === defaultValue.date1
+        && currentValue.date2 === defaultValue.date2
+      ),
+    isInitial: (currentValue: ITestRangeDate, initialValue: ITestRangeDate) =>
+      currentValue === initialValue
+      || (
+        currentValue.date1 === initialValue.date1
+        && currentValue.date2 === initialValue.date2
+      ),
+
     component: {
-      name: 'DateRangeComponent',
+      name: 'FilterDateRangeComponent',
       props: {},
       changeEventName: 'update:value',
     },
@@ -62,16 +78,16 @@ export const testFilters: INewTableFilters = {
     currentValue: null,
     defaultValue: null,
     compare: (
-      filterValue: string,
+      filterValue: string[],
       cellName: string,
       row: INewTableRow,
       // data: INewTableRow[], // как пример, может передаваться перелаваться в другие функции сравнения
-    ) => filterValue === row.data[cellName],
+    ) => filterValue.includes(row.data[cellName] as string),
     component: {
-      name: 'SimpleSelectComponent',
+      name: 'FilterSelectComponent',
       props: {
         options: statusOptions,
-        mode: NEW_TABLE_STANDART_ROW_MODES.EDIT,
+        multiple: true,
       },
       changeEventName: 'update:value',
     },
