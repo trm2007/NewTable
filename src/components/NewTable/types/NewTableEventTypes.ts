@@ -30,9 +30,10 @@ export interface INewTableChangeFilterValue {
 }
 
 export interface INewTableCellNativeEvent {
-  row?: INewTableRow,
-  header?: INewTableColumn,
-  event?: MouseEvent
+  row?: INewTableRow;
+  header?: INewTableColumn;
+  event?: MouseEvent;
+  modes?: string[];
 }
 
 export interface INewTableChangeCellValueEvent {

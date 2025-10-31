@@ -4,6 +4,7 @@ export interface INewMenuItem {
   actionName?: string;
   payload?: unknown;
   children?: INewMenuItem[];
+  modes?: string[];
 };
 
 export interface INewContextMenuXY {

@@ -204,7 +204,7 @@ function onChangeCheck($event: InputEvent) {
 
   emit('row-action', {
     name: actionName,
-    row: props.row,
+    row: localRow,
     value: value,
   })
 }
@@ -281,8 +281,8 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
         'min-width': conputedColumnWidths[header.key],
         'max-width': conputedColumnWidths[header.key],
       }"
-      @dblclick.stop.prevent="$emit('dblclick', { row: props.row, header, event: $event })"
-      @contextmenu.stop.prevent="$emit('contextmenu', { row: props.row, header, event: $event })"
+      @dblclick.stop.prevent="$emit('dblclick', { row: localRow, header, event: $event })"
+      @contextmenu.stop.prevent="$emit('contextmenu', { row: localRow, header, event: $event, modes: props.modes })"
     >
       <slot
         :name="`cell[${header.key}]`"

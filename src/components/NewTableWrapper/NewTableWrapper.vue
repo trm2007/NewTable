@@ -158,6 +158,11 @@ onBeforeUnmount(() => {
   element.removeEventListener('wheel', onWheelEvent);
 });
 
+/**
+ * TODO вынести в хелпер или в композабл
+ * и переиспользовать в TestPage при срабатывании выбора меню
+ * @param event 
+ */
 function onAction(event: INewTableRowActionEvent) {
   const rowType = event.row.meta.rowType && event.row.meta.rowType in props.actionsChangeModes
     ? event.row.meta.rowType

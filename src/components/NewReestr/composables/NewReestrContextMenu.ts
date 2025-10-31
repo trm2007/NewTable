@@ -6,23 +6,38 @@ export function useNewReestrContextMenu(
 ) {
   function generateContextMenuItemsWithPayload(
     activeContextMenuItems: INewMenuItem[],
-    payload: INewTableCellNativeEvent,
+    event: INewTableCellNativeEvent,
   ): INewMenuItem[] {
-    return activeContextMenuItems.map(
-      (activeContextMenuItem: INewMenuItem) => {
-        const newActiveContextMenuItems = {
-          ...activeContextMenuItem,
-          payload: payload,
-        };
+    return activeContextMenuItems
+      .filter(
+        (activeContextMenuItem: INewMenuItem) => {
+          if (
+            !activeContextMenuItem.modes?.length
+            || !event.modes?.length
+          ) {
+            return true;
+          }
 
-        if (!!newActiveContextMenuItems.children?.length) {
-          newActiveContextMenuItems.children =
-            generateContextMenuItemsWithPayload(newActiveContextMenuItems.children, payload);
-        }
+          return activeContextMenuItem.modes.some(
+            (activeContextMenuItemMode: string) => event.modes.includes(activeContextMenuItemMode),
+          )
+        },
+      )
+      .map(
+        (activeContextMenuItem: INewMenuItem) => {
+          const newActiveContextMenuItems = {
+            ...activeContextMenuItem,
+            payload: event,
+          };
 
-        return newActiveContextMenuItems;
-      },
-    );
+          if (!!newActiveContextMenuItems.children?.length) {
+            newActiveContextMenuItems.children =
+              generateContextMenuItemsWithPayload(newActiveContextMenuItems.children, event);
+          }
+
+          return newActiveContextMenuItems;
+        },
+      );
   }
 
   return {

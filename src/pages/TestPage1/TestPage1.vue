@@ -18,6 +18,8 @@ import NewSplitter from '../../components/NewSplitter/NewSplitter.vue';
 import NewReestrSideMenuDateFilter from '../../components/NewReestr/components/NewReestrSideMenuDateFilter/NewReestrSideMenuDateFilter.vue';
 import NewReestrSideMenuSumms from '../../components/NewReestr/components/NewReestrSideMenuSumms/NewReestrSideMenuSumms.vue';
 import { ILocalNewTableRow } from './testdata/testData';
+import { calcParentSums, calcTotalOwnSums } from '../../helpers/calacSums';
+import { columnsToCalc } from './testdata/testColumns';
 
 const newReestrRef = ref<typeof NewReestr>();
 
@@ -46,6 +48,7 @@ const {
 );
 
 const {
+  onSave,
   onDelete,
   onRowAction,
   onChangeCellValue,
@@ -79,6 +82,15 @@ function onSelectContextMenuItem(menuItem: INewMenuItem) {
   switch (menuItem.actionName) {
     case 'edit-row':
       newReestrRef.value.switchOnModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, payload.row);
+      break;
+    case 'save-row':
+      calcTotalOwnSums(payload.row as ILocalNewTableRow);
+      onSave(payload.row);
+      calcParentSums(payload.row, data.value, columnsToCalc);
+      // TODO использовать готовую функцию из NewTableWrapper onAction
+      // её нужно вынести в хелпер
+      newReestrRef.value.switchOffModeForRow(NEW_TABLE_STANDART_ROW_MODES.EDIT, payload.row);
+      newReestrRef.value?.deleteChangedRow(payload.row.data.id);
       break;
     case 'delete-row':
       onDelete({ name: 'delete', row: payload.row });

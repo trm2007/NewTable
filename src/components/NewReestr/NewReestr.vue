@@ -111,6 +111,7 @@ function onSideMenuItemClick(menuItem: INewMenuItem) {
 defineExpose({
   deleteChangedRow: (idRow: number | string) => newTableWrapperRef.value?.deleteChangedRow(idRow),
   switchOnModeForRow: (mode: string, row: INewTableRow) => newTableWrapperRef.value?.switchOnModeForRow(mode, row),
+  switchOffModeForRow: (mode: string, row: INewTableRow) => newTableWrapperRef.value?.switchOffModeForRow(mode, row),
 });
 </script>
 
