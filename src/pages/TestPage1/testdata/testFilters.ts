@@ -39,6 +39,25 @@ export const testFilters: INewTableFilters = {
   name: {
     ...generateEmptyTextFilter(),
   },
+
+  date: {
+    currentValue: null,
+    defaultValue: null,
+    compare: (
+      filterValue: { date1: string, date2: string },
+      cellName: string,
+      row: INewTableRow,
+      // data: INewTableRow[], // как пример, может передаваться перелаваться в другие функции сравнения
+    ) => filterValue.date1 <= row.data[cellName] && row.data[cellName] <= filterValue.date2,
+    component: {
+      name: 'DateRangeComponent',
+      props: {},
+      changeEventName: 'update:value',
+    },
+  },
+
+
+
   status: {
     currentValue: null,
     defaultValue: null,
