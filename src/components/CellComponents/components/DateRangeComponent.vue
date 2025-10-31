@@ -35,8 +35,8 @@ const emit = defineEmits<{
   (e: 'input:date2', value: string),
 }>();
 
-const date1 = ref();
-const date2 = ref();
+const date1 = ref(props.value?.date1 || null);
+const date2 = ref(props.value?.date2 || null);
 
 watch(
   () => props.value,
