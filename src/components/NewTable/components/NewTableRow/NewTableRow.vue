@@ -33,7 +33,6 @@ const props = defineProps<{
   isCheckboxColumnShown?: boolean;
   isExpandColumnShown?: boolean;
   isActionsColumnShown?: boolean;
-  isExpanded?: boolean;
   rowNumber?: number;
   modes?: string[];
   commonMeta?: INewTableRowCommonMeta;
@@ -58,11 +57,19 @@ defineOptions({
   inheritAttrs: false,
 });
 
+const isChecked = computed<boolean>(
+  () => props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.CHECKED) || false,
+);
+
+const isExpanded = computed<boolean>(
+  () => props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EXPANDED) || false,
+);
+
 const iconForExpandCell = computed<string>(() => {
   if (!props.row?.children?.length) {
     return faFile;
   }
-  return props.isExpanded ? faFolderOpen : faFolder;
+  return isExpanded.value ? faFolderOpen : faFolder;
 });
 
 const conputedColumnWidths = computed<Record<string, string>>(
@@ -136,7 +143,7 @@ function onExpandCellClick() {
     return;
   }
 
-  if (props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.EXPANDED)) {
+  if (isExpanded.value) {
     emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_OFF, row: props.row });
   } else {
     emit('row-action', { name: NEW_TABLE_STANDART_ROW_ACTIONS.EXPAND_ON, row: props.row });
@@ -242,19 +249,41 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
       v-if="isNumberColumnShown"
       class="new-table__number-cell"
     >
-      {{ rowNumber }}
+      <slot
+        name="cell[number]"
+        v-bind="{
+          row,
+          headers: visibleSortedColumns,
+          columnSettings: localColumnsSettings,
+          rowNumber,
+          modes,
+        }"
+      >
+        {{ rowNumber }}
+      </slot>
     </div>
 
     <div
       v-if="isCheckboxColumnShown"
       class="new-table__checkbox-cell"
     >
-      <input
-        :value="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.CHECKED)"
-        :checked="props.modes?.includes(NEW_TABLE_STANDART_ROW_MODES.CHECKED)"
-        type="checkbox"
-        @change="onChangeCheck"
+      <slot
+        name="cell[checkbox]"
+        v-bind="{
+          row,
+          headers: visibleSortedColumns,
+          columnSettings: localColumnsSettings,
+          rowNumber,
+          modes,
+        }"
       >
+        <input
+          :value="isChecked"
+          :checked="isChecked"
+          type="checkbox"
+          @change="onChangeCheck"
+        >
+      </slot>
     </div>
 
     <div
@@ -262,14 +291,25 @@ function onCellAction({ key, value, name }: INewTableCellActionData) {
       class="new-table__expand-cell"
       @click="onExpandCellClick"
     >
-      <div :style="{
-        paddingLeft: row.__level ? `${row.__level * 16}px` : '',
-      }">
-        <FontAwesomeIcon
-          :icon="iconForExpandCell"
-          class="icon"
-        />
-      </div>
+      <slot
+        name="cell[expand]"
+        v-bind="{
+          row,
+          headers: visibleSortedColumns,
+          columnSettings: localColumnsSettings,
+          rowNumber,
+          modes,
+        }"
+      >
+        <div :style="{
+          paddingLeft: row.__level ? `${row.__level * 16}px` : '',
+        }">
+          <FontAwesomeIcon
+            :icon="iconForExpandCell"
+            class="icon"
+          />
+        </div>
+      </slot>
     </div>
 
     <div

@@ -75,8 +75,6 @@ const {
 
 const computedModeIds = computed(() => props.modeIds);
 
-const expandedRows = computed<Set<number | string>>(() => props.modeIds?.[NEW_TABLE_STANDART_ROW_MODES.EXPANDED]);
-
 // const rowCount = computed<number>(() => props.data?.length || 1);
 const rowCount = computed<number>(() => props.rowCount || 5);
 
@@ -155,7 +153,6 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
         :localColumnsSettings="columnsSettings"
         :isNumberColumnShown="true"
         :rowNumber="startIndex + rowIndex + 1"
-        :isExpanded="expandedRows?.has(row.data.id)"
         :actions="actions"
         :isCheckboxColumnShown="isCheckboxColumnShown"
         :isExpandColumnShown="isExpandColumnShown"
@@ -253,9 +250,9 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
   height: 100%;
   cursor: col-resize;
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-left: 2px solid rgba(255, 255, 255, 0.0);
-  border-right: 2px solid rgba(255, 255, 255, 0.0);
+  /* background-color: rgba(0, 0, 0, 0.1); */
+  /* border-left: 2px solid rgba(255, 255, 255, 0.0); */
+  /* border-right: 2px solid rgba(255, 255, 255, 0.0); */
   z-index: 2;
   box-sizing: border-box;
   padding: 0;
