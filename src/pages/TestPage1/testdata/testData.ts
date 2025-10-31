@@ -72,6 +72,7 @@ export const generateLargeTestData = (
         id: currentId,
         name: `${rowType} ${currentId}`,
         status: availableStatuses[Math.floor(Math.random() * availableStatuses.length)],
+        date: new Date(Date.now() + (30 - Math.random() * 60) * 24 * 60 * 60 * 1000).toISOString().replace(/T.*/, ''),
       },
     };
 

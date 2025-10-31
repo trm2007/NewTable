@@ -11,6 +11,11 @@ export const testColumnsSettings: Record<string, INewTableHeaderSetting> = {
     order: 2,
     visible: true,
   },
+  date: {
+    width: 200,
+    order: 2,
+    visible: true,
+  },
   status: {
     width: 150,
     order: 3,

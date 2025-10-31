@@ -72,6 +72,19 @@ export const testColumns: INewTableColumn[] = [
     },
   },
   {
+    name: 'Date',
+    key: 'date',
+    meta: {
+      width: 170,
+    },
+    components: {
+      default: {
+        name: 'DateComponent',
+        props: {},
+      },
+    },
+  },
+  {
     name: 'Status',
     key: 'status',
     meta: {
