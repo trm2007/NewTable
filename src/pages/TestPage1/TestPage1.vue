@@ -203,6 +203,7 @@ function onChangeFilters(changedFilters: INewTableFilters) {
                 ...$event,
                 name: 'date-filter',
               })"
+              @close="sideMenuComponents['date-filter'].isShown = false"
             />
 
             <NewReestrSideMenuSumms
@@ -213,6 +214,7 @@ function onChangeFilters(changedFilters: INewTableFilters) {
                 ...$event,
                 name: 'summs',
               })"
+              @close="sideMenuComponents['summs'].isShown = false"
             />
           </template>
         </NewReestr>

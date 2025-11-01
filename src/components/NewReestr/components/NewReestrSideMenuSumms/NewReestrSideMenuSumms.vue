@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import type { ILocalNewTableRow } from '../../../../pages/TestPage1/testdata/testData';
 
+import { useOutsideClickHandler } from '../../../../composables/useOutsideClickHandler';
+
+const el = ref();
+
+useOutsideClickHandler(
+  () => el.value,
+  close,
+);
 const props = defineProps<{
   data: ILocalNewTableRow[];
   payload?: any,
@@ -10,6 +18,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'submit', event: { value: { priceSumms: number, customPriceSumms: number }, payload: any }): void;
+  (e: 'close'): void;
 }>();
 
 const priceSumms = computed<number>(
@@ -26,10 +35,16 @@ const customPriceSumms = computed<number>(
   ),
 );
 
+function close() {
+  emit('close');
+}
 </script>
 
 <template>
-  <div class="new-reestr-side-menu-summs">
+  <div
+    ref="el"
+    class="new-reestr-side-menu-summs"
+  >
     <form @submit="emit(
       'submit',
       {

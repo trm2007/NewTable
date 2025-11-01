@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useOutsideClickHandler } from '../../../../composables/useOutsideClickHandler';
+
+const el = ref();
+
+useOutsideClickHandler(
+  () => el.value,
+  close,
+);
 
 const props = defineProps<{
   payload?: any,
@@ -8,6 +16,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'submit', event: { value: any, payload?: any, }): void;
+  (e: 'close'): void;
 }>();
 
 const value = ref<string>(props.date);
@@ -16,10 +25,17 @@ watch(
   () => props.date,
   (newDate) => value.value = newDate,
 );
+
+function close() {
+  emit('close');
+}
 </script>
 
 <template>
-  <div class="new-reestr-side-menu-date-filter">
+  <div
+    ref="el"
+    class="new-reestr-side-menu-date-filter"
+  >
     <form @submit="emit(
       'submit',
       {

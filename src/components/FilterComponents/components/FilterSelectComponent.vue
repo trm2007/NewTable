@@ -82,10 +82,15 @@ function reset() {
   width: 100%;
   box-sizing: border-box;
   padding: 4px 6px;
-  background-color: white;
+  /* background-color: white; */
+  background-color: rgba(255, 255, 255, 0.4);
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   color: #333;
+}
+
+.filter-select-component select option {
+  background-color: rgba(255, 255, 255, 0.4);
 }
 
 .filter-select-component__actions {

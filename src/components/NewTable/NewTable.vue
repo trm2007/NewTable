@@ -286,7 +286,7 @@ function getModesForRow(row: INewTableRow): string[] | undefined {
 }
 
 .new-table__body :deep(.new-table__cell) {
-  padding: 8px;
+  padding: 4px;
   border-right: 1px solid #eee;
   box-sizing: border-box;
   overflow: hidden;
