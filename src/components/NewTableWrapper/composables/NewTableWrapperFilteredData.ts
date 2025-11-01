@@ -19,8 +19,9 @@ export function useNewTableWrapperFilteredData(
 
   watch(
     () => toValue(initialFilters),
-    () => {
-      filters.value = generateFilters(toValue(initialFilters || {}), filters.value);
+    (newFilters) => {
+      filters.value = generateFilters(newFilters, null);
+      // filters.value = generateFilters(toValue(initialFilters || {}), filters.value);
     },
   );
 
@@ -28,12 +29,15 @@ export function useNewTableWrapperFilteredData(
     filtersToGenerateFrom: INewTableFilters,
     currenFilters: INewTableFilters
   ): INewTableFilters {
+    console.log('[generateFilters]', filtersToGenerateFrom);
+
     return Object.keys(filtersToGenerateFrom || {}).reduce(
       (acc: INewTableFilters, filterName: string): INewTableFilters => {
         acc[filterName] = {
           ...(filtersToGenerateFrom?.[filterName] || {}),
-          currentValue: currenFilters?.[filterName]?.currentValue ?? filtersToGenerateFrom?.[filterName].currentValue
-        }
+          // currentValue: filtersToGenerateFrom?.[filterName].currentValue,
+          currentValue: currenFilters?.[filterName]?.currentValue ?? filtersToGenerateFrom?.[filterName].currentValue,
+        };
 
         return acc;
       },

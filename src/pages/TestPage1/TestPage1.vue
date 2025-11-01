@@ -4,6 +4,9 @@ import { ref } from 'vue';
 import type { INewTableRow } from '../../components/NewTable/components/NewTableRow/types/NewTableRowTypes';
 import type { INewMenuItem } from '../../components/NewContextMenu/types';
 import type { INewTableCellNativeEvent } from '../../components/NewTable/types/NewTableEventTypes';
+import type { ILocalNewTableRow } from './testdata/testData';
+import type { INewTableFilters } from '../../components/NewTable/types/NewTableFilterTypes';
+import type { ITestRangeDate } from '../../components/FilterComponents/components/types';
 
 import { useTestPage1NewReestrInitData } from './composables/TestPage1NewReestrInitData';
 import { useTestPage1NewReestrChangeRowParentId } from './composables/TestPage1NewReestrChangeRowParentId';
@@ -17,9 +20,9 @@ import NewReestrChangeRowParentDialog from '../../components/NewReestr/component
 import NewSplitter from '../../components/NewSplitter/NewSplitter.vue';
 import NewReestrSideMenuDateFilter from '../../components/NewReestr/components/NewReestrSideMenuDateFilter/NewReestrSideMenuDateFilter.vue';
 import NewReestrSideMenuSumms from '../../components/NewReestr/components/NewReestrSideMenuSumms/NewReestrSideMenuSumms.vue';
-import { ILocalNewTableRow } from './testdata/testData';
 import { calcParentSums, calcTotalOwnSums } from '../../helpers/calacSums';
 import { columnsToCalc } from './testdata/testColumns';
+import { integerToRoman } from '../../helpers/integerToRoman';
 
 const newReestrRef = ref<typeof NewReestr>();
 
@@ -119,8 +122,17 @@ function onSelectContextMenuItem(menuItem: INewMenuItem) {
 function onNewReestrSideMenuDateFilterSubmit(
   { name, value, payload }: { name: string, value?: any, payload?: any }
 ) {
+  filters.value['date'].currentValue = { date1: value, date2: value };
+
+  filters.value = {
+    ...filters.value,
+    ['date']: {
+      ...filters.value['date'],
+      currentValue: { date1: value, date2: value },
+    }
+  };
+
   sideMenuComponents.value[name].isShown = false
-  alert(value);
 }
 
 function onNewReestrSideMenuSummsSubmit(
@@ -128,7 +140,10 @@ function onNewReestrSideMenuSummsSubmit(
 ) {
   sideMenuComponents.value[name].isShown = false
   console.log('[onNewReestrSideMenuSummsSubmit]', value);
+}
 
+function onChangeFilters(changedFilters: INewTableFilters) {
+  filters.value = changedFilters;
 }
 </script>
 
@@ -169,21 +184,12 @@ function onNewReestrSideMenuSummsSubmit(
           @row-action="onRowAction"
           @change:cell-value="onChangeCellValue"
           @select:item="onSelectContextMenuItem"
+          @change:filters="onChangeFilters"
         >
-          <!-- <template v-slot:head[id]sort="idSlotProps">
-        <span
-          v-if="idSlotProps.sorts[idSlotProps.cellName]"
-          style="color: green;"
-        >{{ idSlotProps.cellName }} - sorted</span>
-        <span
-          v-else
-          style="color: gray;"
-        >{{ idSlotProps.cellName }} - unsorted</span>
-      </template> -->
-
-          <template v-slot:cell[id]="idSlotProps">
-            <span style="color: red;">id[{{ idSlotProps.value }}]</span>
+          <template v-slot:cell[number]="idSlotProps">
+            <span style="color: red;">[{{ integerToRoman(idSlotProps.rowNumber) }}]</span>
           </template>
+
           <template v-slot:cell[name]="nameSlotProps">
             <span style="color: blue;">{{ nameSlotProps.value }}</span>
           </template>
@@ -192,6 +198,7 @@ function onNewReestrSideMenuSummsSubmit(
             <NewReestrSideMenuDateFilter
               v-if="!!sideMenuComponents['date-filter']?.isShown"
               :payload="sideMenuComponents['date-filter'].payload"
+              :date="(filters['date'].currentValue as ITestRangeDate).date1"
               @submit="onNewReestrSideMenuDateFilterSubmit({
                 ...$event,
                 name: 'date-filter',
@@ -210,6 +217,7 @@ function onNewReestrSideMenuSummsSubmit(
           </template>
         </NewReestr>
       </template>
+
       <template #div2>
         <NewSplitter
           variant="blue"
@@ -250,7 +258,9 @@ function onNewReestrSideMenuSummsSubmit(
   flex-direction: column;
   flex-wrap: nowrap;
   gap: 16px;
-
+  box-sizing: border-box;
+  padding: 12px;
+  background-color: #777;
   align-items: stretch;
   justify-content: space-between;
 }
@@ -291,6 +301,12 @@ function onNewReestrSideMenuSummsSubmit(
 }
 
 /* так можно переопределять стили */
+:deep(.new-table .new-table__number-cell) {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+}
+
 :deep(.new-table .new-table__header__cell .new-table__header__cell__filter__icon.--active) {
   color: red;
 }

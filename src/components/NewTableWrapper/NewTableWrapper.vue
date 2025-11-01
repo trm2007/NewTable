@@ -51,6 +51,7 @@ const emit = defineEmits<{
   (e: 'change:column-width', event: INewTableChangeColumnWidthEvent): void;
   (e: 'change:position', newPosition: number): void;
   (e: 'change:cell-value', event: INewTableChangeCellValueEvent): void;
+  (e: 'change:filters', event: INewTableFilters): void;
 }>();
 
 const {
@@ -210,6 +211,8 @@ function onChangeFilterValue(event: INewTableChangeFilterValue) {
       currentValue: event.value
     }
   }
+
+  emit('change:filters', filters.value);
 }
 
 function onChangeColumnSort(event: INewTableSorts) {

@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   payload?: any,
+  date?: string
 }>();
 
 const emit = defineEmits<{
   (e: 'submit', event: { value: any, payload?: any, }): void;
 }>();
 
-const value = ref<Date>()
+const value = ref<string>(props.date);
+
+watch(
+  () => props.date,
+  (newDate) => value.value = newDate,
+);
 </script>
 
 <template>

@@ -42,6 +42,7 @@ const emit = defineEmits<{
   (e: 'row-action', event: INewTableRowActionEvent): void;
   (e: 'select:item', menuIrem: INewMenuItem): void;
   (e: 'change:cell-value', event: INewTableChangeCellValueEvent): void;
+  (e: 'change:filters', event: INewTableFilters): void;
 }>();
 
 const {
@@ -148,6 +149,7 @@ defineExpose({
         @dblclick.self="onDblClick"
         @contextmenu.self="onContextMenu"
         @change:position="activeContextMenuMouseEvent = null"
+        @change:filters="$emit('change:filters', $event)"
       >
         <template
           v-for="slot in computedHeadSlots"

@@ -15,7 +15,5 @@ const props = defineProps<{
 </script>
 
 <style scoped>
-.cell {
-  padding: 4px;
-}
+@import url(./css/cell.css);
 </style>

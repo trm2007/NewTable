@@ -54,12 +54,6 @@ function commit() {
 </script>
 
 <style scoped>
-.cell {
-  padding: 4px;
-}
-
-input {
-  width: 100%;
-  box-sizing: border-box;
-}
+@import url(./css/cell.css);
+@import url(css/components.css);
 </style>
